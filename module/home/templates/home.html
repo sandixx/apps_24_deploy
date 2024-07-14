@@ -1,0 +1,2039 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Graha Segara</title>
+        <link rel="icon" href="https://cdn.grahasegaramedan.co.id/img/gs.png" type="image/gif" sizes="16x16">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+        <link rel="stylesheet" href="{{ url_for('static', filename='fontawesome-free/css/all.css') }}">
+        <link rel="stylesheet" href="https://cdn.grahasegaramedan.co.id/css/adminlte.min.css">
+        <link rel="stylesheet" href="https://cdn.grahasegaramedan.co.id/toastr/toastr.min.css">
+        <link rel="stylesheet" href="https://cdn.grahasegaramedan.co.id/overlayScrollbars/css/OverlayScrollbars.min.css">
+        <link rel="stylesheet" href="https://cdn.grahasegaramedan.co.id/css/pre2.css">
+        <link rel="stylesheet" href="https://cdn.grahasegaramedan.co.id/datatables-bs4/css/dataTables.bootstrap4.min.css">
+        <link rel="stylesheet" href="https://cdn.grahasegaramedan.co.id/datatables-responsive/css/responsive.bootstrap4.min.css">
+        <link rel="stylesheet" href="https://cdn.grahasegaramedan.co.id/datatables-buttons/css/buttons.bootstrap4.min.css">
+        <link rel="stylesheet" href="https://cdn.grahasegaramedan.co.id/daterangepicker/daterangepicker.css">
+        <link rel="stylesheet" href="https://cdn.grahasegaramedan.co.id/icheck-bootstrap/icheck-bootstrap.min.css">
+        <link rel="stylesheet" href="https://cdn.grahasegaramedan.co.id/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css">
+        <link rel="stylesheet" href="https://cdn.grahasegaramedan.co.id/select2/css/select2.min.css">
+        <link rel="stylesheet" href="https://cdn.grahasegaramedan.co.id/select2-bootstrap4-theme/select2-bootstrap4.min.css">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/upload_file.css') }}">
+    </head>
+
+    <body class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed" data-panel-auto-height-mode="height" >
+        <div id="loading-overlay" hidden></div>
+        <div id="loader-wrapper" style="background-color: #212121; opacity: 0.5;">
+            <div id="loader"></div>
+        </div>
+
+        <div class="wrapper">
+            <nav class="main-header navbar navbar-expand navbar-white navbar-light">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a href="#" class="nav-link" id="judul">Home</a>
+                    </li>
+                </ul>
+
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item dropdown">
+                        <div style="background: #c5c2c2; border-radius: 0.25em;">
+                            <a class="nav-link" data-toggle="dropdown" href="#">{{ session['name'] }}</a>
+
+                            <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="#" onclick="change_pass()">
+                                    <i class="fas fa-key mr-2"></i>
+                                    Change Password
+                                </a>
+                                
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#modal-default">
+                                    <i class="fas fa-sign-out-alt mr-2"></i>
+                                    Logout
+                                </a>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </nav>
+
+            <script>
+                async function change_pass() {
+                    showLoading();
+                    await xhr.open("GET", "{{ url_for('auth_bp.change_password') }}");
+                    xhr.send();
+                    xhr.onload = () => {
+                        hideLoading();
+                        if (xhr.readyState == 4 && xhr.status == 200) {
+                            document.getElementById("judul").innerHTML = "Change Password";
+                            $('#content').html(xhr.response);
+                        } else {
+                            if (xhr.status == 999) {
+                                notif("error", xhr.responseText);
+                            } else if (xhr.status == 401) {
+                                window.location = "{{ url_for('auth_bp.logout') }}";
+                            }
+                        }
+                    };
+                }
+            </script>
+
+            <aside class="main-sidebar sidebar-dark-primary elevation-4">
+                <a href="" class="brand-link">
+                    <img src="https://cdn.grahasegaramedan.co.id/img/gs.png" alt="AdminLTE Logo" class="brand-image">
+                    <span class="brand-text font-weight-light">GRAHA SEGARA</span>
+                </a>
+
+                <div class="sidebar">
+                    <nav class="mt-2">
+                        <ul id="qqq" class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+
+                            {% if session['ekspor'] == 'YES' %}
+                            <li class="nav-item">
+                                <a href="#" class="nav-link" onclick="">
+                                    <i class="nav-icon fas fa-ship"></i>
+                                    <p>Ekspor<i class="right fas fa-angle-left"></i></p>
+                                </a>
+
+                                {% if session['new_customer'] == 'YES' %}
+                                <ul class="nav nav-treeview">
+                                    <li class="nav-item">
+                                        <a href="#" class="nav-link" onclick="">
+                                            <i class="nav-icon fas fa-user"></i>
+                                            <p>Customer<i class="right fas fa-angle-left"></i></p>
+                                        </a>
+
+                                        <ul class="nav nav-treeview">
+                                            <li class="nav-item">
+                                                <a href="#" class="nav-link" onclick="new_customer()">
+                                                    <i class="fas fa-plus nav-icon"></i>
+                                                    <p>New Customer</p>
+                                                </a>
+                                            </li>
+                                        </ul>
+        
+                                        <ul class="nav nav-treeview">
+                                            <li class="nav-item">
+                                                <a href="#" class="nav-link" onclick="find_customer()">
+                                                    <i class="fas fa-edit nav-icon"></i>
+                                                    <p>Update Customer</p>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                </ul>
+
+                                <script>
+                                    async function new_customer() {
+                                        showLoading();
+                                        await xhr.open("GET", "{{ url_for('customer_bp.new_customer') }}");
+                                        xhr.send();
+                                        xhr.onload = () => {
+                                            hideLoading();
+                                            if (xhr.readyState == 4 && xhr.status == 200) {
+                                                document.getElementById("judul").innerHTML = "New Customer";
+                                                $('#content').html(xhr.response);
+                                            } else {
+                                                if (xhr.status == 999) {
+                                                    notif("error", xhr.responseText);
+                                                } else if (xhr.status == 401) {
+                                                    window.location = "{{ url_for('auth_bp.logout') }}";
+                                                }
+                                            }
+                                        };
+                                    }
+
+                                    async function find_customer() {
+                                        showLoading();
+                                        await xhr.open("GET", "{{ url_for('customer_bp.find_customer') }}");
+                                        xhr.send();
+                                        xhr.onload = () => {
+                                            hideLoading();
+                                            if (xhr.readyState == 4 && xhr.status == 200) {
+                                                document.getElementById("judul").innerHTML = "Update Customer";
+                                                $('#content').html(xhr.response);
+                                            } else {
+                                                if (xhr.status == 999) {
+                                                    notif("error", xhr.responseText);
+                                                } else if (xhr.status == 401) {
+                                                    window.location = "{{ url_for('auth_bp.logout') }}";
+                                                }
+                                            }
+                                        };
+                                    }
+                                </script>
+                                {% endif %}
+
+                                {% if session['list_job_order'] == 'YES' %}
+                                <ul class="nav nav-treeview">
+                                    <li class="nav-item">
+                                        <a href="#" class="nav-link">
+                                            <i class="nav-icon fas fa-tasks"></i>
+                                            <p>Job Order<i class="right fas fa-angle-left"></i></p>
+                                        </a>
+    
+                                        <ul class="nav nav-treeview">
+                                            {% if session['job_order'] == 'YES' %}
+                                            <li class="nav-item">
+                                                <a href="#" class="nav-link" onclick="create_job_order()">
+                                                    <i class="fas fa-plus nav-icon"></i>
+                                                    <p>Create Job Order</p>
+                                                </a>
+                                            </li>
+
+                                            <script>
+                                                async function create_job_order() {
+                                                    showLoading();
+                                                    await xhr.open("GET", "{{ url_for('job_order_bp.create_job_order') }}");
+                                                    xhr.send();
+                                                    xhr.onload = () => {
+                                                        hideLoading();
+                                                        if (xhr.readyState == 4 && xhr.status == 200) {
+                                                            document.getElementById("judul").innerHTML = "Create Job Order";
+                                                            $('#content').html(xhr.response);
+                                                        } else {
+                                                            if (xhr.status == 999) {
+                                                                notif("error", xhr.responseText);
+                                                            } else if (xhr.status == 401) {
+                                                                window.location = "{{ url_for('auth_bp.logout') }}";
+                                                            }
+                                                        }
+                                                    };
+                                                }
+                                            </script>
+                                            {% endif %}
+    
+                                            <li class="nav-item">
+                                                <a href="#" class="nav-link" onclick="job_order_cont()">
+                                                    <i class="far fa-circle nav-icon"></i>
+                                                    <p>List By Container</p>
+                                                </a>
+                                            </li>
+    
+                                            <li class="nav-item">
+                                                <a href="#" class="nav-link" onclick="job_order_trx()">
+                                                    <i class="far fa-circle nav-icon"></i>
+                                                    <p>List By Transaction</p>
+                                                </a>
+                                            </li>
+
+                                            <script>
+                                                async function job_order_cont() {
+                                                    showLoading();
+                                                    await xhr.open("GET", "{{ url_for('job_order_bp.job_order_cont') }}");
+                                                    xhr.send();
+                                                    xhr.onload = () => {
+                                                        hideLoading();
+                                                        if (xhr.readyState == 4 && xhr.status == 200) {
+                                                            document.getElementById("judul").innerHTML = "List JO By Container";
+                                                            $('#content').html(xhr.response);
+                                                        } else {
+                                                            if (xhr.status == 999) {
+                                                                notif("error", xhr.responseText);
+                                                            } else if (xhr.status == 401) {
+                                                                window.location = "{{ url_for('auth_bp.logout') }}";
+                                                            }
+                                                        }
+                                                    };
+                                                }
+
+                                                async function job_order_trx() {
+                                                    showLoading();
+                                                    await xhr.open("GET", "{{ url_for('job_order_bp.job_order_trx') }}");
+                                                    xhr.send();
+                                                    xhr.onload = () => {
+                                                        hideLoading();
+                                                        if (xhr.readyState == 4 && xhr.status == 200) {
+                                                            document.getElementById("judul").innerHTML = "List JO By Transaction";
+                                                            $('#content').html(xhr.response);
+                                                        } else {
+                                                            if (xhr.status == 999) {
+                                                                notif("error", xhr.responseText);
+                                                            } else if (xhr.status == 401) {
+                                                                window.location = "{{ url_for('auth_bp.logout') }}";
+                                                            }
+                                                        }
+                                                    };
+                                                }
+                                            </script>
+                                        </ul>
+                                    </li>
+                                </ul>
+                                {% endif %}
+
+                                {% if session['sp2'] == 'YES' %}
+                                <ul class="nav nav-treeview">
+                                    <li class="nav-item">
+                                        <a href="#" class="nav-link">
+                                            <i class="nav-icon fas fa-list"></i>
+                                            <p>SP2<i class="right fas fa-angle-left"></i></p>
+                                        </a>
+    
+                                        <ul class="nav nav-treeview">
+                                            <!--li class="nav-item">
+                                                <a href="#" class="nav-link" onclick="sp2_cont()">
+                                                    <i class="fas fa-print nav-icon"></i>
+                                                    <p>By Container</p>
+                                                </a>
+                                            </!--li-->
+                                            <li class="nav-item">
+                                                <a href="#" class="nav-link" onclick="sp2_trx()">
+                                                    <i class="fas fa-print nav-icon"></i>
+                                                    <p>By Transaction</p>
+                                                </a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a href="#" class="nav-link" onclick="reprint_sp2()">
+                                                    <i class="fas fa-search nav-icon"></i>
+                                                    <p>Reprint</p>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                </ul>
+
+                                <script>
+                                    async function sp2_cont() {
+                                        showLoading();
+                                        await xhr.open("GET", "{{ url_for('sp2_bp.sp2_cont') }}");
+                                        xhr.send();
+                                        xhr.onload = () => {
+                                            hideLoading();
+                                            if (xhr.readyState == 4 && xhr.status == 200) {
+                                                document.getElementById("judul").innerHTML = "List SP2 By Container";
+                                                $('#content').html(xhr.response);
+                                            } else {
+                                                if (xhr.status == 999) {
+                                                    notif("error", xhr.responseText);
+                                                } else if (xhr.status == 401) {
+                                                    window.location = "{{ url_for('auth_bp.logout') }}";
+                                                }
+                                            }
+                                        };
+                                    }
+
+                                    async function sp2_trx() {
+                                        showLoading();
+                                        await xhr.open("GET", "{{ url_for('sp2_bp.sp2_trx') }}");
+                                        xhr.send();
+                                        xhr.onload = () => {
+                                            hideLoading();
+                                            if (xhr.readyState == 4 && xhr.status == 200) {
+                                                document.getElementById("judul").innerHTML = "List SP2 By Transaction";
+                                                $('#content').html(xhr.response);
+                                            } else {
+                                                if (xhr.status == 999) {
+                                                    notif("error", xhr.responseText);
+                                                } else if (xhr.status == 401) {
+                                                    window.location = "{{ url_for('auth_bp.logout') }}";
+                                                }
+                                            }
+                                        };
+                                    }
+
+                                    async function reprint_sp2() {
+                                        showLoading();
+                                        await xhr.open("GET", "{{ url_for('sp2_bp.reprint_sp2') }}");
+                                        xhr.send();
+                                        xhr.onload = () => {
+                                            hideLoading();
+                                            if (xhr.readyState == 4 && xhr.status == 200) {
+                                                document.getElementById("judul").innerHTML = "Reprint SP2";
+                                                $('#content').html(xhr.response);
+                                            } else {
+                                                if (xhr.status == 999) {
+                                                    notif("error", xhr.responseText);
+                                                } else if (xhr.status == 401) {
+                                                    window.location = "{{ url_for('auth_bp.logout') }}";
+                                                }
+                                            }
+                                        };
+                                    }
+                                </script>
+                                {% endif %}
+
+                                {% if session['document'] == 'YES' %}
+                                <ul class="nav nav-treeview">
+                                    <li class="nav-item">
+                                        <a href="#" class="nav-link">
+                                            <i class="nav-icon fas fa-file"></i>
+                                            <p>Document<i class="right fas fa-angle-left"></i></p>
+                                        </a>
+
+                                        <ul class="nav nav-treeview">
+                                            <li class="nav-item">
+                                                <a href="#" class="nav-link" onclick="add_container_to_exist()">
+                                                    <i class="fas fa-plus nav-icon"></i>
+                                                    <p>Add Container</p>
+                                                </a>
+                                            </li>
+                                        </ul>
+
+                                        <ul class="nav nav-treeview">
+                                            <li class="nav-item">
+                                                <a href="#" class="nav-link" onclick="update_document()">
+                                                    <i class="fas fa-edit nav-icon"></i>
+                                                    <p>Update Document</p>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                </ul>
+
+                                <script>
+                                    async function update_document() {
+                                        showLoading();
+                                        await xhr.open("GET", "{{ url_for('document_bp.find_document') }}");
+                                        xhr.send();
+                                        xhr.onload = () => {
+                                            hideLoading();
+                                            if (xhr.readyState == 4 && xhr.status == 200) {
+                                                document.getElementById("judul").innerHTML = "Update Document";
+                                                $('#content').html(xhr.response);
+                                            } else {
+                                                if (xhr.status == 999) {
+                                                    notif("error", xhr.responseText);
+                                                } else if (xhr.status == 401) {
+                                                    window.location = "{{ url_for('auth_bp.logout') }}";
+                                                }
+                                            }
+                                        };
+                                    }
+
+                                    async function add_container_to_exist() {
+                                        showLoading();
+                                        await xhr.open("GET", "{{ url_for('document_bp.find_container_add') }}");
+                                        xhr.send();
+                                        xhr.onload = () => {
+                                            hideLoading();
+                                            if (xhr.readyState == 4 && xhr.status == 200) {
+                                                document.getElementById("judul").innerHTML = "Add Container";
+                                                $('#content').html(xhr.response);
+                                            } else {
+                                                if (xhr.status == 999) {
+                                                    notif("error", xhr.responseText);
+                                                } else if (xhr.status == 401) {
+                                                    window.location = "{{ url_for('auth_bp.logout') }}";
+                                                }
+                                            }
+                                        };
+                                    }
+                                </script>
+                                {% endif %}
+
+                                {% if session['pre_invoice'] == 'YES' %}
+                                <!--ul class="nav nav-treeview">
+                                    <li class="nav-item">
+                                        <a href="#" class="nav-link">
+                                            <i class="nav-icon fas fa-money-bill"></i>
+                                            <p>Billing<i class="right fas fa-angle-left"></i></p>
+                                        </a>
+
+                                        <ul class="nav nav-treeview">
+                                            <li class="nav-item">
+                                                <a href="#" class="nav-link" onclick="preinvoice_ekspor()">
+                                                    <i class="fas fa-file-invoice nav-icon"></i>
+                                                    <p>Create Pre Invoice</p>
+                                                </a>
+                                            </li>
+                                        </ul>
+
+                                        <ul class="nav nav-treeview">
+                                            <li class="nav-item">
+                                                <a href="#" class="nav-link" onclick="reprint_preinvoice_ekspor()">
+                                                    <i class="fas fa-search nav-icon"></i>
+                                                    <p>Reperint Pre Invoice</p>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                </!--ul-->
+
+                                <script>
+                                    async function preinvoice_ekspor() {
+                                        showLoading();
+                                        await xhr.open("GET", "{{ url_for('pre_invoice_bp.preinvoice_ekspor') }}");
+                                        xhr.send();
+                                        xhr.onload = () => {
+                                            hideLoading();
+                                            if (xhr.readyState == 4 && xhr.status == 200) {
+                                                document.getElementById("judul").innerHTML = "Create Pre Invoice Ekspor";
+                                                $('#content').html(xhr.response);
+                                            } else {
+                                                if (xhr.status == 999) {
+                                                    notif("error", xhr.responseText);
+                                                } else if (xhr.status == 401) {
+                                                    window.location = "{{ url_for('auth_bp.logout') }}";
+                                                }
+                                            }
+                                        };
+                                    }
+
+                                    async function reprint_preinvoice_ekspor() {
+                                        showLoading();
+                                        await xhr.open("GET", "{{ url_for('pre_invoice_bp.reprint_preinvoice_ekspor') }}");
+                                        xhr.send();
+                                        xhr.onload = () => {
+                                            hideLoading();
+                                            if (xhr.readyState == 4 && xhr.status == 200) {
+                                                document.getElementById("judul").innerHTML = "Reprint Pre Invoice Ekspor";
+                                                $('#content').html(xhr.response);
+                                            } else {
+                                                if (xhr.status == 999) {
+                                                    notif("error", xhr.responseText);
+                                                } else if (xhr.status == 401) {
+                                                    window.location = "{{ url_for('auth_bp.logout') }}";
+                                                }
+                                            }
+                                        };
+                                    }
+                                </script>
+                                {% endif %}
+
+                                {% if session['on_progress_ekspor'] == 'YES' %}
+                                <ul class="nav nav-treeview">
+                                    <li class="nav-item">
+                                        <a href="#" class="nav-link" onclick="on_progress_ekspor()">
+                                        <i class="nav-icon fas fa-spinner"></i>
+                                        <p>On Progress</p>
+                                        </a>
+                                    </li>
+                                </ul>
+
+                                <script>
+                                    async function on_progress_ekspor() {
+                                        showLoading();
+                                        await xhr.open("GET", "{{ url_for('progress_bp.progress_ekspor') }}");
+                                        xhr.send();
+                                        xhr.onload = () => {
+                                            hideLoading();
+                                            if (xhr.readyState == 4 && xhr.status == 200) {
+                                                document.getElementById("judul").innerHTML = "On Progress";
+                                                $('#content').html(xhr.response);
+                                            } else {
+                                                if (xhr.status == 999) {
+                                                    notif("error", xhr.responseText);
+                                                } else if (xhr.status == 401) {
+                                                    window.location = "{{ url_for('auth_bp.logout') }}";
+                                                }
+                                            }
+                                        };
+                                    }
+                                </script>
+                                {% endif %}
+
+                                {% if session['search_data'] == 'YES' %}
+                                <ul class="nav nav-treeview">
+                                    <li class="nav-item">
+                                        <a href="#" class="nav-link" onclick="search_data()">
+                                        <i class="nav-icon fas fa-search"></i>
+                                        <p>Search</p>
+                                        </a>
+                                    </li>
+                                </ul>
+
+                                <script>
+                                    async function search_data() {
+                                        showLoading();
+                                        await xhr.open("GET", "{{ url_for('search_bp.search') }}");
+                                        xhr.send();
+                                        xhr.onload = () => {
+                                            hideLoading();
+                                            if (xhr.readyState == 4 && xhr.status == 200) {
+                                                document.getElementById("judul").innerHTML = "Search";
+                                                $('#content').html(xhr.response);
+                                            } else {
+                                                if (xhr.status == 999) {
+                                                    notif("error", xhr.responseText);
+                                                } else if (xhr.status == 401) {
+                                                    window.location = "{{ url_for('auth_bp.logout') }}";
+                                                }
+                                            }
+                                        };
+                                    }
+                                </script>
+                                {% endif %}
+
+                                {% if session['report'] == 'YES' %}
+                                <ul class="nav nav-treeview">
+                                    <li class="nav-item">
+                                        <a href="#" class="nav-link">
+                                            <i class="nav-icon fas fa-table"></i>
+                                            <p>Report<i class="right fas fa-angle-left"></i></p>
+                                        </a>
+
+                                        <ul class="nav nav-treeview">
+                                            <li class="nav-item">
+                                                <a href="#" class="nav-link" onclick="report_job_order_ekspor()">
+                                                    <i class="far fa-circle nav-icon"></i>
+                                                    <p>Job Order</p>
+                                                </a>
+                                            </li>
+                                        </ul>
+
+                                        <ul class="nav nav-treeview">
+                                            <li class="nav-item">
+                                                <a href="#" class="nav-link" onclick="report_gatein_ekspor()">
+                                                    <i class="far fa-circle nav-icon"></i>
+                                                    <p>Gate In</p>
+                                                </a>
+                                            </li>
+                                        </ul>
+
+                                        <ul class="nav nav-treeview">
+                                            <li class="nav-item">
+                                                <a href="#" class="nav-link" onclick="report_stack_ekspor()">
+                                                    <i class="far fa-circle nav-icon"></i>
+                                                    <p>Stack</p>
+                                                </a>
+                                            </li>
+                                        </ul>
+
+                                        <ul class="nav nav-treeview">
+                                            <li class="nav-item">
+                                                <a href="#" class="nav-link" onclick="report_gateout_ekspor()">
+                                                    <i class="far fa-circle nav-icon"></i>
+                                                    <p>Gate Out</p>
+                                                </a>
+                                            </li>
+                                        </ul>
+
+                                        <!--ul class="nav nav-treeview">
+                                            <li class="nav-item">
+                                                <a href="#" class="nav-link" onclick="report_stock_ekspor()">
+                                                    <i class="far fa-circle nav-icon"></i>
+                                                    <p>Stock</p>
+                                                </a>
+                                            </li>
+                                        </!--ul-->
+                                    </li>
+                                </ul>
+
+                                <script>
+                                    async function report_gatein_ekspor() {
+                                        showLoading();
+                                        await xhr.open("GET", "{{ url_for('report_bp.report_gatein_ekspor') }}");
+                                        xhr.send();
+                                        xhr.onload = () => {
+                                            hideLoading();
+                                            if (xhr.readyState == 4 && xhr.status == 200) {
+                                                document.getElementById("judul").innerHTML = "Report - Gate In Ekspor";
+                                                $('#content').html(xhr.response);
+                                            } else {
+                                                if (xhr.status == 999) {
+                                                    notif("error", xhr.responseText);
+                                                } else if (xhr.status == 401) {
+                                                    window.location = "{{ url_for('auth_bp.logout') }}";
+                                                }
+                                            }
+                                        };
+                                    }
+
+                                    async function report_gateout_ekspor() {
+                                        showLoading();
+                                        await xhr.open("GET", "{{ url_for('report_bp.report_gateout_ekspor') }}");
+                                        xhr.send();
+                                        xhr.onload = () => {
+                                            hideLoading();
+                                            if (xhr.readyState == 4 && xhr.status == 200) {
+                                                document.getElementById("judul").innerHTML = "Report - Gate Out Ekspor";
+                                                $('#content').html(xhr.response);
+                                            } else {
+                                                if (xhr.status == 999) {
+                                                    notif("error", xhr.responseText);
+                                                } else if (xhr.status == 401) {
+                                                    window.location = "{{ url_for('auth_bp.logout') }}";
+                                                }
+                                            }
+                                        };
+                                    }
+
+                                    async function report_stock_ekspor() {
+                                        showLoading();
+                                        await xhr.open("GET", "{{ url_for('report_bp.report_stock_ekspor') }}");
+                                        xhr.send();
+                                        xhr.onload = () => {
+                                            hideLoading();
+                                            if (xhr.readyState == 4 && xhr.status == 200) {
+                                                document.getElementById("judul").innerHTML = "Report - Stock Ekspor";
+                                                $('#content').html(xhr.response);
+                                            } else {
+                                                if (xhr.status == 999) {
+                                                    notif("error", xhr.responseText);
+                                                } else if (xhr.status == 401) {
+                                                    window.location = "{{ url_for('auth_bp.logout') }}";
+                                                }
+                                            }
+                                        };
+                                    }
+
+                                    async function report_stack_ekspor() {
+                                        showLoading();
+                                        await xhr.open("GET", "{{ url_for('report_bp.report_stack_ekspor') }}");
+                                        xhr.send();
+                                        xhr.onload = () => {
+                                            hideLoading();
+                                            if (xhr.readyState == 4 && xhr.status == 200) {
+                                                document.getElementById("judul").innerHTML = "Report - Stack Ekspor";
+                                                $('#content').html(xhr.response);
+                                            } else {
+                                                if (xhr.status == 999) {
+                                                    notif("error", xhr.responseText);
+                                                } else if (xhr.status == 401) {
+                                                    window.location = "{{ url_for('auth_bp.logout') }}";
+                                                }
+                                            }
+                                        };
+                                    }
+
+                                    async function report_job_order_ekspor() {
+                                        showLoading();
+                                        await xhr.open("GET", "{{ url_for('report_bp.report_job_order_ekspor') }}");
+                                        xhr.send();
+                                        xhr.onload = () => {
+                                            hideLoading();
+                                            if (xhr.readyState == 4 && xhr.status == 200) {
+                                                document.getElementById("judul").innerHTML = "Report - Job Order Ekspor";
+                                                $('#content').html(xhr.response);
+                                            } else {
+                                                if (xhr.status == 999) {
+                                                    notif("error", xhr.responseText);
+                                                } else if (xhr.status == 401) {
+                                                    window.location = "{{ url_for('auth_bp.logout') }}";
+                                                }
+                                            }
+                                        };
+                                    }
+                                </script>
+                                {% endif %}
+                            </li>
+                            {% endif %}
+
+                            {% if session['impor'] == 'YES' %}
+                            <li class="nav-item">
+                                <a href="#" class="nav-link" onclick="">
+                                    <i class="nav-icon fas fa-ship"></i>
+                                    <p>Impor<i class="right fas fa-angle-left"></i></p>
+                                </a>
+
+                                {% if session['on_progress_impor'] == 'YES' %}
+                                <ul class="nav nav-treeview">
+                                    <li class="nav-item">
+                                        <a href="#" class="nav-link" onclick="on_progress_impor()">
+                                        <i class="nav-icon fas fa-spinner"></i>
+                                        <p>On Progress</p>
+                                        </a>
+                                    </li>
+                                </ul>
+
+                                <script>
+                                    async function on_progress_impor() {
+                                        showLoading();
+                                        await xhr.open("GET", "{{ url_for('progress_bp.progress_impor') }}");
+                                        xhr.send();
+                                        xhr.onload = () => {
+                                            hideLoading();
+                                            if (xhr.readyState == 4 && xhr.status == 200) {
+                                                document.getElementById("judul").innerHTML = "On Progress";
+                                                $('#content').html(xhr.response);
+                                            } else {
+                                                if (xhr.status == 999) {
+                                                    notif("error", xhr.responseText);
+                                                } else if (xhr.status == 401) {
+                                                    window.location = "{{ url_for('auth_bp.logout') }}";
+                                                }
+                                            }
+                                        };
+                                    }
+                                </script>
+                                {% endif %}
+
+                                {% if session['gatein'] == 'YES' %}
+                                <!--ul class="nav nav-treeview">
+                                    <li class="nav-item">
+                                        <a href="#" class="nav-link" onclick="gatein_impor()">
+                                        <i class="nav-icon fas fa-angle-right"></i>
+                                        <p>Gate In</p>
+                                        </a>
+                                    </li>
+                                </!--ul>
+
+                                <script>
+                                    async function gatein_impor() {
+                                        showLoading();
+                                        await xhr.open("GET", "{{ url_for('gatein_impor_bp.gatein_impor') }}");
+                                        xhr.send();
+                                        xhr.onload = () => {
+                                            hideLoading();
+                                            if (xhr.readyState == 4 && xhr.status == 200) {
+                                                document.getElementById("judul").innerHTML = "Gate In Impor";
+                                                $('#content').html(xhr.response);
+                                            } else {
+                                                if (xhr.status == 999) {
+                                                    notif("error", xhr.responseText);
+                                                } else if (xhr.status == 401) {
+                                                    window.location = "{{ url_for('auth_bp.logout') }}";
+                                                }
+                                            }
+                                        };
+                                    }
+                                </!--script-->
+                                {% endif %}
+
+                                <ul class="nav nav-treeview">
+                                    <li class="nav-item">
+                                        <a href="#" class="nav-link">
+                                            <i class="nav-icon fas fa-money-bill"></i>
+                                            <p>Billing<i class="right fas fa-angle-left"></i></p>
+                                        </a>
+
+                                        {% if session['pre_invoice'] == 'YES' %}
+                                        <ul class="nav nav-treeview">
+                                            <li class="nav-item">
+                                                <a href="#" class="nav-link" onclick="preinvoice_impor()">
+                                                    <i class="fas fa-file-invoice nav-icon"></i>
+                                                    <p>Create Pre Invoice</p>
+                                                </a>
+                                            </li>
+                                        </ul>
+
+                                        <ul class="nav nav-treeview">
+                                            <li class="nav-item">
+                                                <a href="#" class="nav-link" onclick="reprint_preinvoice_impor()">
+                                                    <i class="fas fa-search nav-icon"></i>
+                                                    <p>Reperint Pre Invoice</p>
+                                                </a>
+                                            </li>
+                                        </ul>
+
+                                        <script>
+                                            async function preinvoice_impor() {
+                                                showLoading();
+                                                await xhr.open("GET", "{{ url_for('preinvoice_impor_bp.preinvoice_impor') }}");
+                                                xhr.send();
+                                                xhr.onload = () => {
+                                                    hideLoading();
+                                                    if (xhr.readyState == 4 && xhr.status == 200) {
+                                                        document.getElementById("judul").innerHTML = "Create Pre Invoice Impor";
+                                                        $('#content').html(xhr.response);
+                                                    } else {
+                                                        if (xhr.status == 999) {
+                                                            notif("error", xhr.responseText);
+                                                        } else if (xhr.status == 401) {
+                                                            window.location = "{{ url_for('auth_bp.logout') }}";
+                                                        }
+                                                    }
+                                                };
+                                            }
+                                            
+                                            async function reprint_preinvoice_impor() {
+                                                showLoading();
+                                                await xhr.open("GET", "{{ url_for('preinvoice_impor_bp.reprint_preinvoice_impor') }}");
+                                                xhr.send();
+                                                xhr.onload = () => {
+                                                    hideLoading();
+                                                    if (xhr.readyState == 4 && xhr.status == 200) {
+                                                        document.getElementById("judul").innerHTML = "Reprint Pre Invoice Impor";
+                                                        $('#content').html(xhr.response);
+                                                    } else {
+                                                        if (xhr.status == 999) {
+                                                            notif("error", xhr.responseText);
+                                                        } else if (xhr.status == 401) {
+                                                            window.location = "{{ url_for('auth_bp.logout') }}";
+                                                        }
+                                                    }
+                                                };
+                                            }
+                                        </script>
+                                        {% endif %}
+
+                                        {% if session['cancel_preinvoice'] == 'YES' %}
+                                        <ul class="nav nav-treeview">
+                                            <li class="nav-item">
+                                                <a href="#" class="nav-link" onclick="cancel_preinvoice_impor()">
+                                                    <i class="fas fa-ban nav-icon"></i>
+                                                    <p>Cancel Pre Invoice</p>
+                                                </a>
+                                            </li>
+                                        </ul>
+
+                                        <script>
+                                            async function cancel_preinvoice_impor() {
+                                                showLoading();
+                                                await xhr.open("GET", "{{ url_for('preinvoice_impor_bp.cancel_preinvoice_impor') }}");
+                                                xhr.send();
+                                                xhr.onload = () => {
+                                                    hideLoading();
+                                                    if (xhr.readyState == 4 && xhr.status == 200) {
+                                                        document.getElementById("judul").innerHTML = "Cancel Pre Invoice Impor";
+                                                        $('#content').html(xhr.response);
+                                                    } else {
+                                                        if (xhr.status == 999) {
+                                                            notif("error", xhr.responseText);
+                                                        } else if (xhr.status == 401) {
+                                                            window.location = "{{ url_for('auth_bp.logout') }}";
+                                                        }
+                                                    }
+                                                };
+                                            }
+                                        </script>
+                                        {% endif %}
+
+                                        {% if session['payment'] == 'YES' %}
+                                        <ul class="nav nav-treeview">
+                                            <li class="nav-item">
+                                                <a href="#" class="nav-link" onclick="payment_impor()">
+                                                    <i class="fas fa-money-bill nav-icon"></i>
+                                                    <p>Payment</p>
+                                                </a>
+                                            </li>
+                                        </ul>
+
+                                        <script>
+                                            async function payment_impor() {
+                                                showLoading();
+                                                await xhr.open("GET", "{{ url_for('payment_impor_bp.payment_impor') }}");
+                                                xhr.send();
+                                                xhr.onload = () => {
+                                                    hideLoading();
+                                                    if (xhr.readyState == 4 && xhr.status == 200) {
+                                                        document.getElementById("judul").innerHTML = "Payment Impor";
+                                                        $('#content').html(xhr.response);
+                                                    } else {
+                                                        if (xhr.status == 999) {
+                                                            notif("error", xhr.responseText);
+                                                        } else if (xhr.status == 401) {
+                                                            window.location = "{{ url_for('auth_bp.logout') }}";
+                                                        }
+                                                    }
+                                                };
+                                            }
+                                        </script>
+                                        {% endif %}
+
+                                        {% if session['invoice'] == 'YES' %}
+                                        <ul class="nav nav-treeview">
+                                            <li class="nav-item">
+                                                <a href="#" class="nav-link" onclick="print_invoice_impor()">
+                                                    <i class="fas fa-file-invoice nav-icon"></i>
+                                                    <p>Print Invoice</p>
+                                                </a>
+                                            </li>
+                                        </ul>
+
+                                        <script>
+                                            async function print_invoice_impor() {
+                                                showLoading();
+                                                await xhr.open("GET", "{{ url_for('invoice_impor_bp.print_invoice_impor') }}");
+                                                xhr.send();
+                                                xhr.onload = () => {
+                                                    hideLoading();
+                                                    if (xhr.readyState == 4 && xhr.status == 200) {
+                                                        document.getElementById("judul").innerHTML = "Print Invoice Impor";
+                                                        $('#content').html(xhr.response);
+                                                    } else {
+                                                        if (xhr.status == 999) {
+                                                            notif("error", xhr.responseText);
+                                                        } else if (xhr.status == 401) {
+                                                            window.location = "{{ url_for('auth_bp.logout') }}";
+                                                        }
+                                                    }
+                                                };
+                                            }
+                                        </script>
+                                        {% endif %}
+
+                                        {% if session['invoice'] == 'YES' and session['external_access'] == 'NO' %}
+                                        <ul class="nav nav-treeview">
+                                            <li class="nav-item">
+                                                <a href="#" class="nav-link" onclick="reprint_invoice_impor()">
+                                                    <i class="fas fa-search nav-icon"></i>
+                                                    <p>Reprint Invoice</p>
+                                                </a>
+                                            </li>
+                                        </ul>
+
+                                        <script>
+                                            async function reprint_invoice_impor() {
+                                                showLoading();
+                                                await xhr.open("GET", "{{ url_for('invoice_impor_bp.reprint_invoice_impor') }}");
+                                                xhr.send();
+                                                xhr.onload = () => {
+                                                    hideLoading();
+                                                    if (xhr.readyState == 4 && xhr.status == 200) {
+                                                        document.getElementById("judul").innerHTML = "Reprint Invoice Impor";
+                                                        $('#content').html(xhr.response);
+                                                    } else {
+                                                        if (xhr.status == 999) {
+                                                            notif("error", xhr.responseText);
+                                                        } else if (xhr.status == 401) {
+                                                            window.location = "{{ url_for('auth_bp.logout') }}";
+                                                        }
+                                                    }
+                                                };
+                                            }
+                                        </script>
+                                        {% endif %}
+
+                                        {% if session['void_invoice'] == 'YES' %}
+                                        <ul class="nav nav-treeview">
+                                            <li class="nav-item">
+                                                <a href="#" class="nav-link" onclick="void_invoice_impor()">
+                                                    <i class="fas fa-ban nav-icon"></i>
+                                                    <p>Void Invoice</p>
+                                                </a>
+                                            </li>
+                                        </ul>
+
+                                        <script>
+                                            async function void_invoice_impor() {
+                                                showLoading();
+                                                await xhr.open("GET", "{{ url_for('invoice_impor_bp.void_invoice_impor') }}");
+                                                xhr.send();
+                                                xhr.onload = () => {
+                                                    hideLoading();
+                                                    if (xhr.readyState == 4 && xhr.status == 200) {
+                                                        document.getElementById("judul").innerHTML = "Void Invoice Impor";
+                                                        $('#content').html(xhr.response);
+                                                    } else {
+                                                        if (xhr.status == 999) {
+                                                            notif("error", xhr.responseText);
+                                                        } else if (xhr.status == 401) {
+                                                            window.location = "{{ url_for('auth_bp.logout') }}";
+                                                        }
+                                                    }
+                                                };
+                                            }
+                                        </script>
+                                        {% endif %}
+
+                                        {% if session['sp2'] == 'YES' %}
+                                        <ul class="nav nav-treeview">
+                                            <li class="nav-item">
+                                                <a href="#" class="nav-link" onclick="gate_pass_impor()">
+                                                    <i class="fas fa-file-invoice nav-icon"></i>
+                                                    <p>Gate Pass</p>
+                                                </a>
+                                            </li>
+                                        </ul>
+
+                                        <ul class="nav nav-treeview">
+                                            <li class="nav-item">
+                                                <a href="#" class="nav-link" onclick="reprint_gate_pass_impor()">
+                                                    <i class="fas fa-file-invoice nav-icon"></i>
+                                                    <p>Reprint Gate Pass</p>
+                                                </a>
+                                            </li>
+                                        </ul>
+
+                                        <script>
+                                            async function gate_pass_impor() {
+                                                showLoading();
+                                                await xhr.open("GET", "{{ url_for('gate_pass_impor_bp.gate_pass_impor') }}");
+                                                xhr.send();
+                                                xhr.onload = () => {
+                                                    hideLoading();
+                                                    if (xhr.readyState == 4 && xhr.status == 200) {
+                                                        document.getElementById("judul").innerHTML = "Gate Pass Impor";
+                                                        $('#content').html(xhr.response);
+                                                    } else {
+                                                        hideLoading();
+                                                        if (xhr.status == 999) {
+                                                            notif("error", xhr.responseText);
+                                                        } else if (xhr.status == 401) {
+                                                            window.location = "{{ url_for('auth_bp.logout') }}";
+                                                        }
+                                                    }
+                                                };
+                                            }
+
+                                            async function reprint_gate_pass_impor() {
+                                                showLoading();
+                                                await xhr.open("GET", "{{ url_for('gate_pass_impor_bp.reprint_gate_pass_impor') }}");
+                                                xhr.send();
+                                                xhr.onload = () => {
+                                                    hideLoading();
+                                                    if (xhr.readyState == 4 && xhr.status == 200) {
+                                                        document.getElementById("judul").innerHTML = "Reprint Gate Pass Impor";
+                                                        $('#content').html(xhr.response);
+                                                    } else {
+                                                        if (xhr.status == 999) {
+                                                            notif("error", xhr.responseText);
+                                                        } else if (xhr.status == 401) {
+                                                            window.location = "{{ url_for('auth_bp.logout') }}";
+                                                        }
+                                                    }
+                                                };
+                                            }
+                                        </script>
+                                        {% endif %}
+
+                                        {% if session['rincian_container'] == 'YES' %}
+                                        <ul class="nav nav-treeview">
+                                            <li class="nav-item">
+                                                <a href="#" class="nav-link" onclick="rincian_container()">
+                                                    <i class="fas fa-file-invoice nav-icon"></i>
+                                                    <p>Rincian Container</p>
+                                                </a>
+                                            </li>
+                                        </ul>
+
+                                        <script>
+                                            async function rincian_container() {
+                                                showLoading();
+                                                await xhr.open("GET", "{{ url_for('perincian_container_impor_bp.perincian_container_impor') }}");
+                                                xhr.send();
+                                                xhr.onload = () => {
+                                                    hideLoading();
+                                                    if (xhr.readyState == 4 && xhr.status == 200) {
+                                                        document.getElementById("judul").innerHTML = "Rincian Container";
+                                                        $('#content').html(xhr.response);
+                                                    } else {
+                                                        hideLoading();
+                                                        if (xhr.status == 999) {
+                                                            notif("error", xhr.responseText);
+                                                        } else if (xhr.status == 401) {
+                                                            window.location = "{{ url_for('auth_bp.logout') }}";
+                                                        }
+                                                    }
+                                                };
+                                            }
+                                        </script>
+                                        {% endif %}
+                                    </li>
+                                </ul>
+
+                                {% if session['report'] == 'YES' %}
+                                <ul class="nav nav-treeview">
+                                    <li class="nav-item">
+                                        <a href="#" class="nav-link">
+                                            <i class="nav-icon fas fa-table"></i>
+                                            <p>Report<i class="right fas fa-angle-left"></i></p>
+                                        </a>
+
+                                        
+                                        
+                                    </li>
+                                </ul>
+
+
+                                {% endif %} 
+                            </li>
+                            {% endif %}
+
+                            {% if session['approval_bc'] == 'YES' %}
+                            <li class="nav-item">
+                                <a href="#" class="nav-link" onclick="get_approval()">
+                                <i class="nav-icon fas fa-thumbs-up"></i>
+                                <p>Approval BC</p>
+                                </a>
+                            </li>
+
+                            <script>
+                                async function get_approval() {
+                                    showLoading();
+                                    await xhr.open("GET", "{{ url_for('approval_bc_bp.get_data_approval') }}");
+                                    xhr.send();
+                                    xhr.onload = () => {
+                                        hideLoading();
+                                        if (xhr.readyState == 4 && xhr.status == 200) {
+                                            document.getElementById("judul").innerHTML = "Approval Bea Cukai";
+                                            $('#content').html(xhr.response);
+                                        } else {
+                                            if (xhr.status == 999) {
+                                                notif("error", xhr.responseText);
+                                            } else if (xhr.status == 401) {
+                                                window.location = "{{ url_for('auth_bp.logout') }}";
+                                            }
+                                        }
+                                    };
+                                }
+                            </script>
+                            {% endif %}
+
+                            {% if session['pass_access'] == 'YES' %}
+                            <li class="nav-item">
+                                <a href="#" class="nav-link" onclick="">
+                                    <i class="nav-icon fas fa-id-card"></i>
+                                    <p>Pass Akses<i class="right fas fa-angle-left"></i></p>
+                                </a>
+
+                                {% if session['create_pass_access'] == 'YES' %}
+                                <ul class="nav nav-treeview">
+                                    <li class="nav-item">
+                                        <a href="#" class="nav-link" onclick="pass_access()">
+                                        <i class="nav-icon fas fa-plus"></i>
+                                        <p>Pass Access</p>
+                                        </a>
+                                    </li>
+                                </ul>
+
+                                <script>
+                                    async function pass_access() {
+                                        showLoading();
+                                        await xhr.open("GET", "{{ url_for('pass_access_bp.pass_access') }}");
+                                        xhr.send();
+                                        xhr.onload = () => {
+                                            hideLoading();
+                                            if (xhr.readyState == 4 && xhr.status == 200) {
+                                                document.getElementById("judul").innerHTML = "Pass Access";
+                                                $('#content').html(xhr.response);
+                                            } else {
+                                                if (xhr.status == 999) {
+                                                    notif("error", xhr.responseText);
+                                                } else if (xhr.status == 401) {
+                                                    window.location = "{{ url_for('auth_bp.logout') }}";
+                                                }
+                                            }
+                                        };
+                                    }
+                                </script>
+                                {% endif %}
+
+                                {% if session['update_pass_access'] == 'YES' %}
+                                <ul class="nav nav-treeview">
+                                    <li class="nav-item">
+                                        <a href="#" class="nav-link" onclick="find_update_pass_access()">
+                                            <i class="fas fa-edit nav-icon"></i>
+                                            <p>Update Pass Access</p>
+                                        </a>
+                                    </li>
+                                </ul>
+
+                                <script>
+                                    async function find_update_pass_access() {
+                                        showLoading();
+                                        await xhr.open("GET", "{{ url_for('pass_access_bp.search_update_pass_access') }}");
+                                        xhr.send();
+                                        xhr.onload = () => {
+                                            hideLoading();
+                                            if (xhr.readyState == 4 && xhr.status == 200) {
+                                                document.getElementById("judul").innerHTML = "Update Pass Access";
+                                                $('#content').html(xhr.response);
+                                            } else {
+                                                if (xhr.status == 999) {
+                                                    notif("error", xhr.responseText);
+                                                } else if (xhr.status == 401) {
+                                                    window.location = "{{ url_for('auth_bp.logout') }}";
+                                                }
+                                            }
+                                        };
+                                    }
+                                </script>
+                                {% endif %}
+
+                                {% if session['search_pass_access'] == 'YES' %}
+                                <ul class="nav nav-treeview">
+                                    <li class="nav-item">
+                                        <a href="#" class="nav-link" onclick="search_pass_access()">
+                                        <i class="nav-icon fas fa-search"></i>
+                                        <p>Search Pass Access</p>
+                                        </a>
+                                    </li>
+                                </ul>
+
+                                <script>
+                                    async function search_pass_access() {
+                                        showLoading();
+                                        await xhr.open("GET", "{{ url_for('pass_access_bp.find_pass_access') }}");
+                                        xhr.send();
+                                        xhr.onload = () => {
+                                            hideLoading();
+                                            if (xhr.readyState == 4 && xhr.status == 200) {
+                                                document.getElementById("judul").innerHTML = "Search Pass Access";
+                                                $('#content').html(xhr.response);
+                                            } else {
+                                                if (xhr.status == 999) {
+                                                    notif("error", xhr.responseText);
+                                                } else if (xhr.status == 401) {
+                                                    window.location = "{{ url_for('auth_bp.logout') }}";
+                                                }
+                                            }
+                                        };
+                                    }
+                                </script>
+                                {% endif %}
+
+                                {% if session['list_pass_access'] == 'YES' %}
+                                <ul class="nav nav-treeview">
+                                    <li class="nav-item">
+                                        <a href="#" class="nav-link" onclick="list_pass_access()">
+                                        <i class="nav-icon fas fa-table"></i>
+                                        <p>List Pass Access</p>
+                                        </a>
+                                    </li>
+                                </ul>
+
+                                <script>
+                                    async function list_pass_access() {
+                                        showLoading();
+                                        await xhr.open("GET", "{{ url_for('pass_access_bp.list_pass_access') }}");
+                                        xhr.send();
+                                        xhr.onload = () => {
+                                            hideLoading();
+                                            if (xhr.readyState == 4 && xhr.status == 200) {
+                                                document.getElementById("judul").innerHTML = "List Pass Access";
+                                                $('#content').html(xhr.response);
+                                            } else {
+                                                if (xhr.status == 999) {
+                                                    notif("error", xhr.responseText);
+                                                } else if (xhr.status == 401) {
+                                                    window.location = "{{ url_for('auth_bp.logout') }}";
+                                                }
+                                            }
+                                        };
+                                    }
+                                </script>
+                                {% endif %}
+
+                                {% if session['ambil_pass_access'] == 'YES' %}
+                                <ul class="nav nav-treeview">
+                                    <li class="nav-item">
+                                        <a href="#" class="nav-link" onclick="visitor_pass_access()">
+                                        <i class="nav-icon fas fa-person-booth"></i>
+                                        <p>Visitor</p>
+                                        </a>
+                                    </li>
+                                </ul>
+
+                                <ul class="nav nav-treeview">
+                                    <li class="nav-item">
+                                        <a href="#" class="nav-link" onclick="pengambalian_pass_access()">
+                                        <i class="nav-icon fas fa-check"></i>
+                                        <p>Pengembalian</p>
+                                        </a>
+                                    </li>
+                                </ul>
+
+                                <script>
+                                    async function visitor_pass_access() {
+                                        showLoading();
+                                        await xhr.open("GET", "{{ url_for('pass_access_bp.visitor_pass_access') }}");
+                                        xhr.send();
+                                        xhr.onload = () => {
+                                            hideLoading();
+                                            if (xhr.readyState == 4 && xhr.status == 200) {
+                                                document.getElementById("judul").innerHTML = "Visitor Pass Access";
+                                                $('#content').html(xhr.response);
+                                            } else {
+                                                if (xhr.status == 999) {
+                                                    notif("error", xhr.responseText);
+                                                } else if (xhr.status == 401) {
+                                                    window.location = "{{ url_for('auth_bp.logout') }}";
+                                                }
+                                            }
+                                        };
+                                    }
+
+                                    async function pengambalian_pass_access() {
+                                        showLoading();
+                                        await xhr.open("GET", "{{ url_for('pass_access_bp.pa') }}");
+                                        xhr.send();
+                                        xhr.onload = () => {
+                                            hideLoading();
+                                            if (xhr.readyState == 4 && xhr.status == 200) {
+                                                document.getElementById("judul").innerHTML = "Pengembalian Pass Access";
+                                                $('#content').html(xhr.response);
+                                            } else {
+                                                if (xhr.status == 999) {
+                                                    notif("error", xhr.responseText);
+                                                } else if (xhr.status == 401) {
+                                                    window.location = "{{ url_for('auth_bp.logout') }}";
+                                                }
+                                            }
+                                        };
+                                    }
+                                </script>
+                                {% endif %}
+
+                                {% if session['report_pass_access'] == 'YES' %}
+                                <ul class="nav nav-treeview">
+                                    <li class="nav-item">
+                                        <a href="#" class="nav-link" onclick="report_pass_access()">
+                                        <i class="nav-icon fas fa-table"></i>
+                                        <p>Report</p>
+                                        </a>
+                                    </li>
+                                </ul>
+
+                                <script>
+                                    async function report_pass_access() {
+                                        showLoading();
+                                        await xhr.open("GET", "{{ url_for('pass_access_bp.report_pass_access') }}");
+                                        xhr.send();
+                                        xhr.onload = () => {
+                                            hideLoading();
+                                            if (xhr.readyState == 4 && xhr.status == 200) {
+                                                document.getElementById("judul").innerHTML = "Report Pass Access";
+                                                $('#content').html(xhr.response);
+                                            } else {
+                                                if (xhr.status == 999) {
+                                                    notif("error", xhr.responseText);
+                                                } else if (xhr.status == 401) {
+                                                    window.location = "{{ url_for('auth_bp.logout') }}";
+                                                }
+                                            }
+                                        };
+                                    }
+                                </script>
+                                {% endif %}
+                            </li>
+                            {% endif %}
+
+                            {% if session['driver'] == 'YES' %}
+                            <li class="nav-item">
+                                <a href="#" class="nav-link" onclick="">
+                                    <i class="nav-icon fas fa-truck-pickup"></i>
+                                    <p>Driver<i class="right fas fa-angle-left"></i></p>
+                                </a>
+
+                                {% if session['penarikan'] == 'YES' %}
+                                <ul class="nav nav-treeview">
+                                    <li class="nav-item">
+                                        <a href="#" class="nav-link" onclick="penarikan()">
+                                        <i class="nav-icon fas fa-truck"></i>
+                                        <p>Penarikan</p>
+                                        </a>
+                                    </li>
+                                </ul>
+
+                                <script>
+                                    async function penarikan() {
+                                        if (no_truck == "" || no_truck == null){
+                                            $('#modal_chose_truck').modal('toggle');
+                                        } else {
+                                            showLoading();
+                                            await xhr.open("GET", "{{ url_for('driver_bp.penarikan') }}");
+                                            xhr.send();
+                                            xhr.onload = () => {
+                                                hideLoading();
+                                                if (xhr.readyState == 4 && xhr.status == 200) {
+                                                    document.getElementById("judul").innerHTML = "Penarikan";
+                                                    $('#content').html(xhr.response);
+                                                } else {
+                                                    if (xhr.status == 999) {
+                                                        notif("error", xhr.responseText);
+                                                    } else if (xhr.status == 401) {
+                                                        window.location = "{{ url_for('auth_bp.logout') }}";
+                                                    }
+                                                }
+                                            };
+                                        }
+                                    }
+                                </script>
+                                {% endif %}
+
+                                <ul class="nav nav-treeview">
+                                    <li class="nav-item">
+                                        <a href="#" class="nav-link">
+                                            <i class="nav-icon fas fa-table"></i>
+                                            <p>Report<i class="right fas fa-angle-left"></i></p>
+                                        </a>
+    
+                                        {% if session['penarikan'] == 'YES' %}
+                                        <ul class="nav nav-treeview">
+                                            <li class="nav-item">
+                                                <a href="#" class="nav-link" onclick="report_penarikan()">
+                                                    <i class="far fa-circle nav-icon"></i>
+                                                    <p>Penarikan</p>
+                                                </a>
+                                            </li>
+                                        </ul>
+
+                                        <script>
+                                            async function report_penarikan() {
+                                                showLoading();
+                                                await xhr.open("GET", "{{ url_for('driver_bp.report_penarikan') }}");
+                                                xhr.send();
+                                                xhr.onload = () => {
+                                                    hideLoading();
+                                                    if (xhr.readyState == 4 && xhr.status == 200) {
+                                                        document.getElementById("judul").innerHTML = "Report Penarikan";
+                                                        $('#content').html(xhr.response);
+                                                    } else {
+                                                        if (xhr.status == 999) {
+                                                            notif("error", xhr.responseText);
+                                                        } else if (xhr.status == 401) {
+                                                            window.location = "{{ url_for('auth_bp.logout') }}";
+                                                        }
+                                                    }
+                                                };
+                                            }
+                                        </script>
+                                        {% endif %}
+                                    </li>
+                                </ul>
+                            </li>
+                            {% endif %}
+
+
+
+
+                            {% if session['meeting'] == 'YES' or session['approval_meeting'] == 'YES' %}
+                            <li class="nav-item">
+                                <a href="#" class="nav-link" onclick="">
+                                    <i class="nav-icon fas fa-handshake"></i>
+                                    <p>Meeting<i class="right fas fa-angle-left"></i></p>
+                                </a>
+
+                                {% if session['meeting'] == 'YES' %}
+                                <ul class="nav nav-treeview">
+                                    <li class="nav-item">
+                                        <a href="#" class="nav-link" onclick="book_meeting()">
+                                        <i class="nav-icon fas fa-pen"></i>
+                                        <p>Book Meeting</p>
+                                        </a>
+                                    </li>
+                                </ul>
+
+                                <script>
+                                    async function book_meeting() {
+                                        showLoading();
+                                        await xhr.open("GET", "{{ url_for('meeting_bp.book_meeting') }}");
+                                        xhr.send();
+                                        xhr.onload = () => {
+                                            hideLoading();
+                                            if (xhr.readyState == 4 && xhr.status == 200) {
+                                                document.getElementById("judul").innerHTML = "Book Meeting";
+                                                $('#content').html(xhr.response);
+                                            } else {
+                                                if (xhr.status == 999) {
+                                                    notif("error", xhr.responseText);
+                                                } else if (xhr.status == 401) {
+                                                    window.location = "{{ url_for('auth_bp.logout') }}";
+                                                }
+                                            }
+                                        };
+                                    }
+                                </script>
+                                {% endif %}
+
+                                {% if session['approval_meeting'] == 'YES' %}
+                                <ul class="nav nav-treeview">
+                                    <li class="nav-item">
+                                        <a href="#" class="nav-link" onclick="approval_meeting()">
+                                        <i class="nav-icon fas fa-check"></i>
+                                        <p>Approval Meeting</p>
+                                        </a>
+                                    </li>
+                                </ul>
+
+                                <script>
+                                    async function approval_meeting() {
+                                        showLoading();
+                                        await xhr.open("GET", "{{ url_for('meeting_bp.approval_meeting') }}");
+                                        xhr.send();
+                                        xhr.onload = () => {
+                                            hideLoading();
+                                            if (xhr.readyState == 4 && xhr.status == 200) {
+                                                document.getElementById("judul").innerHTML = "Approval Meeting";
+                                                $('#content').html(xhr.response);
+                                            } else {
+                                                if (xhr.status == 999) {
+                                                    notif("error", xhr.responseText);
+                                                } else if (xhr.status == 401) {
+                                                    window.location = "{{ url_for('auth_bp.logout') }}";
+                                                }
+                                            }
+                                        };
+                                    }
+                                </script>
+                                {% endif %}
+
+                                {% if session['cancel_meeting'] == 'YES' %}
+                                <ul class="nav nav-treeview">
+                                    <li class="nav-item">
+                                        <a href="#" class="nav-link" onclick="cancel_meeting()">
+                                        <i class="nav-icon fas fa-ban"></i>
+                                        <p>Cancel Meeting</p>
+                                        </a>
+                                    </li>
+                                </ul>
+
+                                <script>
+                                    async function cancel_meeting() {
+                                        showLoading();
+                                        await xhr.open("GET", "{{ url_for('meeting_bp.cancel_meeting') }}");
+                                        xhr.send();
+                                        xhr.onload = () => {
+                                            hideLoading();
+                                            if (xhr.readyState == 4 && xhr.status == 200) {
+                                                document.getElementById("judul").innerHTML = "Cancel Meeting";
+                                                $('#content').html(xhr.response);
+                                            } else {
+                                                if (xhr.status == 999) {
+                                                    notif("error", xhr.responseText);
+                                                } else if (xhr.status == 401) {
+                                                    window.location = "{{ url_for('auth_bp.logout') }}";
+                                                }
+                                            }
+                                        };
+                                    }
+                                </script>
+                                {% endif %}
+
+                                {% if session['on_progress_meeting'] == 'YES' %}
+                                <ul class="nav nav-treeview">
+                                    <li class="nav-item">
+                                        <a href="#" class="nav-link" onclick="on_going_meeting()">
+                                        <i class="nav-icon fas fa-spinner"></i>
+                                        <p>On Going</p>
+                                        </a>
+                                    </li>
+                                </ul>
+
+                                <script>
+                                    async function on_going_meeting() {
+                                        showLoading();
+                                        await xhr.open("GET", "{{ url_for('meeting_bp.on_going_meeting') }}");
+                                        xhr.send();
+                                        xhr.onload = () => {
+                                            hideLoading();
+                                            if (xhr.readyState == 4 && xhr.status == 200) {
+                                                document.getElementById("judul").innerHTML = "On Going Meeting";
+                                                $('#content').html(xhr.response);
+                                            } else {
+                                                if (xhr.status == 999) {
+                                                    notif("error", xhr.responseText);
+                                                } else if (xhr.status == 401) {
+                                                    window.location = "{{ url_for('auth_bp.logout') }}";
+                                                }
+                                            }
+                                        };
+                                    }
+                                </script>
+                                {% endif %}
+                            </li>
+                            {% endif %}
+
+
+
+
+
+
+
+
+
+
+
+
+                            {% if session['open_stack'] == 'YES' %}
+                            <li class="nav-item">
+                                <a href="#" class="nav-link" onclick="open_stack()">
+                                <i class="nav-icon fas fa-ship"></i>
+                                <p>Open Stack BICT</p>
+                                </a>
+                            </li>
+
+                            <script>
+                                async function open_stack() {
+                                    showLoading();
+                                    await xhr.open("GET", "{{ url_for('open_stack_bp.open_stack') }}");
+                                    xhr.send();
+                                    xhr.onload = () => {
+                                        hideLoading();
+                                        if (xhr.readyState == 4 && xhr.status == 200) {
+                                            document.getElementById("judul").innerHTML = "Open Stack BICT";
+                                            $('#content').html(xhr.response);
+                                        } else {
+                                            if (xhr.status == 999) {
+                                                notif("error", xhr.responseText);
+                                            } else if (xhr.status == 401) {
+                                                window.location = "{{ url_for('auth_bp.logout') }}";
+                                            }
+                                        }
+                                    };
+                                }
+                            </script>
+                            {% endif %}
+
+                            {% if session['account'] == 'YES' %}
+                            <li class="nav-item">
+                                <a href="#" class="nav-link" onclick="">
+                                    <i class="nav-icon fas fa-user"></i>
+                                    <p>Account<i class="right fas fa-angle-left"></i></p>
+                                </a>
+
+                                <ul class="nav nav-treeview">
+                                    <li class="nav-item">
+                                        <a href="#" class="nav-link" onclick="add_account()">
+                                        <i class="nav-icon fas fa-plus"></i>
+                                        <p>Add Account</p>
+                                        </a>
+                                    </li>
+                                </ul>
+
+                                <ul class="nav nav-treeview">
+                                    <li class="nav-item">
+                                        <a href="#" class="nav-link" onclick="edit_account()">
+                                        <i class="nav-icon fas fa-edit"></i>
+                                        <p>Edit Account</p>
+                                        </a>
+                                    </li>
+                                </ul>
+
+                                <script>
+                                    async function add_account() {
+                                        showLoading();
+                                        await xhr.open("GET", "{{ url_for('account_bp.add_account') }}");
+                                        xhr.send();
+                                        xhr.onload = () => {
+                                            hideLoading();
+                                            if (xhr.readyState == 4 && xhr.status == 200) {
+                                                document.getElementById("judul").innerHTML = "Add Account";
+                                                $('#content').html(xhr.response);
+                                            } else {
+                                                if (xhr.status == 999) {
+                                                    notif("error", xhr.responseText);
+                                                } else if (xhr.status == 401) {
+                                                    window.location = "{{ url_for('auth_bp.logout') }}";
+                                                }
+                                            }
+                                        };
+                                    }
+
+                                    async function edit_account() {
+                                        showLoading();
+                                        await xhr.open("GET", "{{ url_for('account_bp.edit_account') }}");
+                                        xhr.send();
+                                        xhr.onload = () => {
+                                            hideLoading();
+                                            if (xhr.readyState == 4 && xhr.status == 200) {
+                                                document.getElementById("judul").innerHTML = "Edit Account";
+                                                $('#content').html(xhr.response);
+                                            } else {
+                                                if (xhr.status == 999) {
+                                                    notif("error", xhr.responseText);
+                                                } else if (xhr.status == 401) {
+                                                    window.location = "{{ url_for('auth_bp.logout') }}";
+                                                }
+                                            }
+                                        };
+                                    }
+                                </script>
+                            </li>
+                            {% endif %}
+                        </ul>
+                    </nav>
+                </div>
+            </aside>
+            
+            <div class="content-wrapper" id="content"></div>
+
+            <div class="modal fade" id="modal-default">
+                <div class="modal-dialog modal-sm">
+                    <div class="modal-content">
+                        <!--div class="modal-header">
+                            <h4 class="modal-title">Message</h4>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </!--div-->
+                        
+                        <div class="modal-body">
+                            <h2>Logout ?</h2>
+                        </div>
+
+                        <div class="modal-footer justify-content-between">
+                            <a href="{{ url_for('auth_bp.logout') }}" class="btn btn-primary btn-block"style="color:#FFF;">Yes</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal fade" id="modal-msg">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title">Message</h4>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+
+                        <div class="modal-body">
+                            <p id="msg"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal fade" id="modal_jo">
+                <div class="modal-dialog modal-sm">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title">Message</h4>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+
+                        <div class="modal-body">
+                            <p id="msg_jo"></p>
+                        </div>
+
+                        <div class="modal-footer justify-content-between">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            <button id="print_jo" type="button" class="btn btn-primary" onclick="url_jo()" data-dismiss="modal">Yes</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal fade" id="modal_chose_truck">
+                <div class="modal-dialog modal-sm">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title">Pilih No Truck</h4>
+                            </button>
+                        </div>
+
+                        <div class="modal-body">
+                            <select class="custom-select form-control-border" id="id_truck">
+                                <option>ET-01</option>
+                                <option>ET-03</option>
+                                <option>ET-24</option>
+                                <option>ET-25</option>
+                                <option>GS-01</option>
+                                <option>GS-02</option>
+                            </select>
+                        </div>
+                        
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary" onclick="chose_truck();">OK</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script type="text/javascript" src="https://cdn.grahasegaramedan.co.id/jquery/jquery.min.js"></script>
+        <script type="text/javascript" src="https://cdn.grahasegaramedan.co.id/jquery-ui/jquery-ui.min.js"></script>
+        <script type="text/javascript" src="https://cdn.grahasegaramedan.co.id/bootstrap/js/bootstrap.bundle.min.js"></script>
+        <script type="text/javascript" src="https://cdn.grahasegaramedan.co.id/js/adminlte.min.js"></script>
+        <script type="text/javascript" src="https://cdn.grahasegaramedan.co.id/js/loader.js"></script>
+        <script type="text/javascript" src="https://cdn.grahasegaramedan.co.id/toastr/toastr.min.js"></script>
+        <script type="text/javascript" src="https://cdn.grahasegaramedan.co.id/datatables/jquery.dataTables.min.js"></script>
+        <script type="text/javascript" src="https://cdn.grahasegaramedan.co.id/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+        <script type="text/javascript" src="https://cdn.grahasegaramedan.co.id/datatables-responsive/js/dataTables.responsive.min.js"></script>
+        <script type="text/javascript" src="https://cdn.grahasegaramedan.co.id/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
+        <script type="text/javascript" src="https://cdn.grahasegaramedan.co.id/datatables-buttons/js/dataTables.buttons.min.js"></script>
+        <script type="text/javascript" src="https://cdn.grahasegaramedan.co.id/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
+        <script type="text/javascript" src="https://cdn.grahasegaramedan.co.id/moment/moment.min.js"></script>
+        <script type="text/javascript" src="https://cdn.grahasegaramedan.co.id/inputmask/jquery.inputmask.min.js"></script>
+        <script type="text/javascript" src="https://cdn.grahasegaramedan.co.id/select2/js/select2.full.min.js"></script>
+        <script type="text/javascript" src="https://cdn.grahasegaramedan.co.id/daterangepicker/daterangepicker.js"></script>
+        <script type="text/javascript" src="https://cdn.grahasegaramedan.co.id/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js"></script>
+        <script type="text/javascript" src="https://cdn.grahasegaramedan.co.id/bs-custom-file-input/bs-custom-file-input.min.js"></script>
+        <!--script type="text/javascript" src="https://cdn.grahasegaramedan.co.id/js/socket.io.js"></!--script-->
+        <script type="text/javascript" src="https://cdn.grahasegaramedan.co.id/jszip/jszip.min.js"></script>
+        <script type="text/javascript" src="https://cdn.grahasegaramedan.co.id/pdfmake/pdfmake.min.js"></script>
+        <script type="text/javascript" src="https://cdn.grahasegaramedan.co.id/pdfmake/vfs_fonts.js"></script>
+        <script type="text/javascript" src="https://cdn.grahasegaramedan.co.id/datatables-buttons/js/buttons.html5.min.js"></script>
+        <script type="text/javascript" src="https://cdn.grahasegaramedan.co.id/datatables-buttons/js/buttons.print.min.js"></script>
+        <script type="text/javascript" src="https://cdn.grahasegaramedan.co.id/datatables-buttons/js/buttons.colVis.min.js"></script>
+        
+        <!--script type="text/javascript" src="https://cdn.grahasegaramedan.co.id/js/pages/dis.js"></!--script-->
+
+        <script>
+            var sa = "{{session['si']}}"
+            var url = '';
+
+            //var socket = io();
+
+            window.onbeforeunload = function () {
+                //socket.emit('disconnect');
+            }
+
+            const xhr = new XMLHttpRequest();
+
+            $( document ).ready(function() {
+                hideLoading();
+                bsCustomFileInput.init();
+
+                if ("{{session['penarikan']}}" == "YES" && "{{session['access']}}" == 14){
+                    check_truck();
+                }
+
+                //document.getElementById("menu_impor").click();
+                //document.getElementById("on_progress_impor").classList.add("active");
+            });
+
+            var no_truck = localStorage.getItem("no_truck");
+
+            function check_truck(){
+                if (no_truck == "" || no_truck == null){
+                    $('#modal_chose_truck').modal('toggle');
+                }
+            }
+
+            function chose_truck(){
+                no_truck = document.getElementById("id_truck").value;
+                localStorage.no_truck = no_truck;
+                $('#modal_chose_truck').modal('hide');
+            }
+
+            $(document).keypress(function(event){
+                if (event.which == '13') {
+                    event.preventDefault();
+                }
+            });
+            
+            /*document.addEventListener("visibilitychange", function() {
+                if(window.matchMedia('(display-mode:standalone)').matches) {
+                    cs();
+                }
+            });*/
+
+            window.addEventListener('focus', function (event) {
+                cs();
+            });
+
+            function onlyNumberKey(evt) {
+                var ASCIICode = (evt.which) ? evt.which : evt.keyCode
+                if (ASCIICode > 31 && (ASCIICode < 48 || ASCIICode > 57))
+                    return false;
+                return true;
+            }
+
+            function onlyAllowedAlp(evt) {
+                var ascii_code = (evt.which) ? evt.which : evt.keyCode
+                if (ascii_code == 222)
+                    return false;
+                return true;
+            }
+
+            function formatNpwp() {
+                const NPWP = document.activeElement.id;
+                var np = document.getElementById(NPWP);
+
+                np.oninput = (e) => {
+                    e.target.value = autoFormatNPWP(e.target.value);
+                }
+            }
+
+            function npwp_length() {
+                const npwp = document.activeElement.id;
+                var x = document.getElementById(npwp).value;
+
+                if (x.length < 20) {
+                    document.getElementById(npwp).style.background = 'red';
+                    document.getElementById(npwp).style.color = 'white';
+                    return false;
+                } else if (x.length === 20) {
+                    document.getElementById(npwp).style.background = 'white';
+                    document.getElementById(npwp).style.color = '#495057';
+                    return true;
+                }
+            }
+
+            function autoFormatNPWP(NPWPString) {
+                try {
+                    var cleaned = ("" + NPWPString).replace(/\D/g, "");
+                    var match = cleaned.match(/(\d{0,2})?(\d{0,3})?(\d{0,3})?(\d{0,1})?(\d{0,3})?(\d{0,3})$/);
+                    return [      
+                            match[1], 
+                            match[2] ? ".": "",
+                            match[2], 
+                            match[3] ? ".": "",
+                            match[3],
+                            match[4] ? ".": "",
+                            match[4],
+                            match[5] ? "-": "",
+                            match[5],
+                            match[6] ? ".": "",
+                            match[6]].join("")
+                } catch(err) {
+                    return "";
+                }
+            }
+
+
+            function npwp_16() {
+                const NPWP = document.activeElement.id;
+                var np = document.getElementById(NPWP);
+
+                np.oninput = (e) => {
+                    e.target.value = npx(e.target.value);
+                }
+            }
+
+            function npx(data){
+                try {
+                    var cleaned = ("" + data).replace(/\D/g, "");
+                    var match = cleaned.match(/(\d{0,4})?(\d{0,4})?(\d{0,4})?(\d{0,4})$/);
+                    return [      
+                            match[1], 
+                            match[2] ? " ": "",
+                            match[2], 
+                            match[3] ? " ": "",
+                            match[3],
+                            match[4] ? " ": "",
+                            match[4]].join("")
+                } catch(err) {
+                    return "";
+                }
+            }
+
+            function notif(info, data) {
+                if (info == "success") {
+                    toastr.success(data);
+                } else if (info == "info") {
+                    toastr.info(data);
+                } else if (info == "warning") {
+                    toastr.warning(data);
+                } else if (info == "error") {
+                    toastr.error(data);
+                }
+            }
+
+            async function cs(){
+                await xhr.open("GET", "{{ url_for('auth_bp.cs') }}");
+                xhr.send();
+                xhr.onload = () => {
+                    hideLoading();
+                    if (xhr.readyState == 4 && xhr.status == 200) {
+                        if (xhr.responseText != 'ok') {
+                            window.location = "{{ url_for('auth_bp.logout') }}";
+                        }
+                    } else {
+                        window.location = "{{ url_for('auth_bp.logout') }}";
+                    }
+                };
+            }
+
+            function url_jo() {
+                window.open(url, '_blank').focus();
+            }
+
+            var ct = "{{ csrf_token() }}";
+
+            function gc() {
+                const xhr = new XMLHttpRequest();
+                xhr.open("GET", "{{ url_for('auth_bp.gc') }}");
+                xhr.send();
+                xhr.onload = () => {
+                    hideLoading();
+                    if (xhr.readyState == 4 && xhr.status == 200) {
+                        ct = xhr.response;
+                    }
+                };
+            }
+
+            function on_timeout() {
+                hideLoading();
+                notif("warning", "Proses Gagal");
+            }
+        </script>
+
+        <noscript>
+            <meta http-equiv="refresh" content="0;url='https://grahasegaramedan.co.id'">
+        </noscript>
+    </body>
+</html>

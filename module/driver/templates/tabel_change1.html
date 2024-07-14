@@ -1,0 +1,18 @@
+<table id="table_change1" class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th style="font-size:12px;">::</th>
+            <th style="font-size:12px;">CONTAINER</th>
+            <th style="font-size:12px;">SIZE</th>
+    </thead>
+    
+    <tbody>
+        {% for r in data %}
+        <tr>
+            <td style="font-size:12px;"><input type="radio" name="radio_pilih_cont" id="{{r.cont_id}}_{{r.no_doc}}_{{r.size}}_cont1" onclick="pilih_change_cont_1('{{r.cont_id}}_{{r.no_doc}}_{{r.size}}')"></td>
+            <td style="font-size:12px;">{{r.cont_id}}</td>
+            <td style="font-size:12px;">{{r.size}}/{{r.type}}</td>
+        </tr>
+        {% endfor %}
+    </tfoot>
+</table>

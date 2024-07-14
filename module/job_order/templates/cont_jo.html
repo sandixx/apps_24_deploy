@@ -1,0 +1,120 @@
+<section class="content">
+    <div class="container-fluid">
+        <table id="table_jo_cont" class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th style="font-size:12px;">NO</th>
+                    <th style="font-size:12px;">CONTAINER</th>
+                    <th style="font-size:12px;">SIZE</th>
+                    <th style="font-size:12px;">DOC</th>
+                    <th style="font-size:12px;">TGL DOC</th>
+                    <th style="font-size:12px;">STATUS</th>
+                    <th style="font-size:12px;">CREATED</th>
+                    {% if session['job_order'] == 'YES' %}
+                    <th style="font-size:12px;">GATE PASS</th>
+                    <th style="font-size:12px;">::</th>
+                    {% endif %}
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for r in data %}
+                <tr>
+                    <td style="font-size:12px;">{{ r.no }}</td>
+                    <td style="font-size:12px;">{{ r.cont_id }}</td>
+                    <td style="font-size:12px;">{{ r.size }}</td>
+                    <td style="font-size:12px;">{{ r.no_doc }}</td>
+                    <td style="font-size:12px;">{{ r.tgl_doc }}</td>
+                    <td style="font-size:12px;">{{ r.status }}</td>
+                    <td style="font-size:12px;">{{ r.date_01 }}</td>
+                    {% if session['job_order'] == 'YES' %}
+                    <td style="font-size:12px;"><button type="button" id="{{ r.id }}" class="btn btn-block btn-primary" onclick="window.open('{{ url }}gate_pass_in/{{ r.key_print }}', '_blank').focus();">Print</button></td>
+                    <td style="font-size:12px;"><button type="button" id="cancel_jo_cont/{{ r.id }}_{{r.cont_id}}" class="btn btn-block btn-primary" onclick="check_cancel_cont();">Cancel</button></td>
+                    {% endif %}
+                </tr>
+                {% endfor %}
+            </tfoot>
+        </table>
+    </div>
+</section>
+
+<div class="modal fade" id="modal_jo_cancel_cont">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Message</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <p id="msg_jo_cancel_cont"></p>
+            </div>
+
+            <div class="modal-footer justify-content-between">
+                <button type="button" class="btn btn-default" onclick="no_cancel_jo()" data-dismiss="modal">No</button>
+                <button id="cancel_jo_btn" type="button" class="btn btn-primary" onclick="cancel_jo_cont()" data-dismiss="modal">Yes</button>
+            </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        $('#table_jo_cont').DataTable({
+            "paging": true,
+            "lengthChange": false,
+            "searching": false,
+            "ordering": true,
+            "info": true,
+            "autoWidth": false,
+            "responsive": true,
+        });
+    });
+
+    var link_to_del = '';
+
+    function check_cancel() {
+        id = document.activeElement.id;
+        var datas = id.split("_");
+        link_to_del = '{{ url }}/' + datas[0] + '_' + datas[1];
+        document.getElementById("msg_jo_cancel").innerHTML = 'Cancel Job Order Untuk Container ' + datas[2] + '?';
+        $('#modal_jo_cancel').modal('toggle');
+    }
+
+    function no_cancel_jo() {
+        link_to_del = '';
+    }
+
+    function check_cancel_cont() {
+        id = document.activeElement.id;
+        var datas = id.split("_");
+        link_to_del = '{{ url }}' + datas[0] + '_' + datas[1] + '_' + datas[2];
+        document.getElementById("msg_jo_cancel_cont").innerHTML = 'Cancel Job Order Untuk Container ' + datas[3] + '?';
+        $('#modal_jo_cancel_cont').modal('toggle');
+    }
+
+    function cancel_jo_cont() {
+        showLoading();
+        $.ajax({
+            type: "GET",
+            url: link_to_del,
+            success: function(response){
+                hideLoading();
+                link_to_del = '';
+                list_jo_cont();
+                notif("success", "Job Order Telah Dibatalkan");
+            },
+            error: function(response){
+                hideLoading();
+                if (response.status == 401) {
+                    window.location = "{{ url_for('auth_bp.logout') }}";
+                } else if (response.status == 999) {
+                    notif("error", response.responseText);
+                }
+            }
+        });
+    }
+</script>

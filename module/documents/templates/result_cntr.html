@@ -1,0 +1,66 @@
+{% for x in data %}
+<div class="row">
+    <div class="col-sm-6">
+        <div class="form-group">
+            <label>Container ID</label>
+            <input id="cont_id" oninput="this.value = this.value.toUpperCase();" type="text" class="form-control" placeholder="Container ID" maxlength="15" value="{{ x.cont_id }}">
+            <input id="id_cntr" type="text" class="form-control" maxlength="15" value="{{ x.id }}" hidden disabled>
+        </div>
+    </div>
+
+    <div class="col-sm-6">
+        <div class="form-group">
+            <label>Berat</label>
+            <input id="berat" onkeypress="return onlyNumberKey(event)" type="text" class="form-control" placeholder="In Kg" maxlength="20" value="{{ x.berat }}">
+        </div>
+    </div>
+
+    <!--div class="col-sm-6">
+        <div class="form-group">
+            <label>Waktu Gatein</label>
+            <div class="input-group date" id="reservationdatetime" data-target-input="nearest">
+                <input id="gatein_date" type="text" class="form-control datetimepicker-input" data-target="#reservationdatetime" value="{{ x.date_01 }}"/>
+                <div class="input-group-append" data-target="#reservationdatetime" data-toggle="datetimepicker">
+                    <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                </div>
+            </div>
+        </div>
+    </!--div-->
+</div>
+
+<div class="col-sm-3">
+    <button type="button" class="btn btn-block btn-primary" onclick="update_cntr()">Update</button>
+</div>
+{% endfor %}
+
+<script>
+    $('#reservationdatetime').datetimepicker({ icons: { time: 'far fa-clock' } });
+
+    async function update_cntr(){
+        var fd = new FormData();
+        var id_cntr = document.getElementById("id_cntr").value;
+        var cntr_id = document.getElementById("cont_id").value;
+        var berat = document.getElementById("berat").value;
+        //var gatein_date = document.getElementById("gatein_date").value;
+
+        fd.append("id_cntr", id_cntr);
+        fd.append("cntr_id", cntr_id);
+        fd.append("berat", berat);
+        //fd.append("gatein_date", gatein_date);
+
+        await xhr.open("POST", "{{ url_for('document_bp.edit_cntr') }}");
+        const body = fd;
+        xhr.onload = () => {
+            hideLoading();
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                notif("success", xhr.responseText);
+                document.getElementById("content_edit_doc").innerHTML = "";
+            } else {
+                if (xhr.status == 999) {
+                    notif("error", xhr.responseText);
+                }
+            }
+        };
+        xhr.send(body);
+    }
+</script>

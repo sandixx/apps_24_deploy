@@ -1,0 +1,95 @@
+<br>
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card card-primary">
+                    <!--div class="card-header">
+                        <h3 class="card-title">On Progress</h3>
+                    </!--div-->
+                    
+                    <form>
+                        <div class="card-body">
+                            <div class="form-group" id="content_data">
+                                <section class="content">
+                                    <div class="container-fluid">
+                                        <table id="table_progress" class="table table-bordered table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th style="font-size:12px;">NO</th>
+                                                    <th style="font-size:12px;">TRX</th>
+                                                    <th style="font-size:12px;">CONTAINER</th>
+                                                    <th style="font-size:12px;">SIZE</th>
+                                                    <th style="font-size:12px;">LOC</th>
+                                                    <th style="font-size:12px;">TYPE</th>
+                                                    <th style="font-size:12px;">NO DOC</th>
+                                                    <th style="font-size:12px;">TGL DOC</th>
+                                                    <th style="font-size:12px;">NO PEB</th>
+                                                    <th style="font-size:12px;">TGL PEB</th>
+                                                    <th style="font-size:12px;">VESSEL</th>
+                                                    <th style="font-size:12px;">CREATED</th>
+                                                    <th style="font-size:12px;">STATUS</th>
+                                                </tr>
+                                            </thead>
+                                            
+                                            <tbody>
+                                                {% for r in data %}
+                                                <tr>
+                                                    <td style="font-size:12px;">{{ loop.index }}</td>
+                                                    <td style="font-size:12px;">{{ r.trx_id }}</td>
+                                                    <td style="font-size:12px;">{{ r.cont_id }}</td>
+                                                    <td style="font-size:12px;">{{ r.size_q }}</td>
+                                                    <td style="font-size:12px;">{{ r.loc }}</td>
+                                                    <td style="font-size:12px;">{{ r.status_doc }}</td>
+                                                    <td style="font-size:12px;">{{ r.no_doc }}</td>
+                                                    <td style="font-size:12px;">{{ r.tgl_doc }}</td>
+                                                    <td style="font-size:12px;">{{ r.no_peb }}</td>
+                                                    <td style="font-size:12px;">{{ r.tgl_peb }}</td>
+                                                    <td style="font-size:12px;">{{ r.vessel }}</td>
+                                                    <td style="font-size:12px;">{{ r.created }}</td>
+                                                    <td style="font-size:12px;">{{ r.status_id }}</td>
+                                                </tr>
+                                                {% endfor %}
+                                            </tfoot>
+                                        </table>
+                                    </div>
+                                </section>
+                                
+                                <div class="modal fade" id="modal_jo_cancel">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h4 class="modal-title">Message</h4>
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                
+                                            <div class="modal-body">
+                                                <p id="msg_jo_cancel"></p>
+                                            </div>
+                                
+                                            <div class="modal-footer justify-content-between">
+                                                <button type="button" class="btn btn-default" onclick="no_cancel_jo()" data-dismiss="modal">No</button>
+                                                <button id="cancel_jo_btn" type="button" class="btn btn-primary" onclick="cancel_jo()" data-dismiss="modal">Yes</button>
+                                            </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    $(function () {
+        $("#table_progress").DataTable({
+        "responsive": true, "lengthChange": false, "autoWidth": false
+        }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+    });
+</script>

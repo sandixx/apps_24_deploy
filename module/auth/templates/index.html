@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+    <style>
+        .bg {
+            background-image: url("https://cdn.grahasegaramedan.co.id/img/cont_bg.jpg");
+            height: 100%;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+    </style>
+
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Login - Graha Segara</title>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+        <link rel="stylesheet" href="{{ url_for('static', filename='fontawesome-free/css/all.min.css') }}">
+        <link rel="stylesheet" href="https://cdn.grahasegaramedan.co.id/icheck-bootstrap/icheck-bootstrap.min.css">
+        <link rel="stylesheet" href="https://cdn.grahasegaramedan.co.id/css/adminlte.min.css">
+        <link rel="stylesheet" href="https://cdn.grahasegaramedan.co.id/toastr/toastr.min.css">
+        <link rel="stylesheet" href="https://cdn.grahasegaramedan.co.id/css/pre2.css">
+        <link rel="icon" href="https://cdn.grahasegaramedan.co.id/img/gs.png" type="image/gif" sizes="16x16">
+        <link rel="apple-touch-icon" href="https://cdn.grahasegaramedan.co.id/img/gs.png">
+        <link rel="icon" href="https://cdn.grahasegaramedan.co.id/favicon.ico" type="image/x-icon">
+    </head>
+
+    <body class="hold-transition login-page bg">
+        <div id="loading-overlay" hidden></div>
+        <div id="loader-wrapper" style="background-color: #212121; opacity: 0.5;">
+            <div id="loader"></div>
+        </div>
+        
+        <div class="login-box">
+            <div class="card card-outline card-primary">
+                <div class="card-header text-center">
+                    <a href="https://grahasegaramedan.co.id" class="h1" target="_blank">Graha Segara</a>
+                </div>
+
+                <div class="card-body">
+                    <p class="login-box-msg">Sign in</p>
+
+                    <form>
+                        <div class="input-group mb-3">
+                            <input type="text" class="form-control" placeholder="Username" id="username">
+                            <div class="input-group-append">
+                                <div class="input-group-text">
+                                    <span class="fas fa-user"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="input-group mb-3">
+                            <input type="password" class="form-control" placeholder="Password" id="password">
+                            <div class="input-group-append">
+                                <div class="input-group-text">
+                                    <span class="fas fa-lock"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-12">
+                                <button type="button" class="btn btn-block btn-primary" onclick="login()">Login</button>
+                            </div>
+                        </div>
+                        <br>
+
+                        {% if session['master_akses'] == 'lokal' %}
+                        <!--div>
+                            <p class="login-box-msg">Or</p>
+                        </!--div>
+
+                        <a href="{{ url_for('password_bp.forgot_password') }}" class="btn btn-light btn-block" style="color: slateblue;">Forgot Password?</a>
+
+                        <div-- class="col-12">
+                            <a href="{{ url_for('reg_bp.register') }}" class="btn btn-light btn-block">Register as New User</a>
+                        </div-->
+                        {% endif %}
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="modal-msg">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Message</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p id="msg"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script type="text/javascript" src="https://cdn.grahasegaramedan.co.id/jquery/jquery.min.js"></script>
+        <script type="text/javascript" src="https://cdn.grahasegaramedan.co.id/bootstrap/js/bootstrap.bundle.min.js"></script>
+        <script type="text/javascript" src="https://cdn.grahasegaramedan.co.id/js/adminlte.min.js"></script>
+        <script type="text/javascript" src="https://cdn.grahasegaramedan.co.id/toastr/toastr.min.js"></script>
+        <script type="text/javascript" src="https://cdn.grahasegaramedan.co.id/js/loader.js"></script>
+        <script type="text/javascript" src="https://cdn.grahasegaramedan.co.id/js/pages/dis.js"></script>
+
+        <script>
+            $(document).ready(function(){
+                hideLoading();
+                localStorage.clear();
+            });
+
+            var csrf_token = "{{ csrf_token() }}";
+            
+            $("#password").keyup(function(event) {
+                if (event.keyCode === 13) {
+                    login();
+                }
+            });
+
+            function notif(info, data) {
+                if (info == "warning") {
+                    toastr.warning(data);
+                    toastr.s
+                } else if (info == "error") {
+                    toastr.error(data);
+                }
+            }
+
+            function login() {
+                showLoading();
+                var user = document.getElementById("username").value;
+                var pass= document.getElementById("password").value;
+                var fd = new FormData();
+
+                if (!user || !pass) {
+                    hideLoading();
+                    notif("warning", "Lengkapi Username & Password Terlebih Dahulu");
+                } else {
+                    fd.append("us", user);
+                    fd.append("pw", pass);
+                    const xhr = new XMLHttpRequest();
+                    xhr.open("POST", "{{ url_for('auth_bp.login') }}");
+                    xhr.setRequestHeader("X-CSRFToken", csrf_token);
+                    const body = fd;
+                    xhr.onload = () => {
+                        hideLoading();
+                        if (xhr.readyState == 4 && xhr.status == 200) {
+                            window.location = "{{ url_for('home_bp.home') }}";
+                        } else {
+                            if (xhr.status == 888) {
+                                notif("warning", xhr.responseText);
+                            } else {
+                                notif("error", xhr.responseText);
+                                setTimeout(()=> {
+                                    location.reload();
+                                }
+                                ,1000);
+                            }
+                        }
+                    };
+                    xhr.send(body);
+                }
+            }
+        </script>
+
+        <noscript>
+            <meta http-equiv="refresh" content="0;url='https://grahasegaramedan.co.id'">
+        </noscript>
+    </body>
+</html>

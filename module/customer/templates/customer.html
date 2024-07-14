@@ -1,0 +1,164 @@
+<br>
+<section class="content">
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card card-primary">
+                    <div class="card-body">
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="input-group col-sm-2 col-md-6 mb-3" style="justify-content: center; align-items: center;">
+                                    Daftar Sebagai :
+                                </div>
+                                
+                                <div class="input-group col-sm-2 col-md-6 mb-3">
+                                    <select id="opt_account_access" name="opt_account_access" class="form-control select2bs4" style="width: 100%;">
+                                        <option value="" selected disabled>-- Pilih --</option>
+                                        <option value="eksportir">Eksportir</option>
+                                        <option value="ppjk">PPJK</option>
+                                        <option value="pendaftar">Pendaftar</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label>Nama Perusahaan</label>
+                                        <input type="text" class="form-control" placeholder="Nama Perusahaan" name="cust_name" id="cust_name" maxlength="255" oninput="this.value = this.value.toUpperCase();">
+                                    </div>
+                                </div>
+                                
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label for="">NPWP</label>
+                                        <input type="text" class="form-control" placeholder="NPWP" name="npwp" id="npwp" maxlength="19" onkeypress="npwp_16();">
+                                    </div>
+                                </div>
+                                
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label for="">Alamat</label>
+                                        <input type="text" class="form-control" placeholder="Alamat" name="address" id="address" maxlength="255" oninput="this.value = this.value.toUpperCase();">
+                                    </div>
+                                </div>
+                                
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label for="">Email</label>
+                                        <input type="text" class="form-control" placeholder="Email" name="email" id="email" maxlength="100" oninput="email_check_customer()">
+                                    </div>
+                                </div>
+                                
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label for="">Nomor Telepon</label>
+                                        <input type="text" class="form-control" placeholder="Nomor Telepon" name="phone_number" id="phone_number" onkeypress="return onlyNumberKey_eksportir(event)" maxlength="20">
+                                    </div>
+                                </div>
+                                
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label for="">Nomor HP</label>
+                                        <input type="text" class="form-control" placeholder="Nomor HP" name="mobile_number" id="mobile_number" onkeypress="return onlyNumberKey_eksportir(event)" maxlength="25">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-sm-2 col-md-1">
+                                <button id="reg_cust" type="button" class="btn btn-block btn-primary" onclick="reg_customer()">Create</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    async function reg_customer() {
+        showLoading();
+        var account_access = document.getElementById("opt_account_access").value;
+        var cust_name = document.getElementById("cust_name").value;
+        var npwp = document.getElementById("npwp").value;
+        var address = document.getElementById("address").value;
+        var email = document.getElementById("email").value;
+        var phone_number = document.getElementById("phone_number").value;
+        var mobile_number = document.getElementById("mobile_number").value;
+        var fd = new FormData();
+
+        var csrf_token = "{{ csrf_token() }}";
+        var mailformat = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
+
+        fd.append("account_access", account_access);
+        fd.append("cust_name", cust_name);
+        fd.append("npwp", npwp);
+        fd.append("address", address);
+        fd.append("email", email);
+        fd.append("phone_number", phone_number);
+        fd.append("mobile_number", mobile_number);
+
+        await xhr.open("POST", "{{ url_for('customer_bp.new_customer') }}");
+        const body = fd;
+        xhr.onload = () => {
+            hideLoading();
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                document.getElementById("cust_name").value = "";
+                document.getElementById("npwp").value = "";
+                document.getElementById("address").value = "";
+                document.getElementById("email").value = "";
+                document.getElementById("phone_number").value = "";
+                document.getElementById("mobile_number").value = "";
+                notif("success", "Berhasil Didaftarkan");
+            } else {
+                if (xhr.status == 999) {
+                    notif("error", xhr.responseText);
+                } else if (xhr.status == 888) {
+                    notif("warning", xhr.responseText);
+                }
+            }
+        };
+        xhr.send(body);
+    }
+
+    function onlyNumberKey_eksportir(evt) {
+        var ASCIICode = (evt.which) ? evt.which : evt.keyCode
+        if (ASCIICode > 31 && (ASCIICode < 48 || ASCIICode > 57))
+            return false;
+        return true;
+    }
+
+    function formatNpwp() {
+        const NPWP = document.getElementById("npwp");
+
+        NPWP.oninput = (e) => {
+            e.target.value = autoFormatNPWP(e.target.value);
+        }
+    }
+
+    function npwp_length() {
+        const npwp = document.getElementById("npwp").value;
+
+        if (npwp.length < 20) {
+            document.getElementById('npwp').style.background = 'red';
+            document.getElementById('npwp').style.color = 'white';
+            return false;
+        } else {
+            document.getElementById('npwp').style.background = 'white';
+            document.getElementById('npwp').style.color = '#495057';
+            return true;
+        }
+    }
+
+    function email_check_customer() {
+        var email = document.getElementById("email").value;
+        var mailformat = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
+
+        if (email.match(mailformat)) {
+            document.getElementById('email').style.background = 'white';
+            document.getElementById('email').style.color = '#495057';
+        } else {
+            document.getElementById('email').style.background = 'red';
+            document.getElementById('email').style.color = 'white';
+        }
+    }
+</script>

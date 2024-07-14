@@ -1,0 +1,156 @@
+<br>
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card card-primary">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-sm-2 col-md-3">
+                                <div class="form-group">
+                                    <select class="select2bs4 form-control" id="gate_in_impor" onchange="cont_check_gatein();">
+                                        <option value="" selected>--Pilih--</option>
+                                        {% for d in data %}
+                                        <option value="{{d.trx_id}}_{{d.cont_id}}_{{d.size}}">{{d.cont_id}} - {{d.size}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12" id="g_process_gatein">
+                            <div class="row">
+                                <div class="col-md-6" id="data_gatein"></div>
+                                <div class="col-md-6" id="g_note">
+                                    <div class="form-group row">
+                                        <label class="col-form-label">Note</label>
+                                        <textarea id="note" rows="4" class="form-control" maxlength="250" style="text-transform:uppercase;"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-2 col-md-1">
+                            <button type="button" class="btn btn-block btn-primary" onclick="process_gatein_impor()">Process</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    $('.select2').select2()
+
+    $('.select2bs4').select2({
+        theme: 'bootstrap4'
+    })
+
+    $( document ).ready(function() {
+        document.getElementById("g_process_gatein").style.display = "none";
+    });
+
+    function cont_check_gatein(){
+        var cont = document.getElementById("gate_in_impor").value;
+        
+        if (cont == "") {
+            document.getElementById("g_process_gatein").style.display = "none";
+        } else {
+            const myArray = cont.split("_");
+            var trx_id = myArray[0];
+            var cont_id = myArray[1];
+            var sizex = myArray[2];
+
+            document.getElementById("data_gatein").innerHTML = `
+            <!--div class="form-group row">
+                <label class="col-sm-3 col-form-label">TRX ID</label>
+                <div class="col-sm-9">
+                    <input type="text" id="trx_id" class="form-control" disabled value="` + trx_id + `">
+                </div>
+            </!--div-->
+            
+            <div class="form-group row">
+                <label class="col-sm-3 col-form-label">Cont ID</label>
+                <div class="col-sm-9">
+                    <input type="text" id="cont_id" class="form-control" disabled value="` + cont_id + `">
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-sm-3 col-form-label">Size</label>
+                <div class="col-sm-9">
+                    <input type="text" id="size" class="form-control" disabled value="` + sizex + `">
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-sm-3 col-form-label">Status</label>
+                <div class="col-sm-9">
+                    <select class="form-control" id="status_cont" onchange="cont_check_status();">
+                        <option value="OK" selected>OK</option>
+                        <option value="NOT OK">NOT OK</option>
+                    </select>
+                </div>
+            </div>
+            `;
+
+            document.getElementById("g_process_gatein").style.display = "block";
+            document.getElementById("g_note").style.display = "none";
+        }
+
+        document.getElementById("note").value = "";
+    }
+
+    function cont_check_status(){
+        if (document.getElementById("status_cont").value == "OK") {
+            document.getElementById("g_note").style.display = "none";
+        } else {
+            document.getElementById("g_note").style.display = "block";
+            document.getElementById("note").value = "";
+        }
+    }
+
+    async function process_gatein_impor() {
+        if (document.getElementById("trx_id")){
+            var trx_id = document.getElementById("trx_id").value;
+            var cont_id = document.getElementById("cont_id").value;
+            var status = document.getElementById("status_cont").value;
+            var note = document.getElementById("note").value;
+    
+            var fd = new FormData();
+            showLoading();
+            fd.append("trx_id", trx_id);
+            fd.append("cont_id", cont_id);
+            fd.append("status", status);
+            fd.append("note", note);
+    
+            await xhr.open("POST", "{{ url_for('gatein_impor_bp.gatein_impor') }}");
+            const body = fd;
+            xhr.timeout = 10000;
+            xhr.onload = () => {
+                hideLoading();
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                    notif("success", xhr.responseText);
+                    gatein_impor();
+                } else {
+                    if (xhr.status == 999) {
+                        notif("error", xhr.responseText);
+                    } else if (xhr.status == 888) {
+                        notif("warning", xhr.responseText);
+                    } else if (xhr.status == 401) {
+                        window.location = "{{ url_for('auth_bp.logout') }}";
+                    }
+                }
+            };
+    
+            xhr.ontimeout = (e) => {
+                on_timeout();
+            };
+    
+            xhr.send(body);
+        } else {
+            notif("warning", "Pilih Container");
+        }
+    }
+</script>

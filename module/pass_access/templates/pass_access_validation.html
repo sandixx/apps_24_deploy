@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+    <style>
+        .bg {
+            background-image: url("https://cdn.grahasegaramedan.co.id/img/cont_bg.jpg");
+            height: 100%;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+    </style>
+
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Pass Access Validation - Graha Segara</title>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+        <link rel="stylesheet" href="{{ url_for('static', filename='fontawesome-free/css/all.min.css') }}">
+        <link rel="stylesheet" href="https://cdn.grahasegaramedan.co.id/icheck-bootstrap/icheck-bootstrap.min.css">
+        <link rel="stylesheet" href="https://cdn.grahasegaramedan.co.id/css/adminlte.min.css">
+        <link rel="stylesheet" href="https://cdn.grahasegaramedan.co.id/toastr/toastr.min.css">
+        <link rel="stylesheet" href="https://cdn.grahasegaramedan.co.id/css/pre2.css">
+        <link rel="icon" href="https://cdn.grahasegaramedan.co.id/img/gs.png" type="image/gif" sizes="16x16">
+        <link rel="apple-touch-icon" href="https://cdn.grahasegaramedan.co.id/img/gs.png">
+        <link rel="icon" href="https://cdn.grahasegaramedan.co.id/favicon.ico" type="image/x-icon">
+    </head>
+
+    <body class="hold-transition register-page bg">
+        <div class="login-box">
+            <div class="card card-outline card-primary">
+                <div class="card-header text-center">
+                    <img src="https://cdn.grahasegaramedan.co.id/img/gs.png" width="120" height="100">
+                </div>
+                <br>
+
+                <div class="card-body form-group">
+                    <h3 class="text-center">Pass Access Validation</h3>
+                    <br>
+                    <div class=" text-center">
+                        <img width="150" height="200" src="data:image/jpeg;base64,{{pas_foto}}" /> 
+                    </div>
+                    <br>
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="form-group">
+                                <label>Nama Lengkap</label>
+                                <input type="text" class="form-control" maxlength="150" value="{{nama_petugas}}" disabled>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-12">
+                            <div class="form-group">
+                                <label>Perusahaan</label>
+                                <input type="text" class="form-control" maxlength="150" value="{{perusahaan}}" disabled>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-12">
+                            <div class="form-group">
+                                <label>Pass Access</label>
+                                <input type="text" class="form-control" maxlength="150" value="{{pass_access}}" style="background-color: {{color}}; color:white" disabled>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script type="text/javascript" src="https://cdn.grahasegaramedan.co.id/jquery/jquery.min.js"></script>
+        <script type="text/javascript" src="https://cdn.grahasegaramedan.co.id/bootstrap/js/bootstrap.bundle.min.js"></script>
+        <script type="text/javascript" src="https://cdn.grahasegaramedan.co.id/js/adminlte.min.js"></script>
+        <script type="text/javascript" src="https://cdn.grahasegaramedan.co.id/js/pages/dis.js"></script>
+
+        <noscript>
+            <meta http-equiv="refresh" content="0;url='https://grahasegaramedan.co.id'">
+        </noscript>
+
+    </body>
+</html>

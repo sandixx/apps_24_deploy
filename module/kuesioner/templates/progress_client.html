@@ -1,0 +1,104 @@
+
+
+<div class="card-body">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card card-primary">
+                <div class="card-body">
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label>Nama Perusahaan</label>
+                                    <input type="text" class="form-control" placeholder="Nama Perusahaan" id="cust_name" maxlength="255" value="{{customer}}" disabled>
+                                </div>
+                            </div>
+                            
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="">Keperluan</label>
+                                    <input type="text" class="form-control" placeholder="Keperluan" id="keperluan" maxlength="255" value="{{keperluan}}" disabled>
+                                </div>
+                            </div>
+                            
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="">No. Dokumen</label>
+                                    <input type="text" class="form-control" placeholder="No. Dokumen" id="no_document" maxlength="100" value="{{no_doc}}" disabled>
+                                </div>
+                            </div>
+                            
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="">Jenis Dokumen</label>
+                                    <input type="text" class="form-control" placeholder="Jenis Dokumen" id="jenis_document" maxlength="100" value="{{jenis_doc}}" disabled>
+                                </div>
+                            </div>
+                            
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="">PPJK/EMKL</label>
+                                    <input type="text" class="form-control" placeholder="PPJK/EMKL" id="ppjk" maxlength="255" value="{{ppjk}}" disabled>
+                                </div>
+                            </div>
+                            
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="">Nomor HP</label>
+                                    <input type="text" class="form-control" placeholder="Nomor HP" id="mobile_number" maxlength="15" value="{{no_hp}}" disabled>
+                                </div>
+                            </div>
+                        </div>
+
+                        
+                        </div>
+                    </div>
+                </div>
+
+                <br>
+                <h1>Give Me Rating</h1>
+                <div class="rate" style="margin: auto; text-align: center;">
+                    <input type="radio" id="5" name="rate" value="5" onclick="star_selected()"/>
+                    <label for="5" title="text" style="font-size: 7em;">5 stars</label>
+                    <input type="radio" id="4" name="rate" value="4" onclick="star_selected()"/>
+                    <label for="4" title="text"style="font-size: 7em;">4 stars</label>
+                    <input type="radio" id="3" name="rate" value="3" onclick="star_selected()"/>
+                    <label for="3" title="text"style="font-size: 7em;">3 stars</label>
+                    <input type="radio" id="2" name="rate" value="2" onclick="star_selected()"/>
+                    <label for="2" title="text"style="font-size: 7em;">2 stars</label>
+                    <input type="radio" id="1" name="rate" value="1" onclick="star_selected()"/>
+                    <label for="1" title="text"style="font-size: 7em;">1 star</label>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    var star_to_send = "";
+    var loket = "{{loket}}";
+    var id = "{{id}}";
+
+    function star_selected() {
+        star_to_send = document.activeElement.id;
+        give_rating();
+    }
+
+    async function give_rating() {
+        var fd = new FormData();
+        fd.append("star", star_to_send);
+        fd.append("id", id);
+        fd.append("loket", loket);
+
+        await xhr.open("POST", "{{ url_for('kuesioner_bp.give_rating') }}");
+        const body = fd;
+        xhr.onload = () => {
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                notif("success", "Terima Kasih");
+                setTimeout(function(){
+                    window.location.href = xhr.responseText;
+                }, 1000);
+            }
+        };
+        xhr.send(body);
+    }
+</script>

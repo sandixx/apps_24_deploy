@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+    <style>
+        .bg {
+            background-image: url("https://cdn.grahasegaramedan.co.id/img/cont_bg.jpg");
+            height: 100%;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+    </style>
+
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Activated - Graha Segara</title>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+        <link rel="stylesheet" href="{{ url_for('static', filename='fontawesome-free/css/all.min.css') }}">
+        <link rel="stylesheet" href="https://cdn.grahasegaramedan.co.id/icheck-bootstrap/icheck-bootstrap.min.css">
+        <link rel="stylesheet" href="https://cdn.grahasegaramedan.co.id/css/adminlte.min.css">
+        <link rel="stylesheet" href="https://cdn.grahasegaramedan.co.id/css/pre2.css">
+        <link rel="icon" href="https://cdn.grahasegaramedan.co.id/img/gs.png" type="image/gif" sizes="16x16">
+        <link rel="apple-touch-icon" href="https://cdn.grahasegaramedan.co.id/img/gs.png">
+        <link rel="icon" href="https://cdn.grahasegaramedan.co.id/favicon.ico" type="image/x-icon">
+    </head>
+
+    <body class="hold-transition register-page bg">
+        <div id="loading-overlay" hidden></div>
+        <div id="loader-wrapper" style="background-color: #212121; opacity: 0.5;">
+            <div id="loader"></div>
+        </div>
+        
+        <div class="register-box">
+            <div class="card card-outline card-primary">
+                <div class="card-header text-center">
+                    <a href="https://grahasegaramedan.co.id" class="h1">Graha Segara</a>
+                </div>
+
+                <div class="card-body">
+                    <p>Congratulation! Your account has been successfully activated</p>
+                    <p>This page will be redirected automatically in <span id="time"></span></p>
+                    <p>Or you can manually visit this link</p>
+
+                    <button type="button" class="btn btn-block btn-primary" onclick="link()">Login</button>
+                </div>
+            </div>
+        </div>
+
+        <script type="text/javascript" src="https://cdn.grahasegaramedan.co.id/jquery/jquery.min.js"></script>
+        <script type="text/javascript" src="https://cdn.grahasegaramedan.co.id/bootstrap/js/bootstrap.bundle.min.js"></script>
+        <script type="text/javascript" src="https://cdn.grahasegaramedan.co.id/js/adminlte.min.js"></script>
+        <script type="text/javascript" src="https://cdn.grahasegaramedan.co.id/js/loader.js"></script>
+        <script type="text/javascript" src="https://cdn.grahasegaramedan.co.id/js/pages/dis.js"></script>
+
+        <script>
+            $(document).ready(function(){
+                redirect();
+            });
+
+            function redirect() {
+                var time = 10;
+                setInterval(function() {
+                var seconds = time % 60;
+                if (seconds.toString().length == 1) {
+                    seconds = seconds;
+                }
+                document.getElementById("time").innerHTML = seconds;
+                time--;
+                if (time == 0) {
+                    window.location.href = "{{ url_for('auth_bp.login') }}";
+                }
+                }, 1000);
+            }
+
+            function link(){
+                location.href="{{ url_for('auth_bp.login') }}";
+            }
+        </script>
+
+        <noscript>
+            <meta http-equiv="refresh" content="0;url='https://grahasegaramedan.co.id'">
+        </noscript>
+
+    </body>
+</html>

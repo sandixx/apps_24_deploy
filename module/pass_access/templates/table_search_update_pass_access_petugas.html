@@ -1,0 +1,90 @@
+<table id="tpt" class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th style="font-size:12px;">::</th>
+            <th style="font-size:12px;">CUSTOMER</th>
+            <th style="font-size:12px;">PETUGAS</th>
+            <th style="font-size:12px;">NO. IDENTITAS</th>
+            <th style="font-size:12px;">NO. HP</th>
+            <th style="font-size:12px;">JABATAN</th>
+            <th style="font-size:12px;">PASS ACCESS</th>
+        </tr>
+    </thead>
+    
+    <tbody>
+        {% for r in data %}
+        <tr>
+            <td>
+                <div class="radio">
+                    <input type="radio" id='{{r.key}}' name="opt_key_update_petugas" onclick="get_key_update_pass_petugas_checked()">
+                </div>
+            </td>
+            <td style="font-size:12px;">{{ r.cust_name }}</td>
+            <td style="font-size:12px;">{{ r.nama }}</td>
+            <td style="font-size:12px;">{{ r.no_identitas }}</td>
+            <td style="font-size:12px;">{{ r.no_hp }}</td>
+            <td style="font-size:12px;">{{ r.jabatan }}</td>
+            <td style="font-size:12px;">{{ r.pass_access }}</td>
+        </tr>
+        {% endfor %}
+    </tfoot>
+</table>
+
+<script>
+    $(function () {
+        $('#tpt').DataTable({
+            "paging": true,
+            "lengthChange": false,
+            "searching": false,
+            "ordering": false,
+            "info": true,
+            "autoWidth": false,
+            "responsive": true,
+        });
+    });
+
+    var key_update_pass_access = "";
+
+    function get_key_update_pass_petugas_checked() {
+        key_update_pass_access = document.activeElement.id;
+        show_data_update_pass_access_petugas();
+    }
+
+    async function show_data_update_pass_access_petugas() {
+        /*currentRow = document.getElementById(key_update_pass_access).closest("tr");
+        var Cells = currentRow.getElementsByTagName("td"); 
+        console.log(key_update_pass_access);
+        console.log(Cells[1].id);*/
+
+        showLoading();
+        let fd = new FormData();
+
+        fd.append("opt", "petugas");
+        fd.append("input", key_update_pass_access);
+
+        await xhr.open("POST", "{{ url_for('pass_access_bp.content_update_pass_access') }}");
+        const body = fd;
+        xhr.timeout = 10000;
+        xhr.onload = () => {
+            hideLoading();
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                $('#content_search_update_pass_access').html(xhr.response);
+            } else {
+                document.getElementById("content_search_update_pass_access").value = "";
+                document.getElementById(key_update_pass_access).checked = false;
+                if (xhr.status == 999) {
+                    notif("error", xhr.responseText);
+                } else if (xhr.status == 888) {
+                    notif("warning", xhr.responseText);
+                }
+            }
+        };
+
+        xhr.ontimeout = (e) => {
+            hideLoading();
+            notif("warning", "Proses Gagal");
+        };
+
+        xhr.send(body);
+    }
+</script>

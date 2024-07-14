@@ -1,0 +1,1029 @@
+<br>
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card card-primary">
+                    <div class="card-body" id="body_driver">
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="modal fade" id="modal_change_cont_single">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Ubah Container</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body" id="body_data_change_cont">
+                <div class="form-group">
+                    <h5 class="modal-title" id="title_change_cont"></h5>
+                    <select class="select2bs4 form-control" id="select_change_cont" style="width: 100%;">
+                    </select>
+                </div>
+            </div>
+            
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" onclick="ubah_cont_single();">OK</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modal_change_cont_double">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Ubah Container</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body" id="body_data_change_cont">
+                <div class="col-md-12">
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <h5 class="modal-title" id="title_change_cont_1"></h5>
+                            <select class="select2bs4 form-control" id="select_change_cont_1">
+                            </select>
+                        </div>
+
+                        <div class="form-group col-md-6">
+                            <h5 class="modal-title" id="title_change_cont_2"></h5>
+                            <select class="select2bs4 form-control" id="select_change_cont_2">
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" onclick="ubah_cont_double();">OK</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $('.select2').select2()
+
+    $('.select2bs4').select2({
+        theme: 'bootstrap4'
+    })
+
+    var cancel_time = localStorage.getItem("cancel_time");
+    var terminal = localStorage.getItem("terminal");
+    var waktu_start = localStorage.getItem("waktu_start");
+    var waktu_gate_in_terminal = localStorage.getItem("waktu_gate_in_terminal");
+
+    var combo = localStorage.getItem("combo");
+    var temp_cont = localStorage.getItem("temp_cont");
+    var temp_no_doc = localStorage.getItem("temp_no_doc");
+    var temp_size = localStorage.getItem("temp_size");
+    var waktu_pilih_cont_1 = localStorage.getItem("waktu_pilih_cont_1");
+    var cont_1 = localStorage.getItem("cont_1");
+    var no_doc_cont_1 = localStorage.getItem("no_doc_cont_1");
+    var size_cont_1 = localStorage.getItem("size_cont_1");
+    var waktu_lift_on_cont_1 = localStorage.getItem("waktu_lift_on_cont_1");
+
+    var waktu_pilih_cont_2 = localStorage.getItem("waktu_pilih_cont_2");
+    var cont_2 = localStorage.getItem("cont_2");
+    var no_doc_cont_2 = localStorage.getItem("no_doc_cont_2");
+    var size_cont_2 = localStorage.getItem("size_cont_2");
+    var waktu_lift_on_cont_2 = localStorage.getItem("waktu_lift_on_cont_2");
+
+    var waktu_gate_out_terminal = localStorage.getItem("waktu_gate_out_terminal");
+    var waktu_gate_in_tps = localStorage.getItem("waktu_gate_in_tps");
+    var waktu_lift_off_cont = localStorage.getItem("waktu_lift_off_cont");
+    var waktu_lift_off_cont_1 = localStorage.getItem("waktu_lift_off_cont_1");
+    var waktu_lift_off_cont_2 = localStorage.getItem("waktu_lift_off_cont_2");
+
+    var data_cont = localStorage.getItem("data_cont");
+    var data_opt = localStorage.getItem("data_opt");
+
+    var data_tabel_penarikan = localStorage.getItem("data_tabel_penarikan");
+
+    $( document ).ready(function() {
+        hideLoading();
+
+        if (cancel_time != null) {
+            end_process();
+            return;
+        }
+
+        if (terminal == null) {
+            start_penarikan();
+            return;
+        }
+        
+        if (waktu_start == null){
+            start_process();
+            return;
+        }
+
+        if (waktu_gate_in_terminal == null){
+            gate_in_terminal();
+            return;
+        }
+
+        if (waktu_pilih_cont_1 == null && cancel_time == null){
+            get_data_tabel_penarikan();
+            data_penarikan();
+            return;
+        }
+
+        if (waktu_lift_on_cont_1 == null && cancel_time == null){
+            lift_on_container();
+            return;
+        }
+
+        if (waktu_pilih_cont_2 == null && combo == null && size_cont_1 == 20 && cancel_time == null){
+            get_data_tabel_penarikan();
+            data_penarikan();
+            return;
+        }
+
+        if (waktu_lift_on_cont_2 == null && combo == "Y" && size_cont_1 == 20 && cancel_time == null){
+            lift_on_container();
+            return;
+        }
+
+        if (waktu_gate_out_terminal == null && cancel_time == null){
+            gate_out_terminal();
+            return;
+        }
+
+        if (waktu_gate_in_tps == null && cancel_time == null){
+            gate_in_tps();
+            return;
+        }
+
+        if (waktu_lift_off_cont_1 == null && waktu_lift_off_cont_2 == null && cancel_time == null){
+            lift_off_cont();
+            return;
+        }
+
+        if (waktu_lift_off_cont_1 != null && waktu_lift_off_cont_2 == null && cancel_time == null){
+            lift_off_cont();
+            document.getElementById("btn_lift_off_cont_1").disabled = true;
+            return;
+        }
+
+        end_process();
+    });
+
+    async function start_penarikan() {
+        showLoading();
+        await xhr.open("GET", "{{ url_for('driver_bp.start_penarikan') }}");
+        xhr.send();
+        xhr.onload = () => {
+            hideLoading();
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                $('#body_driver').html(xhr.response);
+            } else {
+                if (xhr.status == 999) {
+                    notif("error", xhr.responseText);
+                } else if (xhr.status == 888) {
+                    notif("warning", xhr.responseText);
+                } else if (xhr.status == 401) {
+                    window.location = "{{ url_for('auth_bp.logout') }}";
+                }
+            }
+        };
+    }
+
+    function chose_terminal(data){
+        localStorage.terminal = data;
+        terminal = data;
+        start_process();
+    }
+
+    function cancel_process(){
+        const date = moment();
+        let currentTime = date.format('DD/MM/YYYY HH:mm:ss');
+        cancel_time = currentTime;
+        localStorage.cancel_time = cancel_time;
+        combo = "N";
+        localStorage.combo = combo;
+        end_process();
+    }
+
+    function start_process(){
+        get_data_tabel_penarikan();
+
+        document.getElementById("body_driver").innerHTML = `
+        <h1>Mulai</h1>
+        <div class="col-md-12">
+            <div class="row">
+                <div class="form-group col-md-6">
+                    <button type="button" style="font-size: 40px;" class="btn btn-block btn-danger" onclick="cancel_process();">Cancel</button>
+                </div>
+
+                <div class="form-group col-md-6">
+                    <button type="button" style="font-size: 40px;" class="btn btn-block btn-success" onclick="get_waktu_start();">OK</button>
+                </div>
+            </div>
+        </div>
+        `;
+    }
+
+    function get_waktu_start(){
+        const date = moment();
+        let currentTime = date.format('DD/MM/YYYY HH:mm:ss')
+        waktu_start = currentTime;
+        localStorage.waktu_start = currentTime;
+        gate_in_terminal();
+    }
+
+    function gate_in_terminal(){
+        if (cancel_time == null) {
+            document.getElementById("body_driver").innerHTML = `
+            <h1>Gate In Terminal</h1>
+            <div class="col-md-12">
+                <div class="row">
+                    <div class="form-group col-md-6">
+                        <button type="button" style="font-size: 40px;" class="btn btn-block btn-danger" onclick="cancel_process();">Cancel</button>
+                    </div>
+                    
+                    <div class="form-group col-md-6">
+                        <button type="button" style="font-size: 40px;" class="btn btn-block btn-success" onclick="get_waktu_gate_in_terminal();">OK</button>
+                    </div>
+                </div>
+            </div>
+            `;
+        }
+    }
+
+    function get_waktu_gate_in_terminal(){
+        const date = moment();
+        let currentTime = date.format('DD/MM/YYYY HH:mm:ss')
+        waktu_gate_in_terminal = currentTime;
+        localStorage.waktu_gate_in_terminal = waktu_gate_in_terminal;
+
+        if (cancel_time == null) {
+            data_penarikan();
+        } else {
+            gate_out_terminal();
+        }
+    }
+
+    async function get_data_tabel_penarikan(){
+        showLoading();
+        var fd = new FormData();
+        fd.append("terminal", terminal);
+
+        await xhr.open("POST", "{{ url_for('driver_bp.data_penarikan') }}");
+        const body = fd;
+        xhr.timeout = 10000;
+        xhr.onload = () => {
+            hideLoading();
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                x = JSON.parse(xhr.response);
+                data_tabel_penarikan = x['table'];
+                localStorage.data_tabel_penarikan = data_tabel_penarikan;
+                data_cont = x['data_con'];
+                localStorage.data_cont = data_cont;
+                data_opt = x['data_op'];
+                localStorage.data_opt = data_opt;
+            } else {
+                if (xhr.status == 999) {
+                    notif("error", xhr.responseText);
+                } else if (xhr.status == 888) {
+                    notif("warning", xhr.responseText);
+                } else if (xhr.status == 401) {
+                    window.location = "{{ url_for('auth_bp.logout') }}";
+                }
+            }
+        };
+        
+        xhr.ontimeout = (e) => {
+            on_timeout();
+        };
+        
+        xhr.send(body);
+    }
+
+    function data_penarikan(){
+        document.getElementById("body_driver").innerHTML = `
+        <h1>Stack On Yard</h1>
+        <div class="col-md-12">
+            ${data_tabel_penarikan}
+        </div>
+        `;
+
+        var JS= document.createElement('script');
+        JS.text= `
+        $(function () {
+            $('#table_penarikan').DataTable({
+                "paging": true,
+                "lengthChange": false,
+                "searching": true,
+                "ordering": false,
+                "info": false,
+                "autoWidth": false,
+                "responsive": true,
+            });
+        });
+        
+        `;
+        document.body.appendChild(JS);
+
+
+        if (size_cont_1 == null){
+            document.getElementById("opt_20").innerHTML = `
+            <div class="col-md-12">
+                <div class="row">
+                    <div class="form-group col-md-6">
+                        <button type="button" style="font-size: 40px;" class="btn btn-block btn-danger" onclick="cancel_process();">Cancel</button>
+                    </div>
+
+                    <div class="form-group col-md-6">
+                        <button type="button" style="font-size: 40px;" class="btn btn-block btn-success" onclick="get_waktu_pilih_cont();">PILIH</button>
+                    </div>
+                </div>
+            </div>
+            `;
+        } else if (size_cont_1 == 20){
+            document.getElementById("opt_20").innerHTML = `
+            <div class="col-md-12">
+                <div class="row">
+                    <div class="form-group col-md-4">
+                        <button type="button" style="font-size: 40px;" class="btn btn-block btn-danger" onclick="cancel_process();">Cancel</button>
+                    </div>
+
+                    <div class="form-group col-md-4">
+                        <button type="button" style="font-size: 40px;" class="btn btn-block btn-success" onclick="combo_s();">NEXT</button>
+                    </div>
+
+                    <div class="form-group col-md-4">
+                        <button type="button" style="font-size: 40px;" class="btn btn-block btn-success" onclick="get_waktu_pilih_cont();">PILIH</button>
+                    </div>
+                </div>
+            </div>
+            `;
+        }
+    }
+
+    function pilih_cont(data){
+        const arr = data.split("_");
+
+        if (cont_1 == arr[0]) {
+            notif("warning", "Container Tidak Boleh Sama");
+            document.getElementById(cont).checked = false;
+            return;
+        }
+
+        temp_cont = arr[0];
+        temp_no_doc = arr[1];
+        temp_size = arr[2];
+
+        localStorage.temp_cont = temp_cont;
+        localStorage.temp_no_doc = temp_no_doc;
+        localStorage.temp_size = temp_size;
+    }
+
+    function get_waktu_pilih_cont(){
+        const date = moment();
+        let currentTime = date.format('DD/MM/YYYY HH:mm:ss')
+
+        if (temp_cont == null) {
+            notif("warning", "Pilih Container Terlebih Dahulu");
+            return;
+        }
+
+        if (cont_1 == null) {
+            waktu_pilih_cont_1 = currentTime;
+            cont_1 = temp_cont;
+            no_doc_cont_1 = temp_no_doc;
+            size_cont_1 = temp_size;
+
+            localStorage.waktu_pilih_cont_1 = waktu_pilih_cont_1;
+            localStorage.cont_1 = cont_1;
+            localStorage.no_doc_cont_1 = no_doc_cont_1;
+            localStorage.size_cont_1 = size_cont_1;
+        } else {
+            if (temp_size == 40){
+                notif("warning", "Ukuran Container Harus 20 feet");
+                return;
+            }
+
+            if (temp_cont == cont_1) {
+                notif("warning", "Container Sudah Dipilih");
+                return;
+            }
+
+            waktu_pilih_cont_2 = currentTime;
+            cont_2 = temp_cont;
+            no_doc_cont_2 = temp_no_doc;
+            size_cont_2 = temp_size;
+
+            localStorage.waktu_pilih_cont_2 = waktu_pilih_cont_2;
+            localStorage.cont_2 = cont_2;
+            localStorage.no_doc_cont_2 = no_doc_cont_2;
+            localStorage.size_cont_2 = size_cont_2;
+            combo = "Y";
+            localStorage.combo = combo;
+        }
+
+        /*temp_cont = "";
+        temp_no_doc = "";
+        temp_size = "";
+
+        localStorage.temp_cont = temp_cont;
+        localStorage.temp_no_doc = temp_no_doc;
+        localStorage.temp_size = temp_size;*/
+        lift_on_container();
+    }
+
+    function lift_on_container(){
+        document.getElementById("body_driver").innerHTML = `
+        <h1>Lift On Container</h1>
+        <div class="form-group">
+            <h1 id="id_cont_now">${temp_cont}</h1>
+        </div>
+        <div class="col-md-12">
+            <div class="row">
+                <div class="form-group col-md-4">
+                    <button type="button" style="font-size: 40px;" class="btn btn-block btn-danger" onclick="cancel_process();">Cancel</button>
+                </div>
+
+                <div class="form-group col-md-4">
+                    <button type="button" style="font-size: 40px;" class="btn btn-block btn-warning" onclick="change_cont();">Change</button>
+                </div>
+
+                <div class="form-group col-md-4">
+                    <button type="button" style="font-size: 40px;" class="btn btn-block btn-success" onclick="get_waktu_lift_on_container();">OK</button>
+                </div>
+            </div>
+        </div>
+        `;
+    }
+
+    function get_waktu_lift_on_container(){
+        const date = moment();
+        let currentTime = date.format('DD/MM/YYYY HH:mm:ss')
+
+        if (waktu_lift_on_cont_1 == null) {
+            waktu_lift_on_cont_1 = currentTime;
+            localStorage.waktu_lift_on_cont_1 = waktu_lift_on_cont_1;
+        } else {
+            waktu_lift_on_cont_2 = currentTime;
+            localStorage.waktu_lift_on_cont_2 = waktu_lift_on_cont_2;
+        }
+        
+        if (size_cont_1 == 40 || combo == "N") {
+            combo = "N";
+            localStorage.combo = combo;
+            gate_out_terminal();
+        } else if (combo == "Y") {
+            gate_out_terminal();
+        } else {
+            data_penarikan();
+        }
+    }
+
+    function change_cont(){
+        if (size_cont_1 == 40) {
+            change_cont_single();
+        } else if (size_cont_1 == 20 && combo == null) {
+            change_cont_single();
+        } else if (size_cont_1 == 20 && combo == "N") {
+            change_cont_single();
+        } else if (size_cont_1 == 20 && combo == "Y") {
+            change_cont_double();
+        }
+    }
+
+    function change_cont_single(){
+        cdo = Array.isArray(data_opt);
+        cc = Array.isArray(data_cont);
+
+        if (!cdo) {
+            data_opt = data_opt.split(",");
+        }
+
+        if (!cc) {
+            data_cont = data_cont.split(",");
+        }
+        
+        document.getElementById("title_change_cont").innerHTML = `${cont_1} Ubah Ke`;
+        document.getElementById("select_change_cont").innerHTML = "";
+        var select_opt = document.getElementById("select_change_cont");
+
+        for (let i = 0; i < data_opt.length; i++) {
+            var option = document.createElement("option");
+            xx = data_opt[i];
+            zz = data_cont[i];
+            sp = xx.split("_");
+            sa = sp[2];
+            option.text = `${zz} - ${sa} Feet`;
+            option.value = xx;
+            select_opt.appendChild(option);
+        }
+
+        document.getElementById('select_change_cont').value = `${cont_1}_${no_doc_cont_1}_${size_cont_1}`;
+        $('#modal_change_cont_single').modal('toggle');
+    }
+
+    function ubah_cont_single(data){
+        cont = document.getElementById("select_change_cont").value;
+        const arr = cont.split("_");
+        cont_1 = arr[0];
+        no_doc_cont_1 = arr[1];
+        size_cont_1 = arr[2];
+
+        localStorage.cont_1 = cont_1;
+        localStorage.no_doc_cont_1 = no_doc_cont_1;
+        localStorage.size_cont_1 = size_cont_1;
+
+        localStorage.temp_cont = cont_1;
+        localStorage.temp_no_doc = no_doc_cont_1;
+        localStorage.temp_size = size_cont_1;
+
+        if (waktu_lift_on_cont_1 == null){
+            document.getElementById("id_cont_now").innerHTML = cont_1;
+            $('#modal_change_cont_single').modal('hide');
+            return;
+        }
+
+        document.getElementById("nama_cont_1").innerHTML = cont_1;
+        $('#modal_change_cont_single').modal('hide');
+    }
+
+    function change_cont_double(){
+        cdo = Array.isArray(data_opt);
+        cc = Array.isArray(data_cont);
+
+        if (!cdo) {
+            data_opt = data_opt.split(",");
+        }
+
+        if (!cc) {
+            data_cont = data_cont.split(",");
+        }
+        
+        document.getElementById("title_change_cont_1").innerHTML = `${cont_1} Ubah Ke`;
+        document.getElementById("select_change_cont_1").innerHTML = "";
+        var select_opt_1 = document.getElementById("select_change_cont_1");
+
+        for (let i = 0; i < data_opt.length; i++) {
+            var option_1 = document.createElement("option");
+            xx = data_opt[i];
+            zz = data_cont[i];
+
+            sp = xx.split("_");
+            sa = sp[2];
+            option_1.text = `${zz} - ${sa} Feet`;
+            option_1.value = xx;
+            select_opt_1.appendChild(option_1);
+        }
+
+        document.getElementById('select_change_cont_1').value = `${cont_1}_${no_doc_cont_1}_${size_cont_1}`;
+
+        document.getElementById("title_change_cont_2").innerHTML = `${cont_2} Ubah Ke`;
+        document.getElementById("select_change_cont_2").innerHTML = "";
+        var select_opt_2 = document.getElementById("select_change_cont_2");
+
+        for (let i = 0; i < data_opt.length; i++) {
+            var option_2 = document.createElement("option");
+            xx = data_opt[i];
+            zz = data_cont[i];
+
+            sp = xx.split("_");
+            sa = sp[2];
+            option_2.text = `${zz} - ${sa} Feet`;
+            option_2.value = xx;
+            select_opt_2.appendChild(option_2);
+        }
+
+        document.getElementById('select_change_cont_2').value = `${cont_2}_${no_doc_cont_2}_${size_cont_2}`;
+        $('#modal_change_cont_double').modal('toggle');
+    }
+
+    function ubah_cont_double(){
+        cont_x = document.getElementById("select_change_cont_1").value;
+        const arr_1 = cont_x.split("_");
+
+        cont_y = document.getElementById("select_change_cont_2").value;
+        const arr_2 = cont_y.split("_");
+
+        if (arr_1[0] == arr_2[0]){
+            notif("warning", "Container Tidak Boleh Sama");
+            return;
+        }
+
+        if (cont_1 != arr_1[0]){
+            if (arr_1[2] == 40){
+                notif("warning", "Ukuran Container Harus 20 Feet");
+                return;
+            }
+
+            cont_1 = arr_1[0];
+            no_doc_cont_1 = arr_1[1];
+            size_cont_1 = arr_1[2];
+
+            localStorage.cont_1 = cont_1;
+            localStorage.no_doc_cont_1 = no_doc_cont_1;
+            localStorage.size_cont_1 = size_cont_1;
+
+            localStorage.temp_cont = cont_1;
+            localStorage.temp_no_doc = no_doc_cont_1;
+            localStorage.temp_size = size_cont_1;
+        }
+
+        if (cont_2 != arr_2[0]){
+            if (arr_2[2] == 40){
+                notif("warning", "Ukuran Container Harus 20 Feet");
+                return;
+            }
+
+            cont_2 = arr_2[0];
+            no_doc_cont_2 = arr_2[1];
+            size_cont_2 = arr_2[2];
+
+            localStorage.cont_2 = cont_2;
+            localStorage.no_doc_cont_2 = no_doc_cont_2;
+            localStorage.size_cont_2 = size_cont_2;
+
+            localStorage.temp_cont = cont_2;
+            localStorage.temp_no_doc = no_doc_cont_2;
+            localStorage.temp_size = size_cont_2;
+        }
+
+        if (waktu_lift_on_cont_2 == null){
+            document.getElementById("id_cont_now").innerHTML = cont_2;
+        }
+
+        nc1 = document.getElementById("nama_cont_1");
+        nc2 = document.getElementById("nama_cont_2");
+
+        if (nc1) {
+            document.getElementById("nama_cont_1").innerHTML = cont_1;
+        }
+
+        if (nc2) {
+            document.getElementById("nama_cont_2").innerHTML = cont_2;
+        }
+
+        $('#modal_change_cont_double').modal('hide');
+    }
+
+    function combo_s(){
+        temp_cont = "";
+        temp_size = "";
+        temp_no_doc = "";
+        combo = "N";
+
+        localStorage.combo = combo;
+        localStorage.temp_cont = temp_cont;
+        localStorage.temp_no_doc = temp_no_doc;
+        localStorage.temp_size = temp_size;
+        gate_out_terminal();
+    }
+
+    function get_cx(){
+        if (cont_1 != null && cont_2 == null) {
+            var cx = `
+            <div class="form-group">
+                <h1 id="nama_cont_1">${cont_1}</h1>
+            </div>`;
+        } else if (cont_1 != null && cont_2 != null) {
+            var cx = `
+            <div class="form-group">
+                <h1 id="nama_cont_1">${cont_1}</h1>
+            </div>
+            
+            <div class="form-group">
+                <h1 id="nama_cont_2">${cont_2}</h1>
+            </div>
+            `;
+        } else {
+            cx = "";
+        }
+
+        return cx;
+    }
+
+    function gate_out_terminal(){
+        if (cancel_time == null) {
+            document.getElementById("body_driver").innerHTML = `
+            <h1>Gate Out Terminal</h1>` + get_cx() + `
+            <div class="col-md-12">
+                <div class="row">
+                    <div class="form-group col-md-4">
+                        <button type="button" style="font-size: 40px;" class="btn btn-block btn-danger" onclick="cancel_process();">Cancel</button>
+                    </div>
+
+                    <div class="form-group col-md-4">
+                        <button type="button" style="font-size: 40px;" class="btn btn-block btn-warning" onclick="change_cont();">Change</button>
+                    </div>
+
+                    <div class="form-group col-md-4">
+                        <button type="button" style="font-size: 40px;" class="btn btn-block btn-success" onclick="get_waktu_gate_out_terminal();">OK</button>
+                    </div>
+                </div>
+            </div>
+            `;
+        }
+    }
+
+    function get_waktu_gate_out_terminal(){
+        const date = moment();
+        let currentTime = date.format('DD/MM/YYYY HH:mm:ss')
+        waktu_gate_out_terminal = currentTime;
+        localStorage.waktu_gate_out_terminal = waktu_gate_out_terminal;
+        gate_in_tps();
+    }
+
+    function gate_in_tps(){
+        if (cancel_time == null) {
+            document.getElementById("body_driver").innerHTML = `
+            <h1>Gate In TPS</h1>` + get_cx() + `
+            <div class="col-md-12">
+                <div class="row">
+                    <div class="form-group col-md-4">
+                        <button type="button" style="font-size: 40px;" class="btn btn-block btn-danger" onclick="cancel_process();">Cancel</button>
+                    </div>
+
+                    <div class="form-group col-md-4">
+                        <button type="button" style="font-size: 40px;" class="btn btn-block btn-warning" onclick="change_cont();">Change</button>
+                    </div>
+
+                    <div class="form-group col-md-4">
+                        <button type="button" style="font-size: 40px;" class="btn btn-block btn-success" onclick="get_waktu_gate_in_tps();">OK</button>
+                    </div>
+                </div>
+            </div>
+            `;
+        }
+    }
+
+    function get_waktu_gate_in_tps(){
+        const date = moment();
+        let currentTime = date.format('DD/MM/YYYY HH:mm:ss')
+        waktu_gate_in_tps = currentTime;
+        localStorage.waktu_gate_in_tps = waktu_gate_in_tps;
+
+        if (cancel_time == null) {
+            lift_off_cont();
+        } else {
+            end_process();
+        }
+    }
+
+    function lift_off_cont(){
+        if (cancel_time == null) {
+            if (combo == 'Y') {
+                document.getElementById("body_driver").innerHTML = `
+                <h1>Lift Off Container</h1>
+                <div class="col-md-12">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="card card-primary">
+                                <div class="card-body">
+                                    <div class="form-group">
+                                        <h1 id="nama_cont_1">${cont_1}</h1>
+                                    </div>
+
+                                    <div class="form-group col-md-4">
+                                        <button type="button" id="btn_lift_off_cont_1" style="font-size: 40px;" class="btn btn-block btn-primary" onclick="get_waktu_lift_off_cont_1();">Lift Off</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="card card-primary">
+                                <div class="card-body">
+                                    <div class="form-group">
+                                        <h1 id="nama_cont_1">${cont_2}</h1>
+                                    </div>
+
+                                    <div class="form-group col-md-4">
+                                        <button type="button" id="btn_lift_off_cont_2" style="font-size: 40px;" class="btn btn-block btn-primary" onclick="get_waktu_lift_off_cont_2();">Lift Off</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-12">
+                    <div class="row">
+                        <div class="form-group col-md-4">
+                            <button type="button" style="font-size: 40px;" class="btn btn-block btn-danger" onclick="cancel_process();">Cancel</button>
+                        </div>
+                        
+                        <div class="form-group col-md-4">
+                            <button type="button" style="font-size: 40px;" class="btn btn-block btn-warning" onclick="change_cont();">Change</button>
+                        </div>
+                        
+                        <div class="form-group col-md-4">
+                            <div class="col-md-12">
+                                <button type="button" style="font-size: 40px;" class="btn btn-block btn-success" onclick="get_waktu_lift_off_cont();">OK</button>
+                            </div>
+                        <div>
+                    </div>
+                </div>
+                `;
+            } else {
+                document.getElementById("body_driver").innerHTML = `
+                <h1>Lift Off Container</h1>
+                <h1 id="nama_cont_1">${cont_1}</h1>
+
+                <div class="col-md-12">
+                    <div class="row">
+                        <div class="form-group col-md-4">
+                            <button type="button" style="font-size: 40px;" class="btn btn-block btn-danger" onclick="cancel_process();">Cancel</button>
+                        </div>
+                        
+                        <div class="form-group col-md-4">
+                            <button type="button" style="font-size: 40px;" class="btn btn-block btn-warning" onclick="change_cont();">Change</button>
+                        </div>
+                        
+                        <div class="form-group col-md-4">
+                            <div class="col-md-12">
+                                <button type="button" style="font-size: 40px;" class="btn btn-block btn-success" onclick="get_waktu_lift_off_cont();">OK</button>
+                            </div>
+                        <div>
+                    </div>
+                </div>
+                `;
+            }
+        }
+    }
+
+    function get_waktu_lift_off_cont_1(){
+        const date = moment();
+        let currentTime = date.format('DD/MM/YYYY HH:mm:ss')
+        waktu_lift_off_cont_1 = currentTime;
+        localStorage.waktu_lift_off_cont_1 = waktu_lift_off_cont_1;
+        document.getElementById("btn_lift_off_cont_1").disabled = true;
+    }
+
+    function get_waktu_lift_off_cont_2(){
+        const date = moment();
+        let currentTime = date.format('DD/MM/YYYY HH:mm:ss')
+        waktu_lift_off_cont_2 = currentTime;
+        localStorage.waktu_lift_off_cont_2 = waktu_lift_off_cont_2;
+        document.getElementById("btn_lift_off_cont_2").disabled = true;
+    }
+
+    function get_waktu_lift_off_cont(){
+        if (combo != "Y"){
+            const date = moment();
+            let currentTime = date.format('DD/MM/YYYY HH:mm:ss')
+            waktu_lift_off_cont_1 = currentTime;
+            localStorage.waktu_lift_off_cont_1 = waktu_lift_off_cont_1;
+        } else {
+            if (localStorage.waktu_lift_off_cont_1 == null) {
+                notif("warning", `Proses Lift Off Container ${cont_1} Belum Dilakukan`);
+                return;
+            }
+    
+            if (localStorage.waktu_lift_off_cont_2 == null) {
+                notif("warning", `Proses Lift Off Container ${cont_2} Belum Dilakukan`);
+                return;
+            }
+        }
+        
+        end_process();
+    }
+
+    function check_finish(){
+        if (cont_1 != null) {
+            cf = `
+            <div class="form-group col-md-6">
+                <button type="button" style="font-size: 40px;" class="btn btn-block btn-warning" onclick="change_cont();">Change</button>
+            </div>
+
+            <div class="form-group col-md-6">
+                <button type="button" style="font-size: 40px;" class="btn btn-block btn-success" onclick="process_data();">OK</button>
+            </div>
+            `;
+        } else {
+            cf = `
+            <div class="col-md-12">
+                <button type="button" style="font-size: 40px;" class="btn btn-block btn-success" onclick="process_data();">OK</button>
+            </div>
+            `;
+        }
+
+        return cf;
+    }
+
+    function end_process(){
+        document.getElementById("body_driver").innerHTML = `
+        <h1>Finish</h1>` + get_cx() + `
+        <h4>Catatan</h4>
+        <div class="col-md-12">
+            <textarea id="note_penarikan" rows="3" class="form-control" maxlength="250" style="text-transform:uppercase"></textarea>
+            <br/>
+            <div class="col-md-12">
+                <div class="row">` + check_finish() + `
+                </div>
+            </div>
+        </div>
+        `;
+    }
+
+    async function process_data(){
+        showLoading();
+        const date = moment();
+        let currentTime = date.format('DD/MM/YYYY HH:mm:ss')
+        var waktu_selesai = currentTime;
+
+        var fd = new FormData();
+        fd.append("no_truck", no_truck);
+        fd.append("terminal", terminal);
+        fd.append("cancel_time", cancel_time == null ? "" : cancel_time);
+        fd.append("waktu_start", waktu_start == null ? "" : waktu_start);
+        fd.append("waktu_gate_in_terminal", waktu_gate_in_terminal == null ? "" : waktu_gate_in_terminal);
+        fd.append("combo", combo == null ? "" : combo);
+        fd.append("waktu_pilih_cont_1", waktu_pilih_cont_1 == null ? "" : waktu_pilih_cont_1);
+        fd.append("cont_1", cont_1 == null ? "" : cont_1);
+        fd.append("no_doc_cont_1", no_doc_cont_1 == null ? "" : no_doc_cont_1);
+        fd.append("size_cont_1", size_cont_1 == null ? "" : size_cont_1);
+        fd.append("waktu_lift_on_cont_1", waktu_lift_on_cont_1 == null ? "" : waktu_lift_on_cont_1);
+        fd.append("waktu_pilih_cont_2", waktu_pilih_cont_2 == null ? "" : waktu_pilih_cont_2);
+        fd.append("cont_2", cont_2 == null ? "" : cont_2);
+        fd.append("no_doc_cont_2", no_doc_cont_2 == null ? "" : no_doc_cont_2);
+        fd.append("size_cont_2", size_cont_2 == null ? "" : size_cont_2);
+        fd.append("waktu_lift_on_cont_2", waktu_lift_on_cont_2 == null ? "" : waktu_lift_on_cont_2);
+        fd.append("waktu_gate_out_terminal", waktu_gate_out_terminal == null ? "" : waktu_gate_out_terminal);
+        fd.append("waktu_gate_in_tps", waktu_gate_in_tps == null ? "" : waktu_gate_in_tps);
+        fd.append("waktu_lift_off_cont_1", waktu_lift_off_cont_1 == null ? "" : waktu_lift_off_cont_1);
+        fd.append("waktu_lift_off_cont_2", waktu_lift_off_cont_2 == null ? "" : waktu_lift_off_cont_2);
+        fd.append("waktu_selesai", waktu_selesai == null ? "" : waktu_selesai);
+        fd.append("catatan", document.getElementById("note_penarikan").value);
+
+        await xhr.open("POST", "{{ url_for('driver_bp.penarikan') }}");
+        const body = fd;
+        xhr.timeout = 10000;
+        xhr.onload = () => {
+            hideLoading();
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                notif("success", xhr.responseText);
+
+                localStorage.clear();
+                localStorage.no_truck = no_truck;
+                cancel_time = localStorage.getItem("cancel_time");
+                terminal = localStorage.getItem("terminal");
+                waktu_start = localStorage.getItem("waktu_start");
+                waktu_gate_in_terminal = localStorage.getItem("waktu_gate_in_terminal");
+
+                combo = localStorage.getItem("combo");
+                temp_cont = localStorage.getItem("temp_cont");
+                temp_no_doc = localStorage.getItem("temp_no_doc");
+                temp_size = localStorage.getItem("temp_size");
+                waktu_pilih_cont_1 = localStorage.getItem("waktu_pilih_cont_1");
+                cont_1 = localStorage.getItem("cont_1");
+                no_doc_cont_1 = localStorage.getItem("no_doc_cont_1");
+                size_cont_1 = localStorage.getItem("size_cont_1");
+                waktu_lift_on_cont_1 = localStorage.getItem("waktu_lift_on_cont_1");
+
+                waktu_pilih_cont_2 = localStorage.getItem("waktu_pilih_cont_2");
+                cont_2 = localStorage.getItem("cont_2");
+                no_doc_cont_2 = localStorage.getItem("no_doc_cont_2");
+                size_cont_2 = localStorage.getItem("size_cont_2");
+                waktu_lift_on_cont_2 = localStorage.getItem("waktu_lift_on_cont_2");
+
+                waktu_gate_out_terminal = localStorage.getItem("waktu_gate_out_terminal");
+                waktu_gate_in_tps = localStorage.getItem("waktu_gate_in_tps");
+                waktu_lift_off_cont = localStorage.getItem("waktu_lift_off_cont");
+                var waktu_lift_off_cont_1 = localStorage.getItem("waktu_lift_off_cont_1");
+                var waktu_lift_off_cont_2 = localStorage.getItem("waktu_lift_off_cont_2");
+
+                data_cont = localStorage.getItem("data_cont");
+                data_opt = localStorage.getItem("data_opt");
+
+                data_tabel_penarikan = localStorage.getItem("data_tabel_penarikan");
+
+                start_penarikan();
+            } else {
+                if (xhr.status == 999) {
+                    notif("error", xhr.responseText);
+                } else if (xhr.status == 888) {
+                    notif("warning", xhr.responseText);
+                } else if (xhr.status == 401) {
+                    window.location = "{{ url_for('auth_bp.logout') }}";
+                }
+            }
+        };
+        
+        xhr.ontimeout = (e) => {
+            on_timeout();
+        };
+        
+        xhr.send(body);
+    }
+</script>

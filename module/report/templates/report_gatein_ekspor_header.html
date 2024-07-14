@@ -1,0 +1,131 @@
+<br>
+<section class="content">
+    <div class="container-fluid">
+        <div class="col-md-12">
+            <div class="card card-primary">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label>From:</label>
+                                <div class="input-group date" id="reservationdate" data-target-input="nearest">
+                                    <input id="date_in_from" type="text" class="form-control datetimepicker-input" data-target="#reservationdate" data-toggle="datetimepicker"/>
+                                    <div class="input-group-append" data-target="#reservationdate" data-toggle="datetimepicker">
+                                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label>Until:</label>
+                                <div class="input-group date" id="reservationdate2" data-target-input="nearest">
+                                    <input id="date_in_until" type="text" class="form-control datetimepicker-input" data-target="#reservationdate2" data-toggle="datetimepicker"/>
+                                    <div class="input-group-append" data-target="#reservationdate2" data-toggle="datetimepicker">
+                                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-2">
+                        <button type="button" class="btn btn-block btn-primary" onclick="get_in()">Search</button>
+                    </div>
+                    <br>
+                    <div id="content_report_in"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    $( document ).ready(function() {
+        var date = moment();
+        var currentDate = date.format('MM/DD/YYYY');
+        document.getElementById("date_in_until").value = currentDate;
+    });
+
+    $('.select2').select2()
+
+    $('.select2bs4').select2({
+        theme: 'bootstrap4'
+    })
+    $('#datemask').inputmask('dd/mm/yyyy', { 'placeholder': 'dd/mm/yyyy' })
+    $('#datemask2').inputmask('mm/dd/yyyy', { 'placeholder': 'mm/dd/yyyy' })
+    $('[data-mask]').inputmask()
+
+    $('#reservationdate').datetimepicker({
+        format: 'L'
+    });
+
+    $('#reservationdate2').datetimepicker({
+        format: 'L'
+    });
+
+    $('#reservationdatetime').datetimepicker({ icons: { time: 'far fa-clock' } });
+
+    $('#reservation').daterangepicker()
+    $('#reservationtime').daterangepicker({
+        timePicker: true,
+        timePickerIncrement: 30,
+        locale: {
+            format: 'MM/DD/YYYY hh:mm A'
+        }
+    })
+
+    $('#daterange-btn').daterangepicker(
+        {
+            ranges   : {
+            'Today'       : [moment(), moment()],
+            'Yesterday'   : [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+            'Last 7 Days' : [moment().subtract(6, 'days'), moment()],
+            'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+            'This Month'  : [moment().startOf('month'), moment().endOf('month')],
+            'Last Month'  : [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+            },
+            startDate: moment().subtract(29, 'days'),
+            endDate  : moment()
+        },
+        function (start, end) {
+            $('#reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'))
+        }
+    )
+
+    $('#timepicker').datetimepicker({
+        format: 'LT'
+    })
+
+    $('#reservationdatetime').datetimepicker({ icons: { time: 'far fa-clock' } });
+
+    async function get_in() {
+        var date_from = document.getElementById("date_in_from").value;
+        var date_until = document.getElementById("date_in_until").value;
+
+        if (date_from && date_until) {
+            var fd = new FormData();
+            showLoading();
+            fd.append("date_from", date_from);
+            fd.append("date_until", date_until);
+
+            await xhr.open("POST", "{{ url_for('report_bp.report_gatein_ekspor') }}");
+            const body = fd;
+            xhr.onload = () => {
+                hideLoading();
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                    $('#content_report_in').html(xhr.response);
+                } else {
+                    if (xhr.status == 999) {
+                        document.getElementById("content_report_in").innerHTML = "";
+                        notif("error", xhr.responseText);
+                    }
+                }
+            };
+            xhr.send(body);
+        } else {
+            notif("warning", "Lengkapi Tanggal");
+            document.getElementById("content_report_in").innerHTML = "";
+        }
+    }
+</script>

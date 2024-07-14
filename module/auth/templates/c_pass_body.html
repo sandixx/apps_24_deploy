@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Registration</title>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+        <link rel="stylesheet" href="{{ url_for('static', filename='fontawesome-free/css/all.min.css')}}">
+        <link rel="stylesheet" href="https://cdn.grahasegaramedan.co.id/icheck-bootstrap/icheck-bootstrap.min.css">
+        <link rel="stylesheet" href="https://cdn.grahasegaramedan.co.id/css/adminlte.min.css">
+        <link rel="icon" href="https://cdn.grahasegaramedan.co.id/img/gs.png" type="image/gif" sizes="16x16">
+    </head>
+
+    <body class="hold-transition register-page">
+        <div class="register-box">
+            <div class="card card-outline card-primary">
+                <div class="card-body">
+                    <p class="login-box-msg">Change Password</p>
+
+                    <form>
+                        <div class="input-group mb-3">
+                            <input id="p_w" type="password" class="form-control" placeholder="New Password" name="pwc" required>
+                            <div class="input-group-append">
+                                <div class="input-group-text">
+                                <span class="fas fa-lock"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="input-group mb-3">
+                            <input id="c_p_w" type="password" class="form-control" placeholder="Retype password" name="cpwc" required>
+                            <div class="input-group-append">
+                                <div class="input-group-text">
+                                <span class="fas fa-lock"></span>
+                                </div>
+                            </div>
+                        </div> 
+
+                        <div class="row">
+                            <div class="col-4">
+                                <li id="b_cpass" class="btn btn-primary btn-block">
+                                    <a href="#" class="" style="color:#FFF;">OK</a>
+                                </li>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="modal-msg">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Message</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+
+                    <div class="modal-body">
+                        <p id="msg"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script src="https://cdn.grahasegaramedan.co.id/jquery/jquery.min.js" async></script>
+        <script src="https://cdn.grahasegaramedan.co.id/bootstrap/js/bootstrap.bundle.min.js" async></script>
+        <script src="https://cdn.grahasegaramedan.co.id/js/adminlte.min.js" async></script>
+        <script src="https://cdn.grahasegaramedan.co.id/js/pages/dis.js" async></script>
+
+        <script>
+            $("#b_cpass").click(function () {
+                c_pass();
+            });
+
+            function c_pass(){
+                var user = "{{ session['username'] }}";
+                var pass = $('input[name="pwc"]').val();
+                var cpass= $('input[name="cpwc"]').val();
+                var act = "c_pass";
+                var uz = "{{ url_for('auth_bp.change_password') }}";
+                if (pass != cpass){
+                    document.getElementById("msg").innerHTML = "Password Tidak Sama";
+                    $('#modal-msg').modal('toggle');
+                } else {
+                    $.ajax({
+                        type: "POST",
+                        url: uz,
+                        data: {"act" : act, "zx1" : user, "zx2" : pass},
+                        success: function(response){
+                            if (response == 'berhasil') {
+                                document.getElementById('p_w').value = "";
+                                document.getElementById('c_p_w').value = "";
+                                document.getElementById("msg").innerHTML = "Password Berhasil Diubah";
+                                $('#modal-msg').modal('toggle');
+                            }
+                        }
+                    });
+                }
+            }
+        </script>
+    </body>
+</html>

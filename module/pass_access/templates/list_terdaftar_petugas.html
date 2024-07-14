@@ -1,0 +1,53 @@
+<table id="lpt" class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th style="font-size:12px;">PETUGAS</th>
+            <th style="font-size:12px;">TEMPAT LAHIR</th>
+            <th style="font-size:12px;">TANGGAL LAHIR</th>
+            <th style="font-size:12px;">NO. IDENTITAS</th>
+            <th style="font-size:12px;">NO. INDUK KARYAWAN</th>
+            <th style="font-size:12px;">AGAMA</th>
+            <th style="font-size:12px;">ALAMAT</th>
+            <th style="font-size:12px;">NO. HP</th>
+            <th style="font-size:12px;">JABATAN</th>
+            <th style="font-size:12px;">PASS ACCESS</th>
+            <th style="font-size:12px;">PERUSAHAAN</th>
+        </tr>
+    </thead>
+    
+    <tbody>
+        {% for r in data %}
+        <tr>
+            <td style="font-size:12px;">{{ r.nama }}</td>
+            <td style="font-size:12px;">{{ r.tempat_lahir }}</td>
+            <td style="font-size:12px;">{{ r.tanggal_lahir }}</td>
+            <td style="font-size:12px;">{{ r.no_identitas }}</td>
+            <td style="font-size:12px;">{{ r.no_induk_karyawan }}</td>
+            <td style="font-size:12px;">{{ r.agama }}</td>
+            <td style="font-size:12px;">{{ r.alamat }}</td>
+            <td style="font-size:12px;">{{ r.no_hp }}</td>
+            <td style="font-size:12px;">{{ r.jabatan }}</td>
+            <td style="font-size:12px;">{{ r.pass_access }}</td>
+            <td style="font-size:12px;">{{ r.perusahaan }}</td>
+        </tr>
+        {% endfor %}
+    </tfoot>
+</table>
+<br>
+<div class="col-sm-1">
+    <a download="List Pass Access Petugas" class="btn btn-block btn-primary" href="data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,{{excel_data}}">Excel</a>
+</div>
+
+<script>
+    $(function () {
+        $('#lpt').DataTable({
+            "paging": true,
+            "lengthChange": false,
+            "searching": true,
+            "ordering": false,
+            "info": true,
+            "autoWidth": false,
+            "responsive": true,
+        });
+    });
+</script>

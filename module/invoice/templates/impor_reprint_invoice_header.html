@@ -1,0 +1,123 @@
+<br>
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card card-primary">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-sm-2 col-md-3">
+                                <div class="form-group">
+                                    <input id="invoice_no" onkeypress="return search_enter(event)" type="text" class="form-control" placeholder="No. Invoice" maxlength="13" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1'); check_val_re_inv(this.value);" onchange="">
+                                </div>
+                            </div>
+
+                            <div class="col-sm-2">
+                                <button type="button" class="btn btn-block btn-primary" onclick="get_data_reprint_invoice_impor();">Search</button>
+                            </div>
+
+                            <div class="col-sm-2" id="g_reprint">
+                                <button type="button" class="btn btn-block btn-primary" onclick="process_reprint_invoice_impor();">Reprint</button>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <section class="content">
+                                <div class="container-fluid" id="data_invoice_impor">
+                                    
+                                </div>
+                            </section>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    $( document ).ready(function() {
+        hideLoading();
+        document.getElementById("g_reprint").style.display = 'none';
+    });
+
+    function check_val_re_inv(data){
+        document.getElementById("g_reprint").style.display = 'none';
+    }
+
+    function search_enter(evt) {
+        if (evt.keyCode === 13) {
+            get_data_reprint_invoice_impor();
+        }
+    }
+
+    async function get_data_reprint_invoice_impor(){
+        showLoading();
+        var fd = new FormData();
+        fd.append("invoice_no", document.getElementById("invoice_no").value);
+
+        await xhr.open("POST", "{{ url_for('invoice_impor_bp.reprint_invoice_impor') }}");
+        const body = fd;
+        xhr.timeout = 10000;
+        xhr.onload = () => {
+            hideLoading();
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                document.getElementById('data_invoice_impor').style.height='1200px';
+                document.getElementById("g_reprint").style.display = 'block';
+                $('#data_invoice_impor').html(xhr.response);
+                //window.open("data:application/pdf;base64, " + xhr.response);
+            } else {
+                document.getElementById('data_invoice_impor').style.height='0px';
+                document.getElementById("data_invoice_impor").innerHTML = "";
+                document.getElementById("g_reprint").style.display = 'none';
+                if (xhr.status == 999) {
+                    notif("error", xhr.responseText);
+                } else if (xhr.status == 888) {
+                    notif("warning", xhr.responseText);
+                } else if (xhr.status == 401) {
+                    window.location = "{{ url_for('auth_bp.logout') }}";
+                }
+            }
+        };
+        
+        xhr.ontimeout = (e) => {
+            on_timeout();
+        };
+        
+        xhr.send(body);
+    }
+
+    async function process_reprint_invoice_impor(){
+        showLoading();
+        var fd = new FormData();
+        fd.append("opt", "rpinv");
+        fd.append("invoice_no", document.getElementById("invoice_no").value);
+
+        await xhr.open("POST", "{{ url_for('pre_invoice_bp.print_data_preinvoice') }}");
+        const body = fd;
+        xhr.timeout = 10000;
+        xhr.onload = () => {
+            hideLoading();
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                document.getElementById('data_invoice_impor').style.height='1200px';
+                $('#data_invoice_impor').html(xhr.response);
+            } else {
+                document.getElementById('data_invoice_impor').style.height='0px';
+                document.getElementById("data_invoice_impor").innerHTML = "";
+                if (xhr.status == 999) {
+                    notif("error", xhr.responseText);
+                } else if (xhr.status == 888) {
+                    notif("warning", xhr.responseText);
+                } else if (xhr.status == 401) {
+                    window.location = "{{ url_for('auth_bp.logout') }}";
+                }
+            }
+        };
+        
+        xhr.ontimeout = (e) => {
+            on_timeout();
+        };
+        
+        xhr.send(body);
+    }
+</script>

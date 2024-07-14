@@ -1,0 +1,34 @@
+<div id="d_pengembalian_pass_access">
+
+</div>
+
+<script>
+    $( document ).ready(function() {
+        get_pengembalian_pass_access();
+    });
+
+    function get_pengembalian_pass_access() {
+        showLoading();
+        xhr.open("GET", "{{ url_for('pass_access_bp.ppa') }}");
+        xhr.timeout = 10000;
+        xhr.send();
+        xhr.onload = () => {
+            hideLoading();
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                $('#d_pengembalian_pass_access').html(xhr.response);
+            } else {
+                if (xhr.status == 999) {
+                    notif("error", xhr.responseText);
+                } else if (xhr.status == 888) {
+                    notif("warning", xhr.responseText);
+                }
+                document.getElementById("d_pengembalian_pass_access").innerHTML = "";
+            }
+        };
+
+        xhr.ontimeout = (e) => {
+            hideLoading();
+            notif("warning", "Proses Gagal");
+        };
+    }
+</script>

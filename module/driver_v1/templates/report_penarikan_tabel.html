@@ -1,0 +1,70 @@
+<table id="example1" class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th style="font-size:12px;">NO</th>
+            <th style="font-size:12px;">PETUGAS</th>
+            <th style="font-size:12px;">CONT ID</th>
+            <th style="font-size:12px;">SIZE</th>
+            <th style="font-size:12px;">NO DOC</th>
+            <th style="font-size:12px;">TRUCK</th>
+            <th style="font-size:12px;">TERMINAL</th>
+            <th style="font-size:12px;">START</th>
+            <th style="font-size:12px;">GATE IN TERMINAL</th>
+            <th style="font-size:12px;">STACK ON YARD</th>
+            <th style="font-size:12px;">LIFT ON</th>
+            <th style="font-size:12px;">GATE OUT TERMINAL</th>
+            <th style="font-size:12px;">GATE IN TPS</th>
+            <th style="font-size:12px;">LIFT OFF</th>
+            <th style="font-size:12px;">CANCEL</th>
+            <th style="font-size:12px;">FINISH</th>
+            <th style="font-size:12px;">START - GATE IN TERMINAL</th>
+            <th style="font-size:12px;">GATE IN TERMINAL - PILIH CONT</th>
+            <th style="font-size:12px;">STACK ON YARD - LIFT ON</th>
+            <th style="font-size:12px;">LIFT ON - GATE OUT TERMINAL</th>
+            <th style="font-size:12px;">GATE OUT TERMINAL - GATE IN TPS</th>
+            <th style="font-size:12px;">GATE IN TPS - LIFT OFF</th>
+            <th style="font-size:12px;">LIFT OFF - FINISH</th>
+            <th style="font-size:12px;">TOTAL</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for r in data %}
+        <tr>
+            <td style="font-size:12px;">{{ r.no }}</td>
+            <td style="font-size:12px;">{{ r.petugas }}</td>
+            <td style="font-size:12px;">{{ r.cont_id }}</td>
+            <td style="font-size:12px;">{{ r.size }}</td>
+            <td style="font-size:12px;">{{ r.no_doc }}</td>
+            <td style="font-size:12px;">{{ r.no_truck }}</td>
+            <td style="font-size:12px;">{{ r.terminal }}</td>
+            <td style="font-size:12px;">{{ r.start_time }}</td>
+            <td style="font-size:12px;">{{ r.gate_in_terminal }}</td>
+            <td style="font-size:12px;">{{ r.pilih }}</td>
+            <td style="font-size:12px;">{{ r.lift_on }}</td>
+            <td style="font-size:12px;">{{ r.gate_out_terminal }}</td>
+            <td style="font-size:12px;">{{ r.gate_in_tps }}</td>
+            <td style="font-size:12px;">{{ r.lift_off }}</td>
+            <td style="font-size:12px;">{{ r.cancel_time }}</td>
+            <td style="font-size:12px;">{{ r.finish }}</td>
+            <td style="font-size:12px;">{{ r.start_time_gate_in_terminal }}</td>
+            <td style="font-size:12px;">{{ r.date_gate_in_terminal_date_pilih }}</td>
+            <td style="font-size:12px;">{{ r.date_pilih_date_lift_on }}</td>
+            <td style="font-size:12px;">{{ r.date_lift_on_date_gate_out_terminal }}</td>
+            <td style="font-size:12px;">{{ r.date_gate_out_terminal_date_gate_in_tps }}</td>
+            <td style="font-size:12px;">{{ r.date_gate_in_tps_date_lift_off }}</td>
+            <td style="font-size:12px;">{{ r.date_lift_off_date_finish }}</td>
+            <td style="font-size:12px;">{{ r.total_time }}</td>
+        </tr>
+        {% endfor %}
+    </tfoot>
+</table>
+
+<script>
+    $(function () {
+        $("#example1").DataTable({
+            "responsive": true, "lengthChange": false, "autoWidth": false,
+            "buttons": ["csv", "excel", "print", "colvis"]
+        }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+    });
+</script>

@@ -1,0 +1,70 @@
+<br>
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card card-primary">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-sm-2 col-md-3">
+                                <div class="form-group">
+                                    <input id="pic" onkeypress="return search_enter(event)" type="text" class="form-control" placeholder="PIC" style="text-transform:uppercase;" maxlength="100">
+                                </div>
+                            </div>
+
+                            <div class="col-sm-2">
+                                <button type="button" class="btn btn-block btn-primary" onclick="find_pic_cancel();">Search</button>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <section class="content">
+                                <div class="container-fluid" id="data_cancel_meeting">
+                                    
+                                </div>
+                            </section>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    function search_enter(evt) {
+        if (evt.keyCode === 13) {
+            find_pic_cancel();
+        }
+    }
+
+    async function find_pic_cancel() {
+        var fd = new FormData();
+        showLoading();
+        fd.append("pic", document.getElementById("pic").value);
+
+        await xhr.open("POST", "{{ url_for('meeting_bp.find_cancel_meeting') }}");
+        const body = fd;
+        xhr.timeout = 10000;
+        xhr.onload = () => {
+            hideLoading();
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                $('#data_cancel_meeting').html(xhr.response);
+            } else {
+                if (xhr.status == 999) {
+                    notif("error", xhr.responseText);
+                } else if (xhr.status == 888) {
+                    notif("warning", xhr.responseText);
+                } else if (xhr.status == 401) {
+                    window.location = "{{ url_for('auth_bp.logout') }}";
+                }
+            }
+        };
+
+        xhr.ontimeout = (e) => {
+            on_timeout();
+        };
+        
+        xhr.send(body);
+    }
+</script>

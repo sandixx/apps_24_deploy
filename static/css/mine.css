@@ -1,0 +1,26 @@
+.login-page2,
+.register-page2 {
+    -ms-flex-align: center;
+    align-items: center;
+    background-color: #e9ecef;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    height: 100vh;
+    -ms-flex-pack: center;
+    justify-content: center;
+}
+
+.login-box2,
+.register-box2 {
+    width: 520px;
+}
+
+@media (max-width: 576px) {
+.login-box2,
+.register-box2 {
+    margin-top: 0.5rem;
+    width: 90%;
+}
+}

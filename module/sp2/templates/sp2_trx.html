@@ -1,0 +1,64 @@
+<br>
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card card-primary">
+                    <!--div class="card-header">
+                        <h3 class="card-title">SP2 by Transaction</h3>
+                    </!--div-->
+                    
+                    <div class="card-body">
+                        <div class="form-group" id="content_data">
+                            <section class="content">
+                                <div class="container-fluid">
+                                    <table id="table_sp2_trx" class="table table-bordered table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th style="font-size:12px;">NO</th>
+                                                <th style="font-size:12px;">PROFORMA</th>
+                                                <th style="font-size:12px;">INVOICE</th>
+                                                <th style="font-size:12px;">INVOICE DATE</th>
+                                                <th style="font-size:12px;">TOTAL CONT</th>
+                                                <th style="font-size:12px;">PAID TRHU</th>
+                                                <th style="font-size:12px;">::</th>
+                                            </tr>
+                                        </thead>
+
+                                        <tbody>
+                                            {% for r in data %}
+                                            <tr>
+                                                <td style="font-size:12px;">{{ r.no }}</td>
+                                                <td style="font-size:12px;">{{ r.proforma }}</td>
+                                                <td style="font-size:12px;">{{ r.invoice }}</td>
+                                                <td style="font-size:12px;">{{ r.invoice_date }}</td>
+                                                <td style="font-size:12px;">{{ r.total_cont }}</td>
+                                                <td style="font-size:12px;">{{ r.paid_trhu }}</td>
+                                                <td style="font-size:12px;"><button type="button" id="" class="btn btn-block btn-primary" onclick="window.open('{{ url }}print_sp2/{{ r.key_print }}', '_blank').focus();">Print</button></td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tfoot>
+                                    </table>
+                                </div>
+                            </section>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    $(function () {
+        $('#table_sp2_trx').DataTable({
+            "paging": true,
+            "lengthChange": false,
+            "searching": false,
+            "ordering": true,
+            "info": true,
+            "autoWidth": false,
+            "responsive": true,
+        });
+    });
+</script>

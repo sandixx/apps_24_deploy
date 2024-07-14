@@ -1,0 +1,76 @@
+<br>
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card card-primary">
+                    <!--div class="card-header">
+                        <h3 class="card-title">Open Stack BICT</h3>
+                    </!--div-->
+                    
+                    <form>
+                        <div class="card-body">
+                            <div class="form-group" id="content_data">
+                                <section class="content">
+                                    <div class="container-fluid">
+                                        <table id="table_open_stack" class="table table-bordered table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th style="font-size:12px;">VESSEL NAME</th>
+                                                    <th style="font-size:12px;">VOY</th>
+                                                    <th style="font-size:12px;">EST TGL SANDAR</th>
+                                                    <th style="font-size:12px;">EST TGL COMPLETE LOADING</th>
+                                                    <th style="font-size:12px;">EST TGL BERANGKAT</th>
+                                                    <th style="font-size:12px;">CARGO EARLY STACK</th>
+                                                    <th style="font-size:12px;">CARGO GATE IN</th>
+                                                    <th style="font-size:12px;">CLOSSING CARGO FCL NPE</th>
+                                                    <th style="font-size:12px;">CLOSSING MTY</th>
+                                                    <th style="font-size:12px;">CLOSSING BILLING</th>
+                                                    <th style="font-size:12px;">CLOSSING VIP</th>
+                                                    <th style="font-size:12px;">STATUS</th>
+                                                </tr>
+                                            </thead>
+                                            
+                                            <tbody>
+                                                {% for r in data %}
+                                                <tr>
+                                                    <td style="font-size:12px;">{{ r.vessel }}</td>
+                                                    <td style="font-size:12px;">{{ r.voyage }}</td>
+                                                    <td style="font-size:12px;">{{ r.est_sandar }}</td>
+                                                    <td style="font-size:12px;">{{ r.est_c_loading }}</td>
+                                                    <td style="font-size:12px;">{{ r.est_berangkat }}</td>
+                                                    <td style="font-size:12px;">{{ r.cargo_e_stack }}</td>
+                                                    <td style="font-size:12px;">{{ r.cargo_gate_in }}</td>
+                                                    <td style="font-size:12px;">{{ r.closing_cargo_fcl }}</td>
+                                                    <td style="font-size:12px;">{{ r.closing_mty }}</td>
+                                                    <td style="font-size:12px;">{{ r.closing_billing }}</td>
+                                                    <td style="font-size:12px;">{{ r.closing_vip }}</td>
+                                                    <td style="font-size:12px;">{{ r.status }}</td>
+                                                </tr>
+                                                {% endfor %}
+                                            </tfoot>
+                                        </table>
+                                    </div>
+                                </section>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    $(function () {
+        $('#table_open_stack').DataTable({
+            "paging": true,
+            "lengthChange": false,
+            "searching": false,
+            "ordering": true,
+            "info": true,
+            "autoWidth": false,
+            "responsive": true,
+        });
+    });
+</script>

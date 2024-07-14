@@ -1,0 +1,301 @@
+<div class="row">
+    {% for x in data %}
+    <div class="col-sm-6">
+        <div class="form-group">
+            <label>No. Pemeriksaan</label>
+            <input id="trx_id" type="text" class="form-control" maxlength="35" value="{{ x.trx_id }}" disabled hidden>
+            <input id="status" type="text" class="form-control" maxlength="35" value="{{ opt }}" disabled hidden>
+            <input id="no_pemeriksaan" oninput="this.value = this.value.toUpperCase();" type="text" class="form-control" placeholder="No. NPE" maxlength="50" value="{{ x.no_3d }}">
+            <input id="old_no_pemeriksaan" type="text" class="form-control" maxlength="35" value="{{ x.no_3d }}" disabled hidden>
+        </div>
+    </div>
+
+    <div class="col-sm-6">
+        <div class="form-group">
+            <label>Tanggal Pemeriksaan</label>
+            <div class="input-group date" id="d_p" data-target-input="nearest">
+                <input id="pemeriksaan_date" type="text" class="form-control datetimepicker-input" data-target="#d_p" data-toggle="datetimepicker" value="{{ x.tgl_3d }}"/>
+                <div class="input-group-append" data-target="#d_p" data-toggle="datetimepicker">
+                    <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-6" id="g_inv">
+        <div class="form-group">
+            <label>No. Invoice</label>
+            <input id="inv" oninput="this.value = this.value.toUpperCase();" type="text" class="form-control" placeholder="No. Invoice" maxlength="50" value="{{ x.no_invoice }}">
+        </div>
+    </div>
+
+    <div class="col-sm-6" id="g_inv_date">
+        <div class="form-group">
+            <label>Tanggal Invoice</label>
+            <div id="inv_d" class="input-group date" data-target-input="nearest">
+                <input id="inv_date" type="text" class="form-control datetimepicker-input" data-target="#inv_d" data-toggle="datetimepicker" value="{{ x.tgl_invoice }}"/>
+                <div class="input-group-append" data-target="#inv_d" data-toggle="datetimepicker">
+                    <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-6" id="g_packing">
+        <div class="form-group">
+            <label>No. Packing List</label>
+            <input id="packing_list" oninput="this.value = this.value.toUpperCase();" type="text" class="form-control" placeholder="No. Invoice" maxlength="50" value="{{ x.no_packing_list }}">
+        </div>
+    </div>
+
+    <div class="col-sm-6" id="g_packing_date">
+        <div class="form-group">
+            <label>Tanggal Packing List</label>
+            <div id="packing_list_d" class="input-group date" data-target-input="nearest">
+                <input id="packing_list_date" type="text" class="form-control datetimepicker-input" data-target="#packing_list_d" data-toggle="datetimepicker" value="{{ x.tgl_packing_list }}"/>
+                <div class="input-group-append" data-target="#packing_list_d" data-toggle="datetimepicker">
+                    <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-6">
+        <div class="form-group">
+            <label>Nama Eksportir</label>
+            <select id="nama_eksportir" class="form-control select2bs4" style="width: 100%;" onchange="get_npwp_eksportir();">
+                <option value="{{ x.cust_npwp }}" selected>{{ x.cust_name }}</option>
+                {% for c in cust %}
+                <option value="{{ c.npwp }}">{{ c.cust_name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+
+    <div class="col-sm-6">
+        <div class="form-group">
+            <label>NPWP Eksportir</label>
+            <input id="npwp_eksportir" type="text" class="form-control" placeholder="NPWP Eksportir" maxlength="30" disabled value="{{ x.cust_npwp }}">
+        </div>
+    </div>
+
+    <div class="col-sm-6">
+        <div class="form-group">
+            <label>Nama PPJK</label>
+            <select id="nama_ppjk" class="form-control select2bs4" style="width: 100%;" onchange="get_npwp_ppjk();">
+                <option value="{{ x.ppjk_npwp }}" selected>{{ x.ppjk_name }}</option>
+                {% for p in ppjk %}
+                <option value="{{ p.npwp }}">{{ p.cust_name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+
+    <div class="col-sm-6">
+        <div class="form-group">
+            <label>NPWP PPJK</label>
+            <input id="npwp_ppjk" type="text" class="form-control" placeholder="NPWP PPJK" maxlength="30" disabled value="{{ x.ppjk_npwp }}">
+        </div>
+    </div>
+
+    <div class="col-sm-6">
+        <div class="form-group">
+            <label>Nama Pendaftar</label>
+            <select id="nama_pendaftar" class="form-control select2bs4" style="width: 100%;" onchange="get_npwp_pendaftar();">
+                <option value="{{ x.pendaftar_npwp }}" selected>{{ x.pendaftar_name }}</option>
+                {% for pe in pendaftar %}
+                <option value="{{ pe.npwp }}">{{ pe.cust_name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+
+    <div class="col-sm-6">
+        <div class="form-group">
+            <label>NPWP Pendaftar</label>
+            <input id="npwp_pendaftar" type="text" class="form-control" placeholder="NPWP Pendaftar" maxlength="30" disabled value="{{ x.pendaftar_npwp }}">
+        </div>
+    </div>
+
+    <div class="col-sm-6">
+        <div class="form-group">
+            <label>Vessel Name</label>
+            <select id="vessel" class="form-control select2bs4" style="width: 100%;">
+                <option value="{{ x.vessel }}" selected>{{ x.vessel }}</option>
+                {% for v in vessel %}
+                <option value="{{ v.vessel }}">{{ v.vessel }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+
+    <div class="col-sm-6">
+        <div class="form-group">
+            <label>Voyage/Flight/Nopol</label>
+            <input id="voyage" oninput="this.value = this.value.toUpperCase();" type="text" class="form-control" placeholder="Voyage/Flight/Nopol" maxlength="100" value="{{ x.voyage }}">
+        </div>
+    </div>
+
+    <div class="col-sm-6">
+        <div class="form-group">
+            <label>Tanggal Perkiraan Ekspor</label>
+            <div class="input-group date" id="reservationdate3" data-target-input="nearest">
+                <input id="perkiraan_date" type="text" class="form-control datetimepicker-input" data-target="#reservationdate3" data-toggle="datetimepicker" value="{{ x.tgl_perkiraan }}"/>
+                <div class="input-group-append" data-target="#reservationdate3" data-toggle="datetimepicker">
+                    <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-6">
+        <div class="form-group">
+            <label>Jenis</label>
+            <input id="jenis" oninput="this.value = this.value.toUpperCase();" type="text" class="form-control" placeholder="Jenis Barang" maxlength="50" value="{{ x.jenis }}">
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<div class="col-sm-3">
+    <button type="button" class="btn btn-block btn-primary" onclick="update_doc()">Update</button>
+</div>
+
+<script>
+    $('#datemask').inputmask('dd/mm/yyyy', { 'placeholder': 'dd/mm/yyyy' })
+    $('#datemask2').inputmask('mm/dd/yyyy', { 'placeholder': 'mm/dd/yyyy' })
+    $('[data-mask]').inputmask()
+
+    $('#reservationdate').datetimepicker({
+        format: 'L'
+    });
+
+    $('#reservationdate2').datetimepicker({
+        format: 'L'
+    });
+
+    $('#reservationdate3').datetimepicker({
+        format: 'L'
+    });
+
+    $('#d_p').datetimepicker({
+        format: 'L'
+    });
+
+    $('#inv_d').datetimepicker({
+        format: 'L'
+    });
+
+    $('#packing_list_d').datetimepicker({
+        format: 'L'
+    });
+
+    $('#reservationdatetime').datetimepicker({ icons: { time: 'far fa-clock' } });
+
+    $('#reservation').daterangepicker()
+    $('#reservationtime').daterangepicker({
+        timePicker: true,
+        timePickerIncrement: 30,
+        locale: {
+            format: 'MM/DD/YYYY hh:mm A'
+        }
+    })
+
+    $('#daterange-btn').daterangepicker(
+        {
+            ranges   : {
+            'Today'       : [moment(), moment()],
+            'Yesterday'   : [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+            'Last 7 Days' : [moment().subtract(6, 'days'), moment()],
+            'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+            'This Month'  : [moment().startOf('month'), moment().endOf('month')],
+            'Last Month'  : [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+            },
+            startDate: moment().subtract(29, 'days'),
+            endDate  : moment()
+        },
+        function (start, end) {
+            $('#reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'))
+        }
+    )
+
+    $('#timepicker').datetimepicker({
+        format: 'LT'
+    })
+
+    $('#reservationdatetime').datetimepicker({ icons: { time: 'far fa-clock' } });
+
+    function get_npwp_eksportir() {
+        var npwp_exportir = document.getElementById("nama_eksportir").value;
+        document.getElementById("npwp_eksportir").value = npwp_exportir;
+    }
+
+    function get_npwp_ppjk() {
+        var npwp_ppjk = document.getElementById("nama_ppjk").value;
+        document.getElementById("npwp_ppjk").value = npwp_ppjk;
+    }
+
+    function get_npwp_pendaftar() {
+        var npwp_pendaftar = document.getElementById("nama_pendaftar").value;
+        document.getElementById("npwp_pendaftar").value = npwp_pendaftar;
+    }
+
+    async function update_doc(){
+        var fd = new FormData();
+        var trx_id = document.getElementById("trx_id").value;
+        var npwp_eksportir = document.getElementById("npwp_eksportir").value;
+        var nama_p = document.getElementById("nama_ppjk");
+        var nama_ppjk = nama_p.options[nama_p.selectedIndex].text;
+        var npwp_ppjk = document.getElementById("npwp_ppjk").value;
+        var npwp_pendaftar = document.getElementById("npwp_pendaftar").value;
+        var vessel = document.getElementById("vessel").value;
+        var voyage = document.getElementById("voyage").value;
+        var perkiraan_date = document.getElementById("perkiraan_date").value;
+
+        var no_pemeriksaan = document.getElementById("no_pemeriksaan").value;
+        var old_no_pemeriksaan = document.getElementById("old_no_pemeriksaan").value;
+        var pemeriksaan_date = document.getElementById("pemeriksaan_date").value;
+        var invoice = document.getElementById("inv").value;
+        var invoice_date = document.getElementById("inv_date").value;
+        var packing_list = document.getElementById("packing_list").value;
+        var packing_list_date = document.getElementById("packing_list_date").value;
+        var jenis = document.getElementById("jenis").value;
+        var status = document.getElementById("status").value;
+
+        fd.append("trx_id", trx_id);
+        fd.append("npwp_eksportir", npwp_eksportir);
+        fd.append("nama_ppjk", nama_ppjk);
+        fd.append("npwp_ppjk", npwp_ppjk);
+        fd.append("npwp_pendaftar", npwp_pendaftar);
+        fd.append("vessel", vessel);
+        fd.append("voyage", voyage);
+        fd.append("perkiraan_date", perkiraan_date);
+
+        fd.append("no_pemeriksaan", no_pemeriksaan);
+        fd.append("old_no_pemeriksaan", old_no_pemeriksaan);
+        fd.append("pemeriksaan_date", pemeriksaan_date);
+        fd.append("invoice", invoice);
+        fd.append("invoice_date", invoice_date);
+        fd.append("packing_list", packing_list);
+        fd.append("packing_list_date", packing_list_date);
+        fd.append("jenis", jenis);
+        fd.append("status", status);
+
+        await xhr.open("POST", "{{ url_for('document_bp.edit_document') }}");
+        const body = fd;
+        xhr.onload = () => {
+            hideLoading();
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                notif("success", xhr.responseText);
+                document.getElementById("content_edit_doc").innerHTML = "";
+            } else {
+                if (xhr.status == 999) {
+                    notif("error", xhr.responseText);
+                } else if (xhr.status == 888) {
+                    notif("warning", xhr.responseText);
+                }
+            }
+        };
+        xhr.send(body);
+    }
+</script>

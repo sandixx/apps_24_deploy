@@ -1,0 +1,138 @@
+<br>
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card card-primary">
+                    <div class="card-body">
+                        <div class="form-group">
+                            <section class="content">
+                                <div class="container-fluid" id="content_data">
+                                    <div class="row">
+                                        <div class="col-md-4 form-group">
+                                            <label>Waktu Mulai</label>
+                                            <div class="input-group date" data-target-input="nearest">
+                                                <input id="date_start" type="text" class="form-control datetimepicker-input" data-target="#date_start" />
+                                                <div class="input-group-append" data-target="#date_start" data-toggle="datetimepicker">
+                                                    <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-4 form-group">
+                                            <label>Waktu Selesai</label>
+                                            <div class="input-group date" data-target-input="nearest">
+                                                <input id="date_end" type="text" class="form-control datetimepicker-input" data-target="#date_end" />
+                                                <div class="input-group-append" data-target="#date_end" data-toggle="datetimepicker">
+                                                    <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-4 form-group">
+                                            <label>Ruangan</label>
+                                            <select class="form-control" id="ruangan" onchange="check_ruangan();">
+                                                <option value="agency">Agency</option>
+                                                <option value="meeting kecil">Meeting Kecil</option>
+                                                <option value="meeting besar">Meeting Besar</option>
+                                            </select>
+                                        </div>
+
+                                        <div class="col-md-4 form-group">
+                                            <label>Perangkat</label>
+                                            <select class="form-control" id="perangkat">
+                                                <option value="tidak">Tanpa Proyektor & Zoom</option>
+                                                <option value="proyektor">Proyektor</option>
+                                                <option value="zoom">Zoom</option>
+                                            </select>
+                                        </div>
+
+                                        <div class="col-md-4 form-group">
+                                            <label>Jumlah Peserta</label>
+                                            <input type="text" class="form-control" id="jumlah_peserta" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" maxlength="2">
+                                        </div>
+
+                                        <div class="col-md-4 form-group">
+                                            <label>PIC</label>
+                                            <input type="text" class="form-control" id="pic" style="text-transform:uppercase;" maxlength="100" value="{{session['name']}}" placeholder="PIC">
+                                        </div>
+
+                                        <div class="col-md-4 form-group">
+                                            <label>Keperluan</label>
+                                            <textarea id="keperluan" class="form-control" rows="3" placeholder="Keperluan" style="text-transform:uppercase;" maxlength="100"></textarea>
+                                        </div>
+                                    </div>
+
+                                    <button type="button" class="btn btn-block btn-primary col-md-3" onclick="create_book_meeting()">Submit</button>
+                                </div>
+                            </section>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    $('#date_start').datetimepicker({ format: 'DD/MM/YYYY HH:mm', icons: { time: 'far fa-clock' } });
+    $('#date_end').datetimepicker({ format: 'DD/MM/YYYY HH:mm', icons: { time: 'far fa-clock' } });
+
+    $( document ).ready(function() {
+        var date = moment();
+        var currentDate = date.format('DD/MM/YYYY HH:mm');
+        var curentTime = date.format('HH:mm');
+        document.getElementById("date_start").value = currentDate;
+        document.getElementById("date_end").value = currentDate;
+        check_ruangan();
+    });
+
+    function check_ruangan(){
+        var ruangan = document.getElementById("ruangan").value;
+
+        if(ruangan == "agency"){
+            document.getElementById("perangkat").selectedIndex = 0;
+            document.getElementById("perangkat").disabled = true;
+        } else {
+            document.getElementById("perangkat").disabled = false;
+        }
+    }
+
+    async function create_book_meeting() {
+        showLoading();
+        var fd = new FormData();
+        fd.append("date_start", document.getElementById("date_start").value);
+        fd.append("date_end", document.getElementById("date_end").value);
+        fd.append("ruangan", document.getElementById("ruangan").value);
+        fd.append("perangkat", document.getElementById("perangkat").value);
+        fd.append("jumlah_peserta", document.getElementById("jumlah_peserta").value);
+        fd.append("pic", document.getElementById("pic").value);
+        fd.append("keperluan", document.getElementById("keperluan").value);
+
+        await xhr.open("POST", "{{ url_for('meeting_bp.book_meeting') }}");
+        const body = fd;
+        xhr.timeout = 10000;
+        xhr.onload = () => {
+            hideLoading();
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                notif("success", xhr.responseText);
+                document.getElementById("jumlah_peserta").value = "";
+                document.getElementById("keperluan").value = "";
+            } else {
+                if (xhr.status == 999) {
+                    notif("error", xhr.responseText);
+                } else if (xhr.status == 888) {
+                    notif("warning", xhr.responseText);
+                } else if (xhr.status == 401) {
+                    window.location = "{{ url_for('auth_bp.logout') }}";
+                }
+            }
+        };
+
+        xhr.ontimeout = (e) => {
+            on_timeout();
+        };
+        
+        xhr.send(body);
+    }
+</script>

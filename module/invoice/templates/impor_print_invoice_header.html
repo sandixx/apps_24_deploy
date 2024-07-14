@@ -1,0 +1,49 @@
+<br>
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card card-primary">
+                    <div class="card-body">
+                        <div class="form-group">
+                            <section class="content">
+                                <div class="container-fluid" id="content_data">
+                                </div>
+                                <br>
+                                <div class="container-fluid" id="pdf_inv">
+                                </div>
+                            </section>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    $( document ).ready(function() {
+        hideLoading();
+        get_list_inv_imp();
+    });
+
+    async function get_list_inv_imp() {
+        //showLoading();
+        await xhr.open("GET", "{{ url_for('invoice_impor_bp.get_print_invoice_impor_ready') }}");
+        xhr.send();
+        xhr.onload = () => {
+            hideLoading();
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                $('#content_data').html(xhr.response);
+            } else {
+                if (xhr.status == 999) {
+                    notif("error", xhr.responseText);
+                } else if (xhr.status == 888) {
+                    notif("warning", xhr.responseText);
+                } else if (xhr.status == 401) {
+                    window.location = "{{ url_for('auth_bp.logout') }}";
+                }
+            }
+        };
+    }
+</script>

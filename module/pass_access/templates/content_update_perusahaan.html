@@ -1,0 +1,161 @@
+<div class="row">
+    <div class="col-sm-6">
+        <div class="form-group">
+            <label>Nama Petugas</label>
+            <input id="id_update" type="hidden" value="{{data.id}}" disabled>
+            <input id="cust_name_update" oninput="this.value = this.value.toUpperCase();" type="text" class="form-control" placeholder="Nama Peruahaan" maxlength="100" value="{{data.cust_name}}">
+        </div>
+    </div>
+
+    <div class="col-sm-6">
+        <div class="form-group">
+            <label>NPWP</label>
+            <input id="npwp_old" type="hidden" value="{{data.npwp}}" disabled>
+            <input id="npwp_update" type="text" class="form-control" placeholder="NPWP" maxlength="19" onkeypress="npwp_16();" value="{{data.npwp}}">
+        </div>
+    </div>
+
+    <div class="col-sm-6" id="g_pj">
+        <div class="form-group">
+            <label>Nama Penanggung Jawab</label>
+            <input id="pj_update" type="text" class="form-control" placeholder="Penanggung Jawab" maxlength="100" oninput="this.value = this.value.toUpperCase();" value="{{data.p_j}}">
+        </div>
+    </div>
+
+    <div class="col-sm-6" id="g_nik_pj">
+        <div class="form-group">
+            <label>No. Identitas Penanggung Jawab</label>
+            <input id="nik_pj_update" type="text" class="form-control" placeholder="No. Identitas (KTP/SIM)" maxlength="16" oninput="this.value = this.value.toUpperCase();" value="{{data.nik}}">
+        </div>
+    </div>
+
+    <div class="col-sm-6" id="g_alamat">
+        <div class="form-group">
+            <label>Alamat Perusahaan</label>
+            <input id="alamat_perusahaan_update" type="text" class="form-control" placeholder="Alamat Perusahaan" maxlength="255" oninput="this.value = this.value.toUpperCase();" value="{{data.alamat_perusahaan}}">
+        </div>
+    </div>
+
+    <div class="col-sm-6" id="g_telp">
+        <div class="form-group">
+            <label>No. Telp</label>
+            <input id="no_telp_update" type="text" class="form-control" placeholder="No. Telp" maxlength="20" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" value="{{data.nt_perusahaan}}">
+        </div>
+    </div>
+
+    <div class="col-sm-6" id="g_hp">
+        <div class="form-group">
+            <label>No. Hp</label>
+            <input id="no_hp_update" type="text" class="form-control" placeholder="No. Hp" maxlength="20" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" value="{{data.nh_perusahaan}}">
+        </div>
+    </div>
+
+    <div class="col-sm-12">
+        <div class="form-group">
+            <label>Surat Permohonan</label>
+            <div class="row">
+                <div class="col-sm-6">
+                    <embed width="200" height="200" src="data:application/pdf;base64,{{data.surat_permohonan}}" /> 
+                </div>
+
+                <div class="custom-file col-sm-6">
+                    <input type="file" accept="image/jpeg, image/png" id="surat_permohonan_update">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-12">
+        <div class="form-group">
+            <label>Scan NPWP</label>
+            <div class="row">
+                <div class="col-sm-6">
+                    <img width="200" height="150" src="data:image/jpeg;base64,{{data.scan_npwp}}" /> 
+                </div>
+
+                <div class="custom-file col-sm-6">
+                    <input type="file" accept="image/jpeg, image/png" id="scan_npwp_update">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-12">
+        <div class="form-group">
+            <label>Scan NIK</label>
+            <div class="row">
+                <div class="col-sm-6" style="height: 100%;">
+                    <img width="200" height="150" src="data:image/jpeg;base64,{{data.scan_nik}}" /> 
+                </div>
+
+                <div class="custom-file col-sm-6">
+                    <input type="file" accept="application/pdf" id="scan_nik_update">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<br>
+
+<div class="row">
+    <div class="col-md-3">
+        <button type="button" class="btn btn-block btn-primary" onclick="update_data_pass_access_perusahaan()">Update</button>
+    </div>
+
+    <div class="col-md-3">
+        <button type="button" class="btn btn-block btn-warning" onclick="cancel_update_data_pass_access_perusahaan()">Cancel</button>
+    </div>
+
+</div>
+
+<script>
+    async function update_data_pass_access_perusahaan() {
+        showLoading();
+
+        let fd = new FormData();
+        fd.append("opt", "perusahaan");
+        fd.append("id_update", document.getElementById("id_update").value);
+        fd.append("cust_name", document.getElementById("cust_name_update").value);
+        fd.append("npwp_old", document.getElementById("npwp_old").value);
+        fd.append("npwp", document.getElementById("npwp_update").value);
+        fd.append("pj", document.getElementById("pj_update").value);
+        fd.append("nik_pj", document.getElementById("nik_pj_update").value);
+        fd.append("alamat_perusahaan", document.getElementById("alamat_perusahaan_update").value);
+        fd.append("no_telp", document.getElementById("no_telp_update").value);
+        fd.append("no_hp", document.getElementById("no_hp_update").value);
+        fd.append("surat_permohonan", $("#surat_permohonan_update").prop("files")[0]);
+        fd.append("scan_npwp", $("#scan_npwp_update").prop("files")[0]);
+        fd.append("scan_nik", $("#scan_nik_update").prop("files")[0]);
+
+        await xhr.open("POST", "{{ url_for('pass_access_bp.update_data_pass_access') }}");
+        const body = fd;
+        xhr.timeout = 10000;
+        xhr.onload = () => {
+            hideLoading();
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                notif("success", xhr.responseText);
+                document.getElementById("search_update_pass_access_result").innerHTML = "";
+                document.getElementById("content_search_update_pass_access").innerHTML = "";
+            } else {
+                if (xhr.status == 999) {
+                    notif("error", xhr.responseText);
+                } else if (xhr.status == 888) {
+                    notif("warning", xhr.responseText);
+                }
+            }
+        };
+
+        xhr.ontimeout = (e) => {
+            hideLoading();
+            notif("warning", "Proses Gagal");
+        };
+
+        xhr.send(body);
+    }
+
+    function cancel_update_data_pass_access_perusahaan() {
+        document.getElementById("content_search_update_pass_access").innerHTML = "";
+        document.getElementById(id_update_pass_access).checked = false;
+    }
+</script>

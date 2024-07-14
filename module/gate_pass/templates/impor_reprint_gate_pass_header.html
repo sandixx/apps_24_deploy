@@ -1,0 +1,94 @@
+<br>
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card card-primary">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-sm-1">
+                                <label class="col-form-label">Reprint By</label>
+                            </div>
+
+                            <div class="col-sm-2 form-group">
+                                <select class="form-control" id="opt_gp" onchange="cp();">
+                                    <option value="container" selected>Container</option>
+                                    <option value="invoice">Invoice</option>
+                                </select>
+                            </div>
+
+                            <div class="col-sm-2">
+                                <div class="form-group">
+                                    <input id="val" onkeypress="return search_enter(event)" type="text" class="form-control" placeholder="Container ID" maxlength="13" style="text-transform:uppercase;">
+                                </div>
+                            </div>
+
+                            <div class="col-sm-2">
+                                <button type="button" class="btn btn-block btn-primary" onclick="get_data_reprint_get_pass_impor();">Search</button>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <section class="content">
+                                <div class="container-fluid" id="data_gate_pass_impor">
+                                    
+                                </div>
+                            </section>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    function cp(){
+        var opt_rgp = document.getElementById("opt_gp").value;
+        
+        if (opt_rgp == "container") {
+            document.getElementById("val").placeholder = "Container ID";
+        } else {
+            document.getElementById("val").placeholder = "Invoice No";
+        }
+    }
+
+    function search_enter(evt) {
+        if (evt.keyCode === 13) {
+            get_data_reprint_get_pass_impor();
+        }
+    }
+
+    async function get_data_reprint_get_pass_impor(){
+        showLoading();
+        var fd = new FormData();
+        fd.append('opt', document.getElementById("opt_gp").value);
+        fd.append("val", document.getElementById("val").value);
+
+        await xhr.open("POST", "{{ url_for('gate_pass_impor_bp.reprint_gate_pass_impor') }}");
+        const body = fd;
+        xhr.timeout = 10000;
+        xhr.onload = () => {
+            hideLoading();
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                document.getElementById("data_gate_pass_impor").style.height = "650px";
+                $('#data_gate_pass_impor').html(xhr.response);
+            } else {
+                document.getElementById("data_gate_pass_impor").style.height = "0";
+                if (xhr.status == 999) {
+                    notif("error", xhr.responseText);
+                } else if (xhr.status == 888) {
+                    notif("warning", xhr.responseText);
+                } else if (xhr.status == 401) {
+                    window.location = "{{ url_for('auth_bp.logout') }}";
+                }
+            }
+        };
+        
+        xhr.ontimeout = (e) => {
+            on_timeout();
+        };
+        
+        xhr.send(body);
+    }
+</script>

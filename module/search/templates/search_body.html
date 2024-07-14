@@ -1,0 +1,57 @@
+<table id="table_search" class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th style="font-size:12px;">NO</th>
+            <th style="font-size:12px;">TRX</th>
+            <th style="font-size:12px;">NO. DOC</th>
+            <th style="font-size:12px;">TGL DOC</th>
+            <th style="font-size:12px;">TYPE</th>
+            <th style="font-size:12px;">CONTAINER</th>
+            <th style="font-size:12px;">SIZE</th>
+            <th style="font-size:12px;">INVOICE</th>
+            <th style="font-size:12px;">VESSEL</th>
+            <th style="font-size:12px;">CREATED</th>
+            <th style="font-size:12px;">GATE IN</th>
+            <th style="font-size:12px;">STACKING</th>
+            <th style="font-size:12px;">STORAGE</th>
+            <th style="font-size:12px;">DELIVERY</th>
+            <th style="font-size:12px;">GATE OUT</th>
+        </tr>
+    </thead>
+    
+    <tbody>
+        {% for r in data %}
+        <tr>
+            <td style="font-size:12px;">{{ r.no }}</td>
+            <td style="font-size:12px;">{{ r.trx_id }}</td>
+            <td style="font-size:12px;">{{ r.no_doc }}</td>
+            <td style="font-size:12px;">{{ r.tgl_doc }}</td>
+            <td style="font-size:12px;">{{ r.doc_type }}</td>
+            <td style="font-size:12px;">{{ r.cont_id }}</td>
+            <td style="font-size:12px;">{{ r.size }}</td>
+            <td style="font-size:12px;">{{ r.invoice_no }}</td>
+            <td style="font-size:12px;">{{ r.vessel }}</td>
+            <td style="font-size:12px;">{{ r.date_01 }}</td>
+            <td style="font-size:12px;">{{ r.date_02 }}</td>
+            <td style="font-size:12px;">{{ r.loc }}</td>
+            <td style="font-size:12px;">{{ r.date_04 }}</td>
+            <td style="font-size:12px;">{{ r.date_05 }}</td>
+            <td style="font-size:12px;">{{ r.date_06 }}</td>
+        </tr>
+        {% endfor %}
+    </tfoot>
+</table>
+
+<script>
+    $(function () {
+        $('#table_search').DataTable({
+            "paging": true,
+            "lengthChange": false,
+            "searching": false,
+            "ordering": true,
+            "info": true,
+            "autoWidth": false,
+            "responsive": true,
+        });
+    });
+</script>

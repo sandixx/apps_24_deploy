@@ -1,0 +1,146 @@
+<br>
+<section class="content">
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card card-primary">
+                    <div class="card-body">
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label>Nama Petugas</label>
+                                        <input type="text" class="form-control" placeholder="Nama Petugas" id="petugas" maxlength="100" oninput="this.value = this.value.toUpperCase();">
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label>No. Identitas</label>
+                                        <input type="text" class="form-control" placeholder="No. Identitas" id="no_identitas" onkeypress="return onlyNumberKey(event)" maxlength="16">
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label>Nama Perusahaan</label>
+                                        <input type="text" class="form-control" placeholder="Nama Perusahaan" id="cust_name" maxlength="255" oninput="this.value = this.value.toUpperCase();">
+                                    </div>
+                                </div>
+                                
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label>Keperluan</label>
+                                        <input type="text" class="form-control" placeholder="Keperluan" id="keperluan" maxlength="255" oninput="this.value = this.value.toUpperCase();">
+                                    </div>
+                                </div>
+                                
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label>No. Kartu</label>
+                                        <input type="text" class="form-control" placeholder="No. Kartu" id="no_kartu" maxlength="2" onkeypress="return onlyNumberKey(event)">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-sm-2 col-md-1">
+                                <button type="button" class="btn btn-block btn-primary" onclick="ambil_pass_access_visitor()">Create</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    async function ambil_pass_access_visitor() {
+        showLoading();
+        var petugas = document.getElementById("petugas").value;
+        var no_identitas = document.getElementById("no_identitas").value;
+        var cust_name = document.getElementById("cust_name").value;
+        var keperluan = document.getElementById("keperluan").value;
+        var no_kartu = document.getElementById("no_kartu").value;
+        var fd = new FormData();
+
+        fd.append("process", "ambil");
+        fd.append("nama_petugas", petugas);
+        fd.append("no_identitas", no_identitas);
+        fd.append("perusahaan", cust_name);
+        fd.append("keperluan", keperluan);
+        fd.append("no_kartu", no_kartu);
+        fd.append("pass_access", "VISITOR")
+        fd.append("terdaftar", "NO");
+
+        await xhr.open("POST", "{{ url_for('pass_access_bp.ambil_pass_access') }}");
+        const body = fd;
+        xhr.timeout = 10000;
+        xhr.onload = () => {
+            hideLoading();
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                document.getElementById("petugas").value = "";
+                document.getElementById("no_identitas").value = "";
+                document.getElementById("cust_name").value = "";
+                document.getElementById("keperluan").value = "";
+                document.getElementById("no_kartu").value = "";
+                notif("success", xhr.responseText);
+            } else {
+                if (xhr.status == 999) {
+                    notif("error", xhr.responseText);
+                } else if (xhr.status == 888) {
+                    notif("warning", xhr.responseText);
+                }
+            }
+        };
+
+        xhr.ontimeout = (e) => {
+            hideLoading();
+            notif("warning", "Proses Gagal");
+        };
+        
+        xhr.send(body);
+    }
+
+    function onlyNumberKey_eksportir(evt) {
+        var ASCIICode = (evt.which) ? evt.which : evt.keyCode
+        if (ASCIICode > 31 && (ASCIICode < 48 || ASCIICode > 57))
+            return false;
+        return true;
+    }
+
+    function formatNpwp() {
+        const NPWP = document.getElementById("npwp");
+
+        NPWP.oninput = (e) => {
+            e.target.value = autoFormatNPWP(e.target.value);
+        }
+    }
+
+    function npwp_length() {
+        const npwp = document.getElementById("npwp").value;
+
+        if (npwp.length < 20) {
+            document.getElementById('npwp').style.background = 'red';
+            document.getElementById('npwp').style.color = 'white';
+            return false;
+        } else {
+            document.getElementById('npwp').style.background = 'white';
+            document.getElementById('npwp').style.color = '#495057';
+            return true;
+        }
+    }
+
+    function email_check_customer() {
+        var email = document.getElementById("email").value;
+        var mailformat = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
+
+        if (email.match(mailformat)) {
+            document.getElementById('email').style.background = 'white';
+            document.getElementById('email').style.color = '#495057';
+        } else {
+            document.getElementById('email').style.background = 'red';
+            document.getElementById('email').style.color = 'white';
+        }
+    }
+</script>

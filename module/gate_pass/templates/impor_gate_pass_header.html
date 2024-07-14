@@ -1,0 +1,70 @@
+<br>
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card card-primary">
+                    <div class="card-body">
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-sm-1">
+                                    <label class="col-form-label">Print By</label>
+                                </div>
+
+                                <div class="col-sm-2 form-group">
+                                    <select class="form-control" id="opt_gp">
+                                        <option value="invoice" selected>Invoice</option>
+                                        <!--option value="container">Container</!--option-->
+                                    </select>
+                                </div>
+
+                                <div class="col-sm-2">
+                                    <button type="button" class="btn btn-block btn-primary" onclick="get_gp_data(document.getElementById('opt_gp').value);">OK</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group" id="content_data">
+                        </div>
+                        
+                        <div class="form-group" id="content_data_gp">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    async function get_gp_data(data) {
+        showLoading();
+        var fd = new FormData();
+        fd.append("opt", data);
+
+        await xhr.open("POST", "{{ url_for('gate_pass_impor_bp.get_gate_pass_impor') }}");
+        const body = fd;
+        xhr.timeout = 10000;
+        xhr.onload = () => {
+            hideLoading();
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                $('#content_data').html(xhr.response);
+                //document.getElementById("content_data_gp").innerHTML = "";
+            } else {
+                if (xhr.status == 999) {
+                    notif("error", xhr.responseText);
+                } else if (xhr.status == 888) {
+                    notif("warning", xhr.responseText);
+                } else if (xhr.status == 401) {
+                    window.location = "{{ url_for('auth_bp.logout') }}";
+                }
+            }
+        };
+        
+        xhr.ontimeout = (e) => {
+            on_timeout();
+        };
+        
+        xhr.send(body);
+    }
+</script>

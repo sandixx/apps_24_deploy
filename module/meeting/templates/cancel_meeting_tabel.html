@@ -1,0 +1,77 @@
+<table id="table_cancel_meeting" class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th style="font-size:12px;">NO</th>
+            <th style="font-size:12px;">PIC</th>
+            <th style="font-size:12px;">RUANG</th>
+            <th style="font-size:12px;">PERANGKAT</th>
+            <th style="font-size:12px;">PESERTA</th>
+            <th style="font-size:12px;">KEPERLUAN</th>
+            <th style="font-size:12px;">WAKTU</th>
+            <th style="font-size:12px;">::</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for r in data %}
+        <tr>
+            <td style="font-size:12px;">{{ r.no }}</td>
+            <td style="font-size:12px;">{{ r.pic }}</td>
+            <td style="font-size:12px;">{{ r.ruang }}</td>
+            <td style="font-size:12px;">{{ r.perangkat }}</td>
+            <td style="font-size:12px;">{{ r.jumlah_peserta }}</td>
+            <td style="font-size:12px;">{{ r.keperluan }}</td>
+            <td style="font-size:12px;">{{ r.start_time }} - {{ r.end_time }}</td>
+            <td style="font-size:12px;">
+                <button type="button" class="btn btn-block btn-primary" onclick="approval_process('{{r.id}}', 'cancel')">Cancel</button>
+            </td>
+        </tr>
+        {% endfor %}
+    </tfoot>
+</table>
+
+<script>
+    $(function () {
+        $('#table_cancel_meeting').DataTable({
+            "paging": true,
+            "lengthChange": false,
+            "searching": true,
+            "ordering": false,
+            "info": false,
+            "autoWidth": false,
+            "responsive": true,
+        });
+    });
+
+    async function approval_process(id, process) {
+        showLoading();
+        var fd = new FormData();
+        fd.append("id", id);
+        fd.append("process", process);
+
+        await xhr.open("POST", "{{ url_for('meeting_bp.approval_meeting') }}");
+        const body = fd;
+        xhr.timeout = 10000;
+        xhr.onload = () => {
+            hideLoading();
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                notif("success", xhr.responseText);
+                find_pic_cancel();
+            } else {
+                if (xhr.status == 999) {
+                    notif("error", xhr.responseText);
+                } else if (xhr.status == 888) {
+                    notif("warning", xhr.responseText);
+                } else if (xhr.status == 401) {
+                    window.location = "{{ url_for('auth_bp.logout') }}";
+                }
+            }
+        };
+
+        xhr.ontimeout = (e) => {
+            on_timeout();
+        };
+        
+        xhr.send(body);
+    }
+</script>

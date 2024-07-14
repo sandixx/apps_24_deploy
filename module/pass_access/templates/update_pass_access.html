@@ -1,0 +1,96 @@
+<br>
+<div class="card-body">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card card-primary">
+                <div class="card-header">
+                    <h3 class="card-title">Search</h3>
+                </div>
+
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <select id="opt_search_update_pass_access" class="form-control select2" style="width: 100%;">
+                                    <option value="petugas" selected="selected">Petugas</option>
+                                    <option value="perusahaan">Perusahaan</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-md-8">
+                            <div class="form-group">
+                                <input id="input_search_update_pass_access" onkeypress="return search_update_pass_access_enter(event)" type="text" class="form-control" style="text-transform:uppercase;">
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <button type="button" class="btn btn-block btn-primary" onclick="search_update_pass_access()">Search</button>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="form-group" id="search_update_pass_access_result"></div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card card-primary">
+                <div class="card-header">
+                    <h3 class="card-title">Data</h3>
+                </div>
+
+                <div >
+                    <div class="card-body">
+                        <div class="form-group" id="content_search_update_pass_access"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function search_update_pass_access_enter(evt) {
+        if (evt.keyCode === 13) {
+            search_update_pass_access();
+        }
+    }
+
+    async function search_update_pass_access(){
+        showLoading();
+        let fd = new FormData();
+        let opt = document.getElementById('opt_search_update_pass_access').value;
+        let input = document.getElementById('input_search_update_pass_access').value;
+
+        fd.append("opt", opt);
+        fd.append("input", input);
+
+        await xhr.open("POST", "{{ url_for('pass_access_bp.search_update_pass_access') }}");
+        const body = fd;
+        xhr.timeout = 10000;
+        xhr.onload = () => {
+            hideLoading();
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                document.getElementById("content_search_update_pass_access").innerHTML = "";
+                $('#search_update_pass_access_result').html(xhr.response);
+            } else {
+                document.getElementById("search_update_pass_access_result").innerHTML = "";
+                document.getElementById("content_search_update_pass_access").innerHTML = "";
+                if (xhr.status == 999) {
+                    notif("error", xhr.responseText);
+                } else if (xhr.status == 888) {
+                    notif("warning", xhr.responseText);
+                }
+            }
+        };
+
+        xhr.ontimeout = (e) => {
+            hideLoading();
+            notif("warning", "Proses Gagal");
+        };
+
+        xhr.send(body);
+    }
+</script>

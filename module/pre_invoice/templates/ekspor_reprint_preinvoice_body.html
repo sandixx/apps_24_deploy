@@ -1,0 +1,175 @@
+<br>
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card card-primary">
+                    <div class="card-body">
+                        <div class="form-group" id="content_pre_invoice">
+                            <section class="content">
+                                <div class="container-fluid">
+                                    <table id="kx" class="table table-bordered table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th style="font-size:12px;">::</th>
+                                                <th style="font-size:12px;">TRX</th>
+                                                <th style="font-size:12px;">DOC</th>
+                                                <th style="font-size:12px;">TGL DOC</th>
+                                                <th style="font-size:12px;">STATUS</th>
+                                                <th style="font-size:12px;">CUSTOMER</th>
+                                                <th style="font-size:12px;">NPWP</th>
+                                                <th style="font-size:12px;">CONTAINER</th>
+                                            </tr>
+                                        </thead>
+                                        
+                                        <tbody>
+                                            {% for r in data %}
+                                            <tr>
+                                                <td>
+                                                    <div class="radio">
+                                                        <input type="radio" id='{{r.trx}}' name="opt_trx" onclick="get_trx_checked()">
+                                                    </div>
+                                                </td>
+                                                <td style="font-size:12px;">{{ r.trx }}</td>
+                                                <td style="font-size:12px;">{{ r.no_doc }}</td>
+                                                <td style="font-size:12px;">{{ r.tgl_doc }}</td>
+                                                <td style="font-size:12px;">{{ r.status }}</td>
+                                                <td style="font-size:12px;">{{ r.cust_name }}</td>
+                                                <td style="font-size:12px;">{{ r.npwp }}</td>
+                                                <td style="font-size:12px;"><button type="button" id="{{r.trx}}" class="btn btn-block btn-primary" onclick="list_container_pre_invoice();">List</button></td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tfoot>
+                                    </table>
+                                </div>
+                            </section>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card card-primary">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    <label>Using NPWP</label>
+                                    <select id="opt_npwp" class="form-control select2bs4" style="width: 100%;">
+                                        <option value="eksportir" selected>Eksportir</option>
+                                        <option value="ppjk">PPJK</option>
+                                        <option value="pendaftar">Pendaftar</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-2">
+                            <button type="button" class="btn btn-block btn-primary" onclick="process_pre_invoice()">Process</button>
+                        </div>
+                        <br>
+                        <div id="data_preinvoice"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% for r in data %}
+<div class="modal fade" id="l_{{r.trx}}">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">List Container</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body" id="data_list_cont_pre_invoice">
+                <table style="text-align: center; width:100%">
+                    <tbody>
+                        <tr>
+                            <th>Container</th>
+                            <th>Gate In</th>
+                        </tr>
+                    {% for z in r.cont_id %}
+                        <tr>
+                            <td>{{ z.cont_id }}</td>
+                            <td>{{ z.date_in }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
+
+<script>
+    $(function () {
+        $('#kx').DataTable({
+            "paging": true,
+            "lengthChange": false,
+            "searching": false,
+            "ordering": true,
+            "info": true,
+            "autoWidth": false,
+            "responsive": true,
+        });
+    });
+
+    var trx_id_pre_invoice = "";
+
+    function list_container_pre_invoice() {
+        var id = document.activeElement.id;
+        $('#l_'+id).modal('toggle');
+    }
+
+    function get_trx_checked() {
+        trx_id_pre_invoice = document.activeElement.id;
+    }
+
+    async function process_pre_invoice() {
+        var opt_npwp = document.getElementById("opt_npwp").value;
+
+        var fd = new FormData();
+        showLoading();
+        fd.append("process", "reprint preinvoice");
+        fd.append("trx_id", trx_id_pre_invoice);
+        fd.append("opt_npwp", opt_npwp);
+
+        await xhr.open("POST", "{{ url_for('pre_invoice_bp.print_data_preinvoice') }}");
+        const body = fd;
+        xhr.timeout = 10000;
+        xhr.onload = () => {
+            hideLoading();
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                $('#data_preinvoice').html(xhr.response);
+                document.getElementById("data_preinvoice").style.height = "650px";
+            } else {
+                document.getElementById("data_preinvoice").innerHTML = "";
+                document.getElementById("data_preinvoice").style.height = "0px";
+                if (xhr.status == 999) {
+                    notif("error", xhr.responseText);
+                } else if (xhr.status == 888) {
+                    notif("warning", xhr.responseText);
+                }
+            }
+        };
+
+        xhr.ontimeout = (e) => {
+            on_timeout();
+        };
+        
+        xhr.send(body);
+    }
+</script>

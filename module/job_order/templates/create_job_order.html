@@ -1,0 +1,735 @@
+<div class="card-body">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card card-primary">
+                <div class="card-header">
+                    <h3 class="card-title">Document</h3>
+                </div>
+
+                <div class="card-body">
+                    <form>
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="input-group col-sm-2 col-md-6 mb-3" style="justify-content: center; align-items: center;">
+                                    Dokumen :
+                                </div>
+
+                                <div class="form-group col-sm-2 col-md-6 mb-3">
+                                    <select id="opt_document" class="form-control select2bs4" style="width: 100%;" onchange="pemeriksaan()">
+                                        <option value="NPE" selected>NPE</option>
+                                        <option value="3D">3D</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-sm-6" id="g_pemeriksaan">
+                                    <div class="form-group">
+                                        <label>No. Pemeriksaan Fisik</label>
+                                        <input id="no_pemeriksaan" oninput="this.value = this.value.toUpperCase();" type="text" class="form-control" placeholder="No. Pemeriksaan Fisik" maxlength="35">
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-6" id="g_pemeriksaan_date">
+                                    <div class="form-group">
+                                        <label>Tanggal Pemeriksaan</label>
+                                        <div class="input-group date" id="d_p" data-target-input="nearest">
+                                            <input id="pemeriksaan_date" type="text" class="form-control datetimepicker-input" data-target="#d_p" data-toggle="datetimepicker"/>
+                                            <div class="input-group-append" data-target="#d_p" data-toggle="datetimepicker">
+                                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-6" id="g_inv">
+                                    <div class="form-group">
+                                        <label>No. Invoice</label>
+                                        <input id="inv" oninput="this.value = this.value.toUpperCase();" type="text" class="form-control" placeholder="No. Invoice" maxlength="50">
+                                    </div>
+                                </div>
+        
+                                <div class="col-sm-6" id="g_inv_date">
+                                    <div class="form-group">
+                                        <label>Tanggal Invoice</label>
+                                        <div id="inv_d" class="input-group date" data-target-input="nearest">
+                                            <input id="inv_date" type="text" class="form-control datetimepicker-input" data-target="#inv_d" data-toggle="datetimepicker"/>
+                                            <div class="input-group-append" data-target="#inv_d" data-toggle="datetimepicker">
+                                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-6" id="g_packing">
+                                    <div class="form-group">
+                                        <label>No. Packing List</label>
+                                        <input id="packing_list" oninput="this.value = this.value.toUpperCase();" type="text" class="form-control" placeholder="No. Invoice" maxlength="50">
+                                    </div>
+                                </div>
+        
+                                <div class="col-sm-6" id="g_packing_date">
+                                    <div class="form-group">
+                                        <label>Tanggal Packing List</label>
+                                        <div id="packing_list_d" class="input-group date" data-target-input="nearest">
+                                            <input id="packing_list_date" type="text" class="form-control datetimepicker-input" data-target="#packing_list_d" data-toggle="datetimepicker"/>
+                                            <div class="input-group-append" data-target="#packing_list_d" data-toggle="datetimepicker">
+                                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-6" id="g_npe">
+                                    <div class="form-group">
+                                        <label>No. NPE</label>
+                                        <input id="no_npe" oninput="this.value = this.value.toUpperCase();" type="text" class="form-control" placeholder="No. NPE" maxlength="35">
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-6" id="g_npe_date">
+                                    <div class="form-group">
+                                        <label>Tanggal NPE</label>
+                                        <div class="input-group date" id="reservationdate2" data-target-input="nearest">
+                                            <input id="npe_date" type="text" class="form-control datetimepicker-input" data-target="#reservationdate2" data-toggle="datetimepicker"/>
+                                            <div class="input-group-append" data-target="#reservationdate2" data-toggle="datetimepicker">
+                                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-6" id="g_peb">
+                                    <div class="form-group">
+                                        <label>No. PEB</label>
+                                        <input id="no_peb" oninput="this.value = this.value.toUpperCase();" onkeypress="return onlyNumberKey_jo(event)" type="text" class="form-control" placeholder="No. PEB" maxlength="25">
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-6" id="g_peb_date">
+                                    <div class="form-group">
+                                        <label>Tanggal PEB</label>
+                                        <div class="input-group date" id="reservationdate" data-target-input="nearest">
+                                            <input id="peb_date" type="text" class="form-control datetimepicker-input" data-target="#reservationdate" data-toggle="datetimepicker"/>
+                                            <div class="input-group-append" data-target="#reservationdate" data-toggle="datetimepicker">
+                                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {% if session['external_access'] == 'YES' %}
+                                    {% if session['access'] == '7' %}
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label>Nama Eksportir</label>
+                                            <input id="nama_eksportir" oninput="this.value = this.value.toUpperCase();" type="text" class="form-control" placeholder="Nama Eksportir" maxlength="100">
+                                        </div>
+                                    </div>
+
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label>NPWP Eksportir</label>
+                                            <input id="npwp_eksportir" type="text" class="form-control" placeholder="NPWP Eksportir" maxlength="20" onkeydown="formatNpwp();" onkeyup="npwp_length();">
+                                        </div>
+                                    </div>
+                                    {% endif %}
+                                {% else %}
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label>Nama Eksportir</label>
+                                        <select id="nama_eksportir" class="form-control select2bs4" style="width: 100%;" onchange="get_npwp_eksportir();">
+                                            <option value="" disabled selected>Pilih Eksportir</option>
+                                            {% for r in data_eksportir %}
+                                            <option value="{{ r.npwp }}">{{ r.cust_name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label>NPWP Eksportir</label>
+                                        <input id="npwp_eksportir" type="text" class="form-control" placeholder="NPWP Eksportir" maxlength="20" disabled>
+                                    </div>
+                                </div>
+                                {% endif %}
+
+                                {% if session['external_access'] == 'YES' %}
+                                    {% if session['access'] == '6' %}
+                                    <div class="col-sm-6" id="g_ppjk">
+                                        <div class="form-group">
+                                            <label>Nama PPJK</label>
+                                            <input id="nama_ppjk" oninput="this.value = this.value.toUpperCase();" type="text" class="form-control" placeholder="Nama PPJK" maxlength="100">
+                                        </div>
+                                    </div>
+
+                                    <div class="col-sm-6" id="g_npwp_ppjk">
+                                        <div class="form-group">
+                                            <label>NPWP PPJK</label>
+                                            <input id="npwp_ppjk" type="text" class="form-control" placeholder="NPWP PPJK" maxlength="20" onkeydown="formatNpwp();" onkeyup="npwp_length();">
+                                        </div>
+                                    </div>
+                                    {% endif %}
+                                {%else %}
+                                <div class="col-sm-6" id="g_ppjk">
+                                    <div class="form-group">
+                                        <label>Nama PPJK</label>
+                                        <select id="nama_ppjk" class="form-control select2bs4" style="width: 100%;" onchange="get_npwp_ppjk();">
+                                            <option value="" selected>Pilih PPJK</option>
+                                            {% for r in data_ppjk %}
+                                            <option value="{{ r.npwp }}">{{ r.cust_name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-6" id="g_npwp_ppjk">
+                                    <div class="form-group">
+                                        <label>NPWP PPJK</label>
+                                        <input id="npwp_ppjk" type="text" class="form-control" placeholder="NPWP PPJK" maxlength="30" disabled>
+                                    </div>
+                                </div>
+                                {% endif %}
+
+                                {% if session['external_access'] == 'NO' %}
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label>Nama Pendaftar</label>
+                                        <select id="nama_pendaftar" class="form-control select2bs4" style="width: 100%;" onchange="get_npwp_pendaftar();">
+                                            <option value="" selected>Pilih Pendaftar</option>
+                                            {% for r in data_pendaftar %}
+                                            <option value="{{ r.npwp }}">{{ r.cust_name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label>NPWP Pendaftar</label>
+                                        <input id="npwp_pendaftar" type="text" class="form-control" placeholder="NPWP Pendaftar" maxlength="30" disabled>
+                                    </div>
+                                </div>
+                                {% endif %}
+
+                                <!--div class="col-sm-6" id="g_booking_id">
+                                    <div class="form-group">
+                                        <label>Booking ID</label>
+                                        <input id="booking_id" oninput="this.value = this.value.toUpperCase();" type="text" class="form-control" placeholder="Booking ID" maxlength="25">
+                                    </div>
+                                </!--div-->
+
+                                <div class="col-sm-6" id="g_pof">
+                                    <div class="form-group">
+                                        <label>Port of Landing</label>
+                                        <select id="opt_pof" class="form-control select2bs4" style="width: 100%;">
+                                            <option value="tpk">TPK</option>
+                                            <option value="ptp">PTP</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label>Vessel Name</label>
+                                        <select id="vessel" class="form-control select2bs4" style="width: 100%;">
+                                            <option value="" disabled selected>-- Pilih --</option>
+                                            {% for r in data_vessel %}
+                                            <option value="{{ r.vessel_name }}">{{ r.vessel_name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label>Voyage/Flight/Nopol</label>
+                                        <input id="voyage" oninput="this.value = this.value.toUpperCase();" type="text" class="form-control" placeholder="Voyage/Flight/Nopol" maxlength="100">
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label>Tanggal Perkiraan Ekspor</label>
+                                        <div class="input-group date" id="reservationdate3" data-target-input="nearest">
+                                            <input id="perkiraan_date" type="text" class="form-control datetimepicker-input" data-target="#reservationdate3" data-toggle="datetimepicker"/>
+                                            <div class="input-group-append" data-target="#reservationdate3" data-toggle="datetimepicker">
+                                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+    
+                                <div class="col-sm-6" id="g_jenis">
+                                    <div class="form-group">
+                                        <label>Jenis</label>
+                                        <input id="jenis" oninput="this.value = this.value.toUpperCase();" type="text" class="form-control" placeholder="Jenis Barang" maxlength="50">
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label>Jumlah Container</label>
+                                        <input id="jumlah_cont" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1'); add_container();" type="text" class="form-control" placeholder="Jumlah Container" maxlength="3">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card card-primary">
+                <div class="card-header">
+                    <h3 class="card-title">Container</h3>
+                </div>
+
+                <div class="card-body">
+                    <div id="add_cntr">
+                        
+                    </div>
+
+                    <div class="col-sm-12">
+                        <div class="form-check">
+                            <input id="check_status" class="form-check-input" type="checkbox" onchange="check_submit()">
+                            <label class="form-check-label">Data Saya Sudah Benar Dan Lengkap</label>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="col-sm-12">
+                        <button id="button_create" type="button" class="btn btn-block btn-primary" onclick="create_job()" disabled>Create</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    var number = 0;
+
+    $(document).ready(function() {
+        pemeriksaan();
+    });
+
+    function check_submit() {
+        status_check = document.getElementById('check_status').checked;
+        if (status_check == true) {
+            document.getElementById('button_create').disabled = false;
+        } else {
+            document.getElementById('button_create').disabled = true;
+        }
+    }
+
+    function pemeriksaan() {
+        var opt_document = document.getElementById("opt_document").value;
+        //const opt_document = "NPE";
+        var ss_id = "{{ session['access'] }}";
+        var ss_e = "{{ session['external_access'] }}";
+
+        if (opt_document == "3D") {
+            document.getElementById("g_pemeriksaan").style.display = "block";
+            document.getElementById("g_pemeriksaan_date").style.display = "block";
+            document.getElementById("g_inv").style.display = "block";
+            document.getElementById("g_inv_date").style.display = "block";
+            document.getElementById("g_packing").style.display = "block";
+            document.getElementById("g_packing_date").style.display = "block";
+            document.getElementById("g_jenis").style.display = "block";
+            document.getElementById("g_npe").style.display = "none";
+            document.getElementById("g_npe_date").style.display = "none";
+            document.getElementById("g_peb").style.display = "none";
+            document.getElementById("g_peb_date").style.display = "none";
+            //document.getElementById("g_booking_id").style.display = "none";
+            document.getElementById("g_pof").style.display = "none";
+
+            if (ss_id == "6" || ss_e == "NO"){
+                document.getElementById("g_ppjk").style.display = "none";
+                document.getElementById("g_npwp_ppjk").style.display = "none";
+            }
+        } else {
+            document.getElementById("g_pemeriksaan").style.display = "none";
+            document.getElementById("g_pemeriksaan_date").style.display = "none";
+            document.getElementById("g_inv").style.display = "none";
+            document.getElementById("g_inv_date").style.display = "none";
+            document.getElementById("g_packing").style.display = "none";
+            document.getElementById("g_packing_date").style.display = "none";
+            document.getElementById("g_jenis").style.display = "none";
+            document.getElementById("g_npe").style.display = "block";
+            document.getElementById("g_npe_date").style.display = "block";
+            document.getElementById("g_peb").style.display = "block";
+            document.getElementById("g_peb_date").style.display = "block";
+            //document.getElementById("g_booking_id").style.display = "block";
+            document.getElementById("g_pof").style.display = "block";
+
+            if (ss_id == "6" || ss_e == "NO"){
+                document.getElementById("g_ppjk").style.display = "block";
+                document.getElementById("g_npwp_ppjk").style.display = "block";
+            }
+        }
+
+        //opt_c_p();
+    }
+
+    function opt_c_p() {
+        var opt_document = document.getElementById("opt_document").value;
+        var jumlah_cont = document.getElementById("jumlah_cont").value;
+
+        if (opt_document == "3D") {
+            if (jumlah_cont) {
+                for (i = 0; i < jumlah_cont; i++) {
+                    var g_jenis = "g_jenis_" + (parseInt(i) + parseInt(1));
+                    document.getElementById(g_jenis).style.display = "block";
+                }
+            }
+        } else {
+            if (jumlah_cont) {
+                for (i = 0; i < jumlah_cont; i++) {
+                    var g_jenis = "g_jenis_" + (parseInt(i) + parseInt(1));
+                    document.getElementById(g_jenis).style.display = "none";
+                }
+            }
+        }
+    }
+
+    function add_container() {
+        var jumlah_cont = document.getElementById("jumlah_cont").value;
+
+        if (jumlah_cont && jumlah_cont > number) {
+            for (i = number; i < jumlah_cont; i++) {
+                var container = document.getElementById("add_cntr");
+                var div = document.createElement('div');
+                var id_div = "form_group_" + (parseInt(i) + parseInt(1));
+                var id_cont_id = "cont_id_" + (parseInt(i) + parseInt(1));
+                var id_opt_size = "opt_size_" + (parseInt(i) + parseInt(1));
+                var id_opt_type = "opt_type_" + (parseInt(i) + parseInt(1));
+                var id_opt_rf = "opt_rf_" + (parseInt(i) + parseInt(1));
+                var id_opt_cooling = "opt_cooling_" + (parseInt(i) + parseInt(1));
+                var id_temp = "temp_" + (parseInt(i) + parseInt(1));
+                var id_temperature = "temperature_" + (parseInt(i) + parseInt(1));
+                var id_jenis = "jenis_" + (parseInt(i) + parseInt(1));
+                var id_berat = "berat_" + (parseInt(i) + parseInt(1));
+                var id_inv = "inv_" + (parseInt(i) + parseInt(1));
+                var id_inv_date = "inv_date_" + (parseInt(i) + parseInt(1));
+    
+                div.id = id_div;
+                div.className = 'form-group';
+    
+                div.innerHTML = `
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <label style="font-size:150%;">Container ke ` + (parseInt(i) + parseInt(1)) + `</label>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label>Container ID</label>
+                                <input id="` + id_cont_id + `" oninput="this.value = this.value.toUpperCase();" type="text" class="form-control" placeholder="Container ID" maxlength="15">
+                            </div>
+                        </div>
+                        
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label>Size</label>
+                                <select id="` + id_opt_size + `" class="form-control select2bs4" style="width: 100%;">
+                                    <option value="20">20</option>
+                                    <option value="40">40</option>
+                                    <option value="45">45</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label>Type</label>
+                                <select id="` + id_opt_type + `" onchange="check_rf_evt();" class="form-control select2bs4" style="width: 100%;">
+                                    <option value="dr">DRY</option>
+                                    <!--option value="rf">REEFER</!--option-->
+                                </select>
+                            </div>
+                        </div>
+    
+                        <div id="` + id_opt_cooling + `" class="col-sm-6" style="display: none;">
+                            <div class="form-group">
+                                <label>Reefer Option</label>
+                                <select id="` + id_opt_rf + `" onchange="check_cooling_evt();" class="form-control select2bs4" style="width: 100%;">
+                                    <option value="no_cooling">No Cooling</option>
+                                    <option value="cooling">Cooling</option>
+                                </select>
+                            </div>
+                        </div>
+    
+                        <div id="` + id_temp + `" class="col-sm-6" style="display: none;">
+                            <div class="form-group">
+                                <label>Temperature</label>
+                                <input id="` + id_temperature + `" onkeypress="return valid_temp(event)" type="text" class="form-control" placeholder="In Celcius" maxlength="6">
+                            </div>
+                        </div>
+
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label>Berat</label>
+                                <input id="` + id_berat + `" onkeypress="return onlyNumberKey(event)" type="text" class="form-control" placeholder="In Kg" maxlength="20">
+                            </div>
+                        </div>
+                    </div>`;
+
+                    i_d = (parseInt(i) + parseInt(1));
+    
+                    var s = "$('.select2').select2()\n"+
+                            "$('.select2bs4').select2({\n"+
+                            "    theme: 'bootstrap4'\n"+
+                            "})\n"+
+                            "$('#datemask').inputmask('dd/mm/yyyy', { 'placeholder': 'dd/mm/yyyy' })\n"+
+                            "$('#datemask2').inputmask('mm/dd/yyyy', { 'placeholder': 'mm/dd/yyyy' })\n"+
+                            "$('[data-mask]').inputmask()\n"+
+
+                            "$('#inv_d_"+i_d+"').datetimepicker({\n"+
+                                "format: 'L'\n"+
+                            "});\n";
+
+                    //addCode(s);
+                container.appendChild(div);
+                number = number + 1;
+            }
+        } else if (jumlah_cont && jumlah_cont < number) {
+            for (i = number; i > jumlah_cont; i--) {
+                var elem = document.getElementById("form_group_"+i);
+                elem.parentNode.removeChild(elem);
+                number = number - 1;
+            }
+        }
+
+        //opt_c_p();
+    }
+
+    function addCode(code){
+        var JS= document.createElement('script');
+        JS.text= code;
+        document.body.appendChild(JS);
+    }
+
+    function check_val(){
+        id = document.activeElement.id;
+        active_id = document.getElementById(id).value;
+
+        if(active_id) {
+            document.getElementById(id).style.background = 'white';
+            document.getElementById(id).style.color = '#495057';
+        }
+    }
+
+    $('.select2').select2()
+
+    $('.select2bs4').select2({
+        theme: 'bootstrap4'
+    })
+    $('#datemask').inputmask('dd/mm/yyyy', { 'placeholder': 'dd/mm/yyyy' })
+    $('#datemask2').inputmask('mm/dd/yyyy', { 'placeholder': 'mm/dd/yyyy' })
+    $('[data-mask]').inputmask()
+
+    $('#reservationdate').datetimepicker({
+        format: 'L'
+    });
+
+    $('#reservationdate2').datetimepicker({
+        format: 'L'
+    });
+
+    $('#reservationdate3').datetimepicker({
+        format: 'L'
+    });
+
+    $('#d_p').datetimepicker({
+        format: 'L'
+    });
+
+    $('#inv_d').datetimepicker({
+        format: 'L'
+    });
+
+    $('#packing_list_d').datetimepicker({
+        format: 'L'
+    });
+
+    function onlyNumberKey_jo(evt) {
+        var ASCIICode = (evt.which) ? evt.which : evt.keyCode
+        if (ASCIICode > 31 && (ASCIICode < 48 || ASCIICode > 57))
+            return false;
+        return true;
+    }
+
+    function get_npwp_eksportir() {
+        var npwp_exportir = document.getElementById("nama_eksportir").value;
+        document.getElementById("npwp_eksportir").value = npwp_exportir;
+    }
+
+    function get_npwp_ppjk() {
+        var npwp_ppjk = document.getElementById("nama_ppjk").value;
+        document.getElementById("npwp_ppjk").value = npwp_ppjk;
+    }
+
+    function get_npwp_pendaftar() {
+        var npwp_pendaftar = document.getElementById("nama_pendaftar").value;
+        document.getElementById("npwp_pendaftar").value = npwp_pendaftar;
+    }
+
+    function check_rf_evt() {
+        var id = document.activeElement.id;
+        var list_array = id.split("_");
+        var type = document.getElementById("opt_type_"+list_array[2]).value;
+        var rf = document.getElementById("opt_rf_"+list_array[2]).value;
+
+        if (type == "rf") {
+            document.getElementById("opt_cooling_"+list_array[2]).style.display = "block";
+        } else {
+            document.getElementById("opt_cooling_"+list_array[2]).style.display = "none";
+            document.getElementById("temp_"+list_array[2]).style.display = "none";
+        }
+    }
+
+    function check_cooling_evt() {
+        var id = document.activeElement.id;
+        var list_array = id.split("_");
+        var cooling_status = document.getElementById("opt_rf_"+list_array[2]).value;
+
+        if (cooling_status == "cooling") {
+            document.getElementById("temp_"+list_array[2]).style.display = "block";
+        } else {
+            document.getElementById("temp_"+list_array[2]).style.display = "none";
+        }
+    }
+
+    function valid_temp(evt) {
+        var ASCIICode = (evt.which) ? evt.which : evt.keyCode
+        if (ASCIICode > 31 && (ASCIICode < 45 || ASCIICode > 46) && (ASCIICode < 48 || ASCIICode > 57))
+            return false;
+        return true;
+    }
+
+    async function create_job() {
+        showLoading();
+        var ss_id = "{{ session['access'] }}";
+        var ss_e = "{{ session['external_access'] }}";
+
+        if (ss_id == "6") {
+            var np_e = "{{ session['npwp'] }}";
+        } else {
+            var np_e = document.getElementById("npwp_eksportir").value;
+        }
+
+        if (ss_id == "6") {
+            var np_p = document.getElementById("npwp_ppjk").value;
+            var na_p = document.getElementById("nama_ppjk").value;
+        } else if (ss_id == "7") {
+            var np_p = "{{ session['npwp'] }}";
+            var na_p = "{{ session['name'] }}";
+        } else {
+            var np_p = document.getElementById("npwp_ppjk").value;
+            var nap = document.getElementById("nama_ppjk");
+            var na_p = nap.options[nap.selectedIndex].text;
+        }
+
+        if (ss_id == "7") {
+            var nama_eksportir = document.getElementById("nama_eksportir").value;
+        } else if (ss_id == "6") {
+            var nama_eksportir = "{{ session['name'] }}";
+        }
+
+        if (ss_e == "NO") {
+            var npwp_pendaftar = document.getElementById("npwp_pendaftar").value;
+        }
+
+        var status = document.getElementById("opt_document").value;
+        var no_pemeriksaan = document.getElementById("no_pemeriksaan").value;
+        var pemeriksaan_date = document.getElementById("pemeriksaan_date").value;
+        var npe = document.getElementById("no_npe").value;
+        var npe_date = document.getElementById("npe_date").value;
+        var peb = document.getElementById("no_peb").value;
+        var peb_date = document.getElementById("peb_date").value;
+        var npwp_eksportir = np_e;
+        var nama_ppjk = na_p;
+        var npwp_ppjk = np_p;
+
+        //var booking_id = document.getElementById("booking_id").value;
+        var pof = document.getElementById("opt_pof").value;
+        var vessel = document.getElementById("vessel").value;
+        var voyage = document.getElementById("voyage").value;
+        var perkiraan_date = document.getElementById("perkiraan_date").value;
+        var jumlah_cont = document.getElementById("jumlah_cont").value;
+        var invoice = document.getElementById("inv").value;
+        var invoice_date = document.getElementById("inv_date").value;
+        var packing_list = document.getElementById("packing_list").value;
+        var packing_list_date = document.getElementById("packing_list_date").value;
+        var jenis = document.getElementById("jenis").value;
+
+        var fd = new FormData();
+        fd.append("status", status);
+        fd.append("no_pemeriksaan", no_pemeriksaan);
+        fd.append("pemeriksaan_date", pemeriksaan_date);
+        fd.append("no_npe", npe);
+        fd.append("npe_date", npe_date);
+        fd.append("no_peb", peb);
+        fd.append("peb_date", peb_date);
+
+        if (ss_id == "7") {
+            fd.append("nama_eksportir", nama_eksportir);
+        }
+
+        fd.append("npwp_eksportir", npwp_eksportir);
+        fd.append("nama_ppjk", nama_ppjk);
+        fd.append("npwp_ppjk", npwp_ppjk);
+
+        if (ss_e == "NO") {
+            fd.append("npwp_pendaftar", npwp_pendaftar);
+        }
+
+        //fd.append("booking_id", booking_id);
+        fd.append("port_of_landing", pof);
+        fd.append("vessel", vessel);
+        fd.append("voyage", voyage);
+        fd.append("perkiraan_date", perkiraan_date);
+        fd.append("jumlah_cont", jumlah_cont);
+        fd.append("invoice", invoice);
+        fd.append("invoice_date", invoice_date);
+        fd.append("packing_list", packing_list);
+        fd.append("packing_list_date", packing_list_date);
+        fd.append("jenis", jenis);
+
+        for (i = 0; i < jumlah_cont; i++) {
+            fd.append("cont_id_"+(i+1), document.getElementById("cont_id_"+(i+1)).value);
+            fd.append("size_"+(i+1), document.getElementById("opt_size_"+(i+1)).value);
+            fd.append("type_"+(i+1), document.getElementById("opt_type_"+(i+1)).value);
+            fd.append("rf_type_"+(i+1), document.getElementById("opt_rf_"+(i+1)).value);
+            fd.append("temperature_"+(i+1), document.getElementById("temperature_"+(i+1)).value);
+            fd.append("berat_"+(i+1), document.getElementById("berat_"+(i+1)).value);
+        }
+
+        await xhr.open("POST", "{{ url_for('job_order_bp.create_job_order') }}");
+        const body = fd;
+        xhr.onload = () => {
+            hideLoading();
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                for (i = 0; i < jumlah_cont; i++) {
+                    document.getElementById("cont_id_"+(i+1)).value = "";
+                    document.getElementById("berat_"+(i+1)).value = "";
+                    document.getElementById("temperature_"+(i+1)).value = "";
+                }
+                //document.getElementById("nama_pendaftar").options.selectedIndex = 0;
+                hideLoading();
+                url = xhr.response;
+                document.getElementById("msg_jo").innerHTML = "Dokumen Berhasil Terkirim<br>Simpan Gate Pass ?";
+                $('#modal_jo').modal('toggle');
+            } else {
+                if (xhr.status == 999) {
+                    notif("error", xhr.responseText);
+                } else if (xhr.status == 888) {
+                    notif("warning", xhr.responseText);
+                }
+            }
+        };
+        xhr.send(body);
+    }
+</script>

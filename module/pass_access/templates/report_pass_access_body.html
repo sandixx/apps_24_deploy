@@ -1,0 +1,58 @@
+<table id="trpa" class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th style="font-size:12px;">NO</th>
+            <th style="font-size:12px;">NO KARTU</th>
+            <th style="font-size:12px;">PASS ACCESS</th>
+            <th style="font-size:12px;">PETUGAS</th>
+            <th style="font-size:12px;">NO. IDENTITAS</th>
+            <th style="font-size:12px;">PERUSAHAAN</th>
+            <th style="font-size:12px;">KEPERLUAN</th>
+            <th style="font-size:12px;">AMBIL</th>
+            <th style="font-size:12px;">KEMBALI</th>
+        </tr>
+    </thead>
+    
+    <tbody>
+        {% for r in data %}
+        <tr>
+            <td style="font-size:12px;">{{ r.no }}</td>
+            <td style="font-size:12px;">{{ r.no_kartu }}</td>
+            <td style="font-size:12px;">{{ r.pass_access }}</td>
+            <td style="font-size:12px;">{{ r.nama }}</td>
+            <td style="font-size:12px;">{{ r.no_identitas }}</td>
+            <td style="font-size:12px;">{{ r.perusahaan }}</td>
+            <td style="font-size:12px;">{{ r.keperluan }}</td>
+            <td style="font-size:12px;">{{ r.ambil }}</td>
+            <td style="font-size:12px;">{{ r.kembali }}</td>
+        </tr>
+        {% endfor %}
+    </tfoot>
+</table>
+
+<br>
+
+<div class="row">
+    <div class="col-sm-1">
+        <a download="Report Pass Aceess {{tipe}} {{periode}}" class="btn btn-block btn-primary" href="data:application/pdf;base64,{{pdf}}">PDF</a>
+    </div>
+
+    <div class="col-sm-1">
+        <a download="Report Pass Aceess {{tipe}} {{periode}}" class="btn btn-block btn-primary" href="data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,{{excel_data}}">Excel</a>
+    </div>
+
+</div>
+
+<script>
+    $(function () {
+        $('#trpa').DataTable({
+            "paging": true,
+            "lengthChange": false,
+            "searching": true,
+            "ordering": false,
+            "info": true,
+            "autoWidth": false,
+            "responsive": true,
+        });
+    });
+</script>

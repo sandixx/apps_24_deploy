@@ -1,0 +1,71 @@
+<br>
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card card-primary">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-sm-2 col-md-3">
+                                <div class="form-group">
+                                    <input id="transaction_id" onkeypress="return search_enter(event)" type="text" class="form-control" placeholder="Transaction ID" maxlength="13" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');">
+                                </div>
+                            </div>
+
+                            <div class="col-sm-2">
+                                <button type="button" class="btn btn-block btn-primary" onclick="get_data_cancel_preinvoice_impor();">Search</button>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <section class="content">
+                                <div class="container-fluid" id="data_cancel_preinvoice_impor">
+                                    
+                                </div>
+                            </section>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    function search_enter(evt) {
+        if (evt.keyCode === 13) {
+            get_data_cancel_preinvoice_impor();
+        }
+    }
+
+    async function get_data_cancel_preinvoice_impor(){
+        showLoading();
+        var fd = new FormData();
+        fd.append("transaction_id", document.getElementById("transaction_id").value);
+
+        await xhr.open("POST", "{{ url_for('preinvoice_impor_bp.cancel_preinvoice_impor') }}");
+        const body = fd;
+        xhr.timeout = 10000;
+        xhr.onload = () => {
+            hideLoading();
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                $('#data_cancel_preinvoice_impor').html(xhr.response);
+            } else {
+                document.getElementById("data_cancel_preinvoice_impor").innerHTML = "";
+                if (xhr.status == 999) {
+                    notif("error", xhr.responseText);
+                } else if (xhr.status == 888) {
+                    notif("warning", xhr.responseText);
+                } else if (xhr.status == 401) {
+                    window.location = "{{ url_for('auth_bp.logout') }}";
+                }
+            }
+        };
+        
+        xhr.ontimeout = (e) => {
+            on_timeout();
+        };
+        
+        xhr.send(body);
+    }
+</script>

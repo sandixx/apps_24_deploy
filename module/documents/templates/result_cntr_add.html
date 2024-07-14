@@ -1,0 +1,289 @@
+<section class="content">
+    <div class="container-fluid">
+        <table id="table_jo_trx" class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th style="font-size:12px;">TRX ID</th>
+                    <th style="font-size:12px;">DOC</th>
+                    <th style="font-size:12px;">TGL DOC</th>
+                    <th style="font-size:12px;">VESSEL</th>
+                    <th style="font-size:12px;">CUSTOMER</th>
+                    <th style="font-size:12px;">STATUS</th>
+                    <th style="font-size:12px;">CREATED</th>
+                    <th style="font-size:12px;">::</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for r in data %}
+                <tr>
+                    <td style="font-size:12px;">{{ r.trx_id }}</td>
+                    <td style="font-size:12px;">{{ r.no_doc }}</td>
+                    <td style="font-size:12px;">{{ r.tgl_doc }}</td>
+                    <td style="font-size:12px;">{{ r.vessel }}</td>
+                    <td style="font-size:12px;">{{ r.cust_name }}</td>
+                    <td style="font-size:12px;">{{ r.status }}</td>
+                    <td style="font-size:12px;">{{ r.created }}</td>
+                    <td style="font-size:12px;">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <button type="button" id="{{r.trx_id}}_{{r.no_doc}}_{{r.status}}" class="btn btn-block btn-primary " onclick="add_container()">Add</button>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tfoot>
+        </table>
+    </div>
+</section>
+
+<div class="modal fade" id="modal_jo_add_container">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Add Container</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-sm-8">
+                        <div class="form-group">
+                            <label>No. Doc</label>
+                            <input id="doc_exist" type="text" class="form-control" maxlength="3" disabled>
+                            <input id="trx_exist" type="hidden" class="form-control" maxlength="3" disabled>
+                            <input id="status_exist" type="hidden" class="form-control" maxlength="3" disabled>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <label>Jumlah Container</label>
+                            <input id="jumlah_cont_exist" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1'); add_container_exist();" type="text" class="form-control" placeholder="Jumlah Container" maxlength="3">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-body">
+                    <div id="add_cntr_exist"></div>
+
+                    <div class="col-sm-12">
+                        <div class="form-check">
+                            <input id="check_status_exist" class="form-check-input" type="checkbox" onchange="check_submit_exist()">
+                            <label class="form-check-label">Data Saya Sudah Benar Dan Lengkap</label>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="col-sm-12">
+                        <button id="button_create_exist" type="button" class="btn btn-block btn-primary" onclick="add_exist_job()" disabled>Create</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function add_container(){
+        var id = document.activeElement.id;
+        var list_array = id.split("_");
+        var text_trx = list_array[0];
+        var text_doc = list_array[1];
+        var text_status = list_array[2];
+        document.getElementById("trx_exist").value = text_trx;
+        document.getElementById("doc_exist").value = text_doc;
+        document.getElementById("status_exist").value = text_status;
+        $('#modal_jo_add_container').modal('toggle');
+    }
+
+    var number = 0;
+
+    function add_container_exist() {
+        var jumlah_cont = document.getElementById("jumlah_cont_exist").value;
+
+        if (jumlah_cont && jumlah_cont > number) {
+            for (i = number; i < jumlah_cont; i++) {
+                var container = document.getElementById("add_cntr_exist");
+                var div = document.createElement('div');
+                var id_div = "form_group_" + (parseInt(i) + parseInt(1));
+                var id_cont_id = "cont_id_" + (parseInt(i) + parseInt(1));
+                var id_opt_size = "opt_size_" + (parseInt(i) + parseInt(1));
+                var id_opt_type = "opt_type_" + (parseInt(i) + parseInt(1));
+                var id_opt_rf = "opt_rf_" + (parseInt(i) + parseInt(1));
+                var id_opt_cooling = "opt_cooling_" + (parseInt(i) + parseInt(1));
+                var id_temp = "temp_" + (parseInt(i) + parseInt(1));
+                var id_temperature = "temperature_" + (parseInt(i) + parseInt(1));
+                var id_berat = "berat_" + (parseInt(i) + parseInt(1));
+    
+                div.id = id_div;
+                div.className = 'form-group';
+    
+                div.innerHTML = `
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <label style="font-size:150%;">Container ke ` + (parseInt(i) + parseInt(1)) + `</label>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label>Container ID</label>
+                                <input id="` + id_cont_id + `" oninput="this.value = this.value.toUpperCase();" type="text" class="form-control" placeholder="Container ID" maxlength="15">
+                            </div>
+                        </div>
+                        
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label>Size</label>
+                                <select id="` + id_opt_size + `" class="form-control select2bs4" style="width: 100%;">
+                                    <option value="20">20</option>
+                                    <option value="40">40</option>
+                                    <option value="45">45</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label>Type</label>
+                                <select id="` + id_opt_type + `" onchange="check_rf_evt_exist();" class="form-control select2bs4" style="width: 100%;">
+                                    <option value="dr">DRY</option>
+                                    <!--option value="rf">REEFER</!--option-->
+                                </select>
+                            </div>
+                        </div>
+    
+                        <div id="` + id_opt_cooling + `" class="col-sm-6" style="display: none;">
+                            <div class="form-group">
+                                <label>Reefer Option</label>
+                                <select id="` + id_opt_rf + `" onchange="check_cooling_evt_exist();" class="form-control select2bs4" style="width: 100%;">
+                                    <option value="no_cooling">No Cooling</option>
+                                    <option value="cooling">Cooling</option>
+                                </select>
+                            </div>
+                        </div>
+    
+                        <div id="` + id_temp + `" class="col-sm-6" style="display: none;">
+                            <div class="form-group">
+                                <label>Temperature</label>
+                                <input id="` + id_temperature + `" onkeypress="return valid_temp_exist(event)" type="text" class="form-control" placeholder="In Celcius" maxlength="6">
+                            </div>
+                        </div>
+    
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label>Berat</label>
+                                <input id="` + id_berat + `" onkeypress="return onlyNumberKey(event)" type="text" class="form-control" placeholder="In Kg" maxlength="20">
+                            </div>
+                        </div>
+                    </div>`;
+    
+                container.appendChild(div);
+                number = number + 1;
+            }
+        } else if (jumlah_cont && jumlah_cont < number) {
+            for (i = number; i > jumlah_cont; i--) {
+                var elem = document.getElementById("form_group_"+i);
+                elem.parentNode.removeChild(elem);
+                number = number - 1;
+            }
+        }
+    }
+
+    function check_rf_evt_exist() {
+        var id = document.activeElement.id;
+        var list_array = id.split("_");
+        var type = document.getElementById("opt_type_"+list_array[2]).value;
+        var rf = document.getElementById("opt_rf_"+list_array[2]).value;
+
+        if (type == "rf") {
+            document.getElementById("opt_cooling_"+list_array[2]).style.display = "block";
+        } else {
+            document.getElementById("opt_cooling_"+list_array[2]).style.display = "none";
+            document.getElementById("temp_"+list_array[2]).style.display = "none";
+        }
+    }
+
+    function check_cooling_evt_exist() {
+        var id = document.activeElement.id;
+        var list_array = id.split("_");
+        var cooling_status = document.getElementById("opt_rf_"+list_array[2]).value;
+
+        if (cooling_status == "cooling") {
+            document.getElementById("temp_"+list_array[2]).style.display = "block";
+        } else {
+            document.getElementById("temp_"+list_array[2]).style.display = "none";
+        }
+    }
+
+    function check_cancel_trx() {
+        id = document.activeElement.id;
+        var datas = id.split("_");
+        link_to_del = '{{ url }}' + datas[0] + '_' + datas[1] + '_' + datas[2];
+        document.getElementById("msg_jo_cancel_trx").innerHTML = 'Cancel Job Order Untuk NPE ' + datas[3] + '?';
+        $('#modal_jo_cancel_trx').modal('toggle');
+    }
+
+    function valid_temp_exist(evt) {
+        var ASCIICode = (evt.which) ? evt.which : evt.keyCode
+        if (ASCIICode > 31 && (ASCIICode < 45 || ASCIICode > 46) && (ASCIICode < 48 || ASCIICode > 57))
+            return false;
+        return true;
+    }
+
+    function check_submit_exist() {
+        status_check = document.getElementById('check_status_exist').checked;
+        if (status_check == true) {
+            document.getElementById('button_create_exist').disabled = false;
+        } else {
+            document.getElementById('button_create_exist').disabled = true;
+        }
+    }
+
+    async function add_exist_job() {
+        showLoading();
+        var doc = document.getElementById("doc_exist").value;
+        var trx_id = document.getElementById("trx_exist").value;
+        var status = document.getElementById("status_exist").value;
+        var jumlah_cont = document.getElementById("jumlah_cont_exist").value;
+
+        var fd = new FormData();
+
+        fd.append("no_doc", doc);
+        fd.append("trx_id", trx_id);
+        fd.append("status", status);
+        fd.append("jumlah_cont", jumlah_cont);
+
+        for (i = 0; i < jumlah_cont; i++) {
+            fd.append("cont_id_"+(i+1), document.getElementById("cont_id_"+(i+1)).value);
+            fd.append("size_"+(i+1), document.getElementById("opt_size_"+(i+1)).value);
+            fd.append("type_"+(i+1), document.getElementById("opt_type_"+(i+1)).value);
+            fd.append("rf_type_"+(i+1), document.getElementById("opt_rf_"+(i+1)).value);
+            fd.append("temperature_"+(i+1), document.getElementById("temperature_"+(i+1)).value);
+            fd.append("berat_"+(i+1), document.getElementById("berat_"+(i+1)).value);
+        }
+
+        await xhr.open("POST", "{{ url_for('document_bp.add_exist_jo') }}");
+        const body = fd;
+        xhr.onload = () => {
+            hideLoading();
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                document.getElementById("jumlah_cont_exist").value = 0;
+                add_container_exist();
+                $('#modal_jo_add_container').modal('hide');
+                notif("success", "Container Berhasil Ditambahkan");
+            } else {
+                if (xhr.status == 999) {
+                    notif("error", xhr.responseText);
+                } else if (xhr.status == 888) {
+                    notif("warning", xhr.responseText);
+                }
+            }
+        };
+        xhr.send(body);
+    }
+</script>

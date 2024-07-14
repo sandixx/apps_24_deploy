@@ -1,0 +1,41 @@
+<table id="table_search" class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th style="font-size:12px;">NO</th>
+            <th style="font-size:12px;">SP2 NO</th>
+            <th style="font-size:12px;">SP2 DATE</th>
+            <th style="font-size:12px;">INVOICE NO</th>
+            <th style="font-size:12px;">CONTAINER</th>
+            <th style="font-size:12px;">SIZE</th>
+            <th style="font-size:12px;">::</th>
+        </tr>
+    </thead>
+    
+    <tbody>
+        {% for r in data %}
+        <tr>
+            <td style="font-size:12px;">{{ r.no }}</td>
+            <td style="font-size:12px;">{{ r.sp2_no }}</td>
+            <td style="font-size:12px;">{{ r.sp2_date }}</td>
+            <td style="font-size:12px;">{{ r.invoice_no }}</td>
+            <td style="font-size:12px;">{{ r.cont_id }}</td>
+            <td style="font-size:12px;">{{ r.size }}</td>
+            <td style="font-size:12px;"><button type="button" id="{{ r.id }}" class="btn btn-block btn-primary" onclick="window.open('{{ url }}print_sp2/{{ r.key_print }}', '_blank').focus();">Print</button></td>
+        </tr>
+        {% endfor %}
+    </tfoot>
+</table>
+
+<script>
+    $(function () {
+        $('#table_search').DataTable({
+            "paging": true,
+            "lengthChange": false,
+            "searching": false,
+            "ordering": true,
+            "info": true,
+            "autoWidth": false,
+            "responsive": true,
+        });
+    });
+</script>

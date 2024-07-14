@@ -1,0 +1,85 @@
+<br>
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card card-primary">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-sm-2 col-md-2">
+                                <div class="form-group">
+                                    <div class="input-group">
+                                        <select id="opt_search_pass_access" class="form-control select2" style="width: 100%;">
+                                            <option value="petugas" selected="selected">Petugas</option>
+                                            <option value="cust_name">Perusahaan</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-2 col-md-3">
+                                <div class="form-group">
+                                    <input id="input_search_pass_access" onkeypress="return find_pass_access_enter(event)" type="text" class="form-control" style="text-transform:uppercase;">
+                                </div>
+                            </div>
+
+                            <div class="col-sm-2 col-md-2">
+                                <button type="button" class="btn btn-block btn-primary" onclick="find_pass_access()">Search</button>
+                            </div>
+                        </div>
+
+                        <div class="form-group" id="content_search_pass_access"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    function find_pass_access_enter(evt) {
+        if (evt.keyCode === 13) {
+            find_pass_access();
+        }
+    }
+
+    async function find_pass_access() {
+        var input_search_pass_access = document.getElementById("input_search_pass_access").value;
+        var opt_search = document.getElementById("opt_search_pass_access").value;
+
+        var fd = new FormData();
+        showLoading();
+        fd.append("val", input_search_pass_access);
+        fd.append("opt_search", opt_search)
+
+        await xhr.open("POST", "{{ url_for('pass_access_bp.find_pass_access') }}");
+        xhr.setRequestHeader("X-CSRFToken", ct);
+        const body = fd;
+        xhr.timeout = 10000;
+        xhr.onload = () => {
+            hideLoading();
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                $('#content_search_pass_access').html(xhr.response);
+            } else {
+                document.getElementById("content_search_pass_access").innerHTML = "";
+                if (xhr.status == 999) {
+                    notif("error", xhr.responseText);
+                } else if (xhr.status == 888) {
+                    notif("warning", xhr.responseText);
+                } else {
+                    if (xhr.responseText.includes("The CSRF token has expired.") == true){
+                        gc();
+                        find_pass_access();
+                    }
+                }
+            }
+        };
+
+        xhr.ontimeout = (e) => {
+            hideLoading();
+            notif("warning", "Proses Gagal");
+        };
+
+        xhr.send(body);
+    }
+</script>

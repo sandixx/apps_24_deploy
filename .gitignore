@@ -1,0 +1,14 @@
+flask_session
+env
+document
+__pycache__
+module/__pycache__
+module/*/__pycache__
+module/config.py
+enc.py
+.pytest_cache
+.vscode
+__pycache__
+temp
+hash.py
+enc.py

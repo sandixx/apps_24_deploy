@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Report</title>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/adminlte.min2.css')}}">
+        <style>
+            @page {
+                margin: 8mm
+            }
+        </style>
+</head>
+
+<body onload="window.print();">
+    <h1 style="text-align: center;">Laporan {{ print_name }}</h1>
+    <div class="form-group">
+        <div class="row">
+            <div class="col-sm-6 col-md-12">
+                <table style="border: 0px;">
+                    <tbody>
+                        <tr>
+                            <td rowspan="4"><img src="{{ url_for('static', filename='img/gs.png')}}" height="100" width="120"></td>
+                        </tr>
+                        <tr>
+                            <td style="font-size:12px; width:20%;"><h5>Tanggal</h5></td>
+                            <td style="font-size:12px;"><h5>: {{ dp }}</h5></td>
+                        </tr>
+                        <tr>
+                            <td style="font-size:12px; width:20%;"><h5>Dokumen</h5></td>
+                            <td style="font-size:12px;"><h5>: {{ docm }}</h5></td>
+                        </tr>
+                        <tr>
+                            <td style="font-size:12px; width:20%;"><h5>Terminal</h5></td>
+                            <td style="font-size:12px;"><h5>: {{ term }}</h5></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <br>
+
+    {% block content %}{% endblock %}
+
+    <br>
+    <table style="border: 0px; width:20%">
+        <tbody>
+            <tr>
+                <td style="text-align: center;"><img src="{{ qrcode(enc, box_size = 3, error_correction='H', icon_img='img/gs.png') }}"></td>
+            </tr>
+            <tr>
+                <td style="text-align: center;"><h6>{{ time }}</h6></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <script type="text/javascript" src="{{ url_for('static', filename='jquery/jquery.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/adminlte.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/pages/dis.js') }}"></script>
+
+    <script type="text/javascript" src="{{ url_for('static', filename='datatables/jquery.dataTables.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='datatables-bs4/js/dataTables.bootstrap4.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='datatables-responsive/js/dataTables.responsive.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='datatables-responsive/js/responsive.bootstrap4.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='datatables-buttons/js/dataTables.buttons.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='datatables-buttons/js/buttons.bootstrap4.min.js') }}"></script>
+</body>
+</html>

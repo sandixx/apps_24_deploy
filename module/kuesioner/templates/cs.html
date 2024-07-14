@@ -1,0 +1,175 @@
+<br>
+<section class="content">
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card card-primary">
+                    <div class="card-body">
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label>Nama Perusahaan</label>
+                                        <input type="text" class="form-control" placeholder="Nama Perusahaan" id="cust_name" maxlength="255" oninput="this.value = this.value.toUpperCase();">
+                                    </div>
+                                </div>
+                                
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label for="">Keperluan</label>
+                                        <input type="text" class="form-control" placeholder="Keperluan" id="keperluan" maxlength="255" oninput="this.value = this.value.toUpperCase();">
+                                    </div>
+                                </div>
+                                
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label for="">No. Dokumen</label>
+                                        <input type="text" class="form-control" placeholder="No. Dokumen" id="no_document" maxlength="100" oninput="this.value = this.value.toUpperCase();">
+                                    </div>
+                                </div>
+                                
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label for="">Jenis Dokumen</label>
+                                        <input type="text" class="form-control" placeholder="Jenis Dokumen" id="jenis_document" maxlength="100" oninput="this.value = this.value.toUpperCase();">
+                                    </div>
+                                </div>
+                                
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label for="">PPJK/EMKL</label>
+                                        <input type="text" class="form-control" placeholder="PPJK/EMKL" id="ppjk" maxlength="255" oninput="this.value = this.value.toUpperCase();">
+                                    </div>
+                                </div>
+                                
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label for="">Nomor HP</label>
+                                        <input type="text" class="form-control" placeholder="Nomor HP" id="mobile_number" onkeypress="return onlyNumberKey(event)" maxlength="15">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-sm-2 col-md-1">
+                                <button id="btn_kuesioner" type="button" class="btn btn-block btn-primary" onclick="input_data_rating()">Create</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    var loket = "{{loket}}";
+    var data_aktif = "";
+
+    $( document ).ready(function() {
+        data_aktif = "{{aktif}}";
+
+        if (data_aktif == "yes") {
+            document.getElementById("btn_kuesioner").disabled = true;
+            document.getElementById("cust_name").value = "{{customer}}";
+            document.getElementById("keperluan").value = "{{keperluan}}";
+            document.getElementById("no_document").value = "{{no_doc}}";
+            document.getElementById("jenis_document").value = "{{jenis_doc}}";
+            document.getElementById("ppjk").value = "{{ppjk}}";
+            document.getElementById("mobile_number").value = "{{no_hp}}";
+
+            document.getElementById("cust_name").disabled = true;
+            document.getElementById("keperluan").disabled = true;
+            document.getElementById("no_document").disabled = true;
+            document.getElementById("jenis_document").disabled = true;
+            document.getElementById("ppjk").disabled = true;
+            document.getElementById("mobile_number").disabled = true;
+        }
+    });
+
+    async function input_data_rating() {
+        showLoading();
+        var customer = document.getElementById("cust_name").value;
+        var keperluan = document.getElementById("keperluan").value;
+        var no_doc = document.getElementById("no_document").value;
+        var jenis_doc = document.getElementById("jenis_document").value;
+        var ppjk = document.getElementById("ppjk").value;
+        var no_hp = document.getElementById("mobile_number").value;
+
+        var fd = new FormData();
+        fd.append("loket", loket);
+        fd.append("customer", customer);
+        fd.append("keperluan", keperluan);
+        fd.append("no_doc", no_doc);
+        fd.append("jenis_doc", jenis_doc);
+        fd.append("ppjk", ppjk);
+        fd.append("no_hp", no_hp);
+
+        await xhr.open("POST", "{{ url_for('kuesioner_bp.kuesioner') }}");
+        const body = fd;
+        xhr.onload = () => {
+            hideLoading();
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                hideLoading();
+                data_aktif = "yes";
+                notif("success", xhr.responseText);
+                document.getElementById("btn_kuesioner").disabled = true;
+                document.getElementById("cust_name").disabled = true;
+                document.getElementById("keperluan").disabled = true;
+                document.getElementById("no_document").disabled = true;
+                document.getElementById("jenis_document").disabled = true;
+                document.getElementById("ppjk").disabled = true;
+                document.getElementById("mobile_number").disabled = true;
+            } else {
+                document.getElementById("btn_kuesioner").disabled = false;
+                data_aktif = "no";
+
+                if (xhr.status == 999) {
+                    notif("error", xhr.responseText);
+                } else if (xhr.status == 888) {
+                    notif("warning", xhr.responseText);
+                }
+            }
+        };
+        xhr.send(body);
+    }
+
+    if (loket == "1") {
+        socket.on('get_star_1', function(msg) {
+            if (msg == "ok") {
+                data_aktif = "no";
+                document.getElementById("cust_name").value = "";
+                document.getElementById("keperluan").value = "";
+                document.getElementById("no_document").value = "";
+                document.getElementById("jenis_document").value = "";
+                document.getElementById("ppjk").value = "";
+                document.getElementById("mobile_number").value = "";
+                document.getElementById("btn_kuesioner").disabled = false;
+                document.getElementById("cust_name").disabled = false;
+                document.getElementById("keperluan").disabled = false;
+                document.getElementById("no_document").disabled = false;
+                document.getElementById("jenis_document").disabled = false;
+                document.getElementById("ppjk").disabled = false;
+                document.getElementById("mobile_number").disabled = false;
+            }
+        });
+    } else if (loket == "2") {
+        socket.on('get_star_2', function(msg) {
+            if (msg == "ok") {
+                data_aktif = "no";
+                document.getElementById("cust_name").value = "";
+                document.getElementById("keperluan").value = "";
+                document.getElementById("no_document").value = "";
+                document.getElementById("jenis_document").value = "";
+                document.getElementById("ppjk").value = "";
+                document.getElementById("mobile_number").value = "";
+                document.getElementById("btn_kuesioner").disabled = false;
+                document.getElementById("cust_name").disabled = false;
+                document.getElementById("keperluan").disabled = false;
+                document.getElementById("no_document").disabled = false;
+                document.getElementById("jenis_document").disabled = false;
+                document.getElementById("ppjk").disabled = false;
+                document.getElementById("mobile_number").disabled = false;
+            }
+        });
+    }
+</script>

@@ -1,0 +1,495 @@
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-5">
+                {% for r in data %}
+
+                {% if session['external_access'] == "NO" %}
+                <div class="form-group row">
+                    <label class="col-sm-3 col-form-label">TRX ID</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" value="{{r.trx}}" disabled>
+                    </div>
+                </div>
+                {% endif %}
+
+                <div class="form-group row">
+                    <label id="trx_id" class="col-sm-9 col-form-label" hidden>{{r.trx}}</label>
+                    <label class="col-sm-3 col-form-label">No. Doc</label>
+                    <div class="col-sm-9">
+                        <input type="text" id="no_doc" class="form-control" value="{{r.no_doc}}" disabled>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label class="col-sm-3 col-form-label">Tanggal Doc</label>
+                    <div class="col-sm-9">
+                        <input type="text" id="tgl_doc" class="form-control" value="{{r.tgl_doc}}" disabled>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label class="col-sm-3 col-form-label">Customer</label>
+                    <div class="col-sm-9">
+                        <input type="text" id="cust_name" class="form-control" value="{{r.cust_name}}" disabled>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label class="col-sm-3 col-form-label">NPWP</label>
+                    <div class="col-sm-9">
+                        <input type="text" id="npwp" class="form-control" value="{{r.npwp}}" disabled>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label class="col-sm-3 col-form-label">Alamat</label>
+                    <div class="col-sm-9">
+                        <textarea id="address" rows="2" class="form-control" disabled>{{r.address}}</textarea>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label class="col-sm-3 col-form-label">Terminal</label>
+                    <div class="col-sm-9">
+                        <input type="text" id="terminal_code" class="form-control" value="{{r.terminal_code}}" disabled>
+                        <input type="text" id="eq_type" class="form-control" value="{{r.eq_type}}" disabled hidden>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label class="col-sm-3 col-form-label">Total Cont</label>
+                    <div class="col-sm-9">
+                        <input type="text" id="total_cont" class="form-control" value="{{r.total_cont}}" disabled>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-sm-6 form-group ">
+                        <button type="button" id="{{r.trx}}" class="btn btn-block btn-primary" onclick="list_container_pre_invoice();">List Container</button>
+                    </div>
+
+                    <div class="col-sm-6 form-group ">
+                        <button type="button" class="btn btn-block btn-primary" onclick="list_paid_inv();">List Invoice</button>
+                    </div>
+
+                </div>
+                {% endfor %}
+
+                {% for r in data %}
+                <div class="modal fade" id="i_{{r.trx}}">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title">List Container</h4>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+
+                            <div class="modal-body form-group-sm" id="data_list_cont_pre_invoice">
+                                <div class="table-responsive p-0" style="text-align: center;">
+                                    <table class="table table-head-fixed text-nowrap">
+                                        <tbody>
+                                            <tr>
+                                                <th>No</th>
+                                                <th>Container</th>
+                                                <th>Size</th>
+                                                <th>Type</th>
+                                                <th>Status</th>
+                                                <th>Tanggal Bongkar</th>
+                                                <th id="terminal_plugin">Terminal Plugin</th>
+                                            </tr>
+                                        
+                                        {% for z in r.cont_id %}
+                                            <tr>
+                                                <td>{{ z.no }}</td>
+                                                <td>{{ z.cont_id }}</td>
+                                                <td>{{ z.size }}</td>
+                                                <td>{{ z.type }}</td>
+                                                <td>{{ z.status }}</td>
+                                                <td>{{ z.tanggal_bongkar }}</td>
+                                                <td id="terminal_plugin">{{ z.terminal_plugin }}</td>
+                                            </tr>
+                                        {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+
+                <div class="modal fade" id="list_data_inv">
+                    <div class="modal-dialog modal-xl">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title">List Invoice</h4>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+
+                            <div class="modal-body" id="data_list_inv">
+                                <div class="table-responsive p-0" style="text-align: center;">
+                                    <table class="table table-head-fixed text-nowrap">
+                                        <tbody>
+                                            <tr>
+                                                <th>No</th>
+                                                <th>Type</th>
+                                                <th>Invoice</th>
+                                                <th>Invoice Date</th>
+                                                <th>Payment</th>
+                                                <th>Payment Date</th>
+                                                <th>Paid Trhu</th>
+                                                <th>Tax Nbr</th>
+                                            </tr>
+                                        {% for z in list_inv %}
+                                            <tr>
+                                                <td>{{ z.no }}</td>
+                                                <td>{{ z.type_id }}</td>
+                                                <td>{{ z.invoice_no }}</td>
+                                                <td>{{ z.invoice_date }}</td>
+                                                <td>{{ z.payment_no }}</td>
+                                                <td>{{ z.payment_date }}</td>
+                                                <td>{{ z.paid_trhu }}</td>
+                                                <td>{{ z.tax_nbr }}</td>
+                                            </tr>
+                                        {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {% if process_data_pre == "YES" %}
+            <div class="col-md-7">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label>Proses</label>
+                            <select id="opt" class="form-control select2bs4" style="width: 100%;" onchange="check_pt();">
+                                {% for z in opt %}
+                                <option value="{{z.opt_name}}">{{z.opt_value}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-6" id="g_opt">
+                        <div class="form-group">
+                            <label>Bayar Sampai Tanggal</label>
+                            <div class="input-group date" id="date_paidtrhu_impor" data-target-input="nearest">
+                                <input id="paidtrhu" type="text" class="form-control datetimepicker-input" data-target="#date_paidtrhu_impor" data-toggle="datetimepicker"/>
+                                <div class="input-group-append" data-target="#date_paidtrhu_impor" data-toggle="datetimepicker">
+                                    <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-6" id="g_unplug">
+                        <div class="form-group">
+                            <label>Unplug Container</label>
+                            <div class="input-group date" id="" data-target-input="nearest">
+                                <input id="time_unplug" type="text" class="form-control datetimepicker-input" data-target="#time_unplug" data-toggle="datetimepicker"/>
+                                <div class="input-group-append" data-target="#time_unplug" data-toggle="datetimepicker">
+                                    <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-12" id="g_sppb">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <label>No. SPPB</label>
+                                <div class="form-group">
+                                    <input type="text" id="no_sppb" class="form-control" placeholder="No. SPPB" style="text-transform:uppercase;" maxlength="25" value="{{ sppb_nbr }}">
+                                </div>
+                            </div>
+                            
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label>SPPB Date</label>
+                                    <div class="input-group date" id="" data-target-input="nearest">
+                                        <input id="sppb_date" type="text" class="form-control datetimepicker-input" data-target="#sppb_date" data-toggle="datetimepicker"  value="{{ sppb_date }}"/>
+                                        <div class="input-group-append" data-target="#sppb_date" data-toggle="datetimepicker">
+                                            <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-12" id="g_do">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <label>No. DO</label>
+                                <div class="form-group">
+                                    <input type="text" id="no_do" class="form-control" placeholder="No. DO" style="text-transform:uppercase;" maxlength="25" value="{{ do_nbr }}">
+                                </div>
+                            </div>
+
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label>DO Exp</label>
+                                    <div class="input-group date" id="" data-target-input="nearest">
+                                        <input id="do_exp" type="text" class="form-control datetimepicker-input" data-target="#do_exp" data-toggle="datetimepicker"  value="{{ do_exp }}"/>
+                                        <div class="input-group-append" data-target="#do_exp" data-toggle="datetimepicker">
+                                            <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-6" id="g_bl">
+                        <label>No. BL</label>
+                        <div class="form-group">
+                            <input type="text" id="bl_nbr" class="form-control" value="{{ bl_nbr }}" placeholder="No. BL" style="text-transform:uppercase;">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-sm-3 mb-3">
+                        <button type="button" class="btn btn-block btn-primary" onclick="check_pre_invoice()">Check</button>
+                    </div>
+                    <br>
+                    <!--div class="col-sm-3 mb-3">
+                        <button id="btn_print_preinvoice" type="button" class="btn btn-block btn-primary" onclick="create_pre_invoice()">Print</button>
+                    </!--div-->
+                </div>
+
+                <br>
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <div id="data_txt_preinvoice"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <br>
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <div id="data_pdf_preinvoice"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+        </div>
+    </div>
+</section>
+
+<script>
+    $('#date_paidtrhu_impor').datetimepicker({format: 'DD/MM/YYYY'});
+    $('#sppb_date').datetimepicker({format: 'DD/MM/YYYY'});
+    $('#do_exp').datetimepicker({format: 'DD/MM/YYYY'});
+    //$('#time_unplug').datetimepicker({format: 'HH:mm'})
+    $('#time_unplug').datetimepicker({ icons: { time: 'far fa-clock' }, format: 'DD/MM/YYYY HH:mm' });
+
+    $( document ).ready(function() {
+        var date = moment();
+        var currentDate = date.format('DD/MM/YYYY');
+        //var ccurrentDate = moment(new Date()).format("DD/MM/YYYY");
+        document.getElementById("paidtrhu").value = currentDate;
+        check_pt();
+    });
+
+    function check_pt() {
+        var unplug = "{{ unplug }}";
+        var input_bl = "{{ input_bl }}";
+        var input_sppb_do = "{{ input_sppb_do }}";
+        const opt = document.getElementById("opt").value;
+        console.log(input_bl, opt);
+
+        if (opt == "bhdl" || opt == "bhdl2") {
+            document.getElementById("g_opt").style.display = "none";
+            document.getElementById("g_bl").style.display = "block";
+            document.getElementById("bl_nbr").disabled = false;
+        } else {
+            document.getElementById("g_opt").style.display = "block";
+            document.getElementById("g_bl").style.display = "none";
+            document.getElementById("bl_nbr").disabled = false;
+        }
+
+        if (unplug == "YES") {
+            if (opt == "pnpk" || opt == "rfext") {
+                document.getElementById("g_unplug").style.display = "block";
+                document.getElementById("bl_nbr").disabled = false;
+
+                var dateu = moment();
+                var currentDateu = dateu.format('DD/MM/YYYY HH:mm');
+                document.getElementById("time_unplug").value = currentDateu;
+            } else {
+                document.getElementById("g_unplug").style.display = "none";
+            }
+        } else {
+            document.getElementById("g_unplug").style.display = "none";
+        }
+
+        if (input_sppb_do == "YES" && opt == "pnpk") {
+            document.getElementById("g_sppb").style.display = "block";
+            document.getElementById("g_do").style.display = "block";
+            document.getElementById("g_bl").style.display = "block";
+            document.getElementById("bl_nbr").disabled = true;
+        } else if (input_sppb_do == "YES" && opt == "ppnpk" || input_sppb_do == "YES" && opt == "rfext") {
+            document.getElementById("g_sppb").style.display = "block";
+            document.getElementById("g_do").style.display = "block";
+            document.getElementById("g_bl").style.display = "block";
+            document.getElementById("bl_nbr").disabled = true;
+            document.getElementById("no_sppb").disabled = true;
+            document.getElementById("no_do").disabled = true;
+            document.getElementById("sppb_date").disabled = true;
+        } else {
+            document.getElementById("g_sppb").style.display = "none";
+            document.getElementById("g_do").style.display = "none";
+            document.getElementById("g_bl").style.display = "none";
+        }
+
+        if (input_bl == "YES") {
+            document.getElementById("g_bl").style.display = "block";
+            document.getElementById("bl_nbr").disabled = false;
+        }
+    }
+
+    function list_container_pre_invoice() {
+        var id = document.activeElement.id;
+        $('#i_'+id).modal('toggle');
+    }
+
+    function list_paid_inv() {
+        $('#list_data_inv').modal('toggle');
+    }
+
+    async function check_pre_invoice() {
+        var trx_id = document.getElementById("trx_id").innerHTML;
+        var opt = document.getElementById("opt").value;
+        var paid_trhu = document.getElementById("paidtrhu").value;
+        var unplug = "{{ unplug }}";
+        var input_bl = "{{ input_bl }}";
+
+        var fd = new FormData();
+        showLoading();
+        fd.append("trx_id", trx_id);
+        fd.append("paid_trhu", paid_trhu);
+        fd.append("opt", opt);
+
+        if (unplug == "YES" && opt == "pnpk" || unplug == "YES" && opt == "rfext") {
+            fd.append("unplug_time", document.getElementById("time_unplug").value);
+        }
+
+        if (input_bl == "YES") {
+            fd.append("bl_nbr", document.getElementById("bl_nbr").value);
+        }
+
+        await xhr.open("POST", "{{ url_for('preinvoice_impor_bp.preinvoice_impor') }}");
+        const body = fd;
+        xhr.timeout = 10000;
+        xhr.onload = () => {
+            hideLoading();
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                $('#data_txt_preinvoice').html(xhr.response);
+                document.getElementById("data_txt_preinvoice").style.display='block';
+                document.getElementById("data_pdf_preinvoice").style.display='none';
+            } else {
+                document.getElementById("data_txt_preinvoice").innerHTML = "";
+                document.getElementById("data_pdf_preinvoice").style.display='none';
+                if (xhr.status == 999) {
+                    notif("error", xhr.responseText);
+                } else if (xhr.status == 888) {
+                    notif("warning", xhr.responseText);
+
+                    if (xhr.responseText == "Data Sudah Diproses") {
+                        get_data_preinvoice_impor();
+                    }
+                } else if (xhr.status == 401) {
+                    window.location = "{{ url_for('auth_bp.logout') }}";
+                }
+            }
+        };
+
+        xhr.ontimeout = (e) => {
+            on_timeout();
+        };
+
+        xhr.send(body);
+    }
+
+    async function create_pre_invoice() {
+        var paid_trhu = document.getElementById("paidtrhu").value;
+        var trx_id = document.getElementById("trx_id").innerHTML;
+        var opt = document.getElementById("opt").value;
+        var unplug = "{{ unplug }}";
+        var input_bl = "{{ input_bl }}";
+        var input_sppb_do = "{{ input_sppb_do }}";
+        var cust_name = document.getElementById("cust_name").value;
+
+        var fd = new FormData();
+        showLoading();
+        fd.append("trx_id", trx_id);
+        fd.append("paid_trhu", paid_trhu);
+        fd.append("opt", opt);
+        fd.append("cust_name", cust_name);
+
+        if (unplug == "YES" && opt == "pnpk") {
+            fd.append("unplug_time", document.getElementById("time_unplug").value);
+        }
+
+        if (input_bl == "YES") {
+            fd.append("bl_nbr", document.getElementById("bl_nbr").value);
+        }
+
+        if (input_sppb_do == "YES" && opt == "pnpk" || input_sppb_do == "YES" && opt == "ppnpk") {
+            fd.append("no_sppb", document.getElementById("no_sppb").value);
+            fd.append("sppb_date", document.getElementById("sppb_date").value);
+            fd.append("no_do", document.getElementById("no_do").value);
+            fd.append("do_exp", document.getElementById("do_exp").value);
+        }
+
+        await xhr.open("POST", "{{ url_for('pre_invoice_bp.print_data_preinvoice') }}");
+        const body = fd;
+        xhr.timeout = 10000;
+        xhr.onload = () => {
+            hideLoading();
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                $('#data_pdf_preinvoice').html(xhr.response);
+                document.getElementById("data_pdf_preinvoice").style.display='block';
+                document.getElementById("data_pdf_preinvoice").style.height = "650px";
+                document.getElementById("btn_print_preinvoice").disabled = true; 
+            } else {
+                document.getElementById("data_pdf_preinvoice").innerHTML = "";
+                document.getElementById("data_pdf_preinvoice").style.height = "0px";
+                document.getElementById("btn_print_preinvoice").disabled = false; 
+                if (xhr.status == 999) {
+                    notif("error", xhr.responseText);
+                } else if (xhr.status == 888) {
+                    notif("warning", xhr.responseText);
+                } else if (xhr.status == 401) {
+                    window.location = "{{ url_for('auth_bp.logout') }}";
+                }
+            }
+        };
+
+        xhr.ontimeout = (e) => {
+            on_timeout();
+        };
+        
+        xhr.send(body);
+    }
+</script>

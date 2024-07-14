@@ -1,0 +1,206 @@
+<div class="row">
+    <div class="col-sm-6">
+        <div class="form-group">
+            <label>Nama Petugas</label>
+            <input id="key_update" type="hidden" value="{{data.key}}" disabled>
+            <input id="npwp" type="hidden" value="{{data.npwp}}" disabled>
+            <input id="nama_petugas_update" oninput="this.value = this.value.toUpperCase();" type="text" class="form-control" placeholder="Nama Petugas" maxlength="100" value="{{data.nama}}">
+        </div>
+    </div>
+
+    <div class="col-sm-6">
+        <div class="form-group">
+            <label>Tempat Lahir</label>
+            <input id="tempat_lahir_update" oninput="this.value = this.value.toUpperCase();" type="text" class="form-control" placeholder="Tempat Lahir" maxlength="100" value="{{data.tempat_lahir}}">
+        </div>
+    </div>
+
+    <div class="col-sm-6">
+        <div class="form-group">
+            <label>Tanggal Lahir</label>
+            <div class="input-group date" data-target-input="nearest">
+                <input id="tanggal_lahir_update" type="text" class="form-control datetimepicker-input" data-target="#tanggal_lahir_update" data-toggle="datetimepicker" value="{{data.tanggal_lahir}}">
+                <div class="input-group-append" data-target="#tanggal_lahir_update" data-toggle="datetimepicker">
+                    <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-6">
+        <div class="form-group">
+            <label>No. Identitas Diri (KTP/SIM)</label>
+            <input id="old_no_identitas" type="hidden" value="{{data.no_identitas}}" disabled>
+            <input id="no_identitas_update" oninput="this.value = this.value.toUpperCase();" type="text" class="form-control" placeholder="No. Identitas Diri (KTP/SIM)" maxlength="16" value="{{data.no_identitas}}">
+        </div>
+    </div>
+
+    <div class="col-sm-6">
+        <div class="form-group">
+            <label>No. Induk Karyawan</label>
+            <input id="no_induk_karyawan_update" oninput="this.value = this.value.toUpperCase();" type="text" class="form-control" placeholder="No. Induk Karyawan" maxlength="100" value="{{data.no_induk_karyawan}}">
+        </div>
+    </div>
+
+    <div class="col-sm-6">
+        <div class="form-group">
+            <label>Agama</label>
+            <select id="agama_update" class="form-control select2bs4" style="width: 100%;">
+                <option value="islam" {% if data.agama == 'ISLAM' %} selected {% endif %}>Islam</option>
+                <option value="protestan" {% if data.agama == 'PROTESTAN' %} selected {% endif %}>Protestan</option>
+                <option value="katolik" {% if data.agama == 'KATOLIK' %} selected {% endif %}>Katolik</option>
+                <option value="hindu" {% if data.agama == 'HINDU' %} selected {% endif %}>Hindu</option>
+                <option value="budha" {% if data.agama == 'BUDHA' %} selected {% endif %}>Budha</option>
+                <option value="konghucu" {% if data.agama == 'KONGHUCU' %} selected {% endif %}>Konghucu</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="col-sm-6">
+        <div class="form-group">
+            <label>Alamat</label>
+            <input id="alamat_karyawan_update" oninput="this.value = this.value.toUpperCase();" type="text" class="form-control" placeholder="Alamat" maxlength="225" value="{{data.alamat}}">
+        </div>
+    </div>
+
+    <div class="col-sm-6">
+        <div class="form-group">
+            <label>No. Hp</label>
+            <input id="no_hp_karyawan_update" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" type="text" class="form-control" placeholder="No. Hp" maxlength="225" value="{{data.no_hp}}">
+        </div>
+    </div>
+
+    <div class="col-sm-6">
+        <div class="form-group">
+            <label>Jabatan</label>
+            <input id="jabatan_update" oninput="this.value = this.value.toUpperCase();" type="text" class="form-control" placeholder="Jabatan" maxlength="20" value="{{data.jabatan}}">
+        </div>
+    </div>
+    
+    <div class="col-sm-6">
+        <div class="form-group">
+            <label>Pass Access</label>
+            <select id="pass_access_update" class="form-control select2bs4" style="width: 100%;">
+                <option value="behandle" {% if data.pass_access == 'BEHANDLE' %} selected {% endif %}>Behandle</option>
+                <option value="building" {% if data.pass_access == 'BUILDING' %} selected {% endif %}>Building</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="col-sm-12">
+        <div class="form-group">
+            <label>Scan Identitas</label>
+            <div class="row">
+                <div class="col-sm-6">
+                    <img width="200" height="150" src="data:image/jpeg;base64,{{data.scan_identitas}}" /> 
+                </div>
+
+                <div class="custom-file col-sm-6">
+                    <input type="file" accept="image/jpeg, image/png" id="scan_identitas_update">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-12">
+        <div class="form-group">
+            <label>Pas Foto</label>
+            <div class="row">
+                <div class="col-sm-6">
+                    <img width="150" height="200" src="data:image/jpeg;base64,{{data.pas_foto}}" /> 
+                </div>
+
+                <div class="custom-file col-sm-6">
+                    <input type="file" accept="image/jpeg, image/png" id="pas_foto_update">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-12">
+        <div class="form-group">
+            <label>Surat Pernyataan</label>
+            <div class="row">
+                <div class="col-sm-6" style="height: 100%;">
+                    <embed width="200" height="200" src="data:application/pdf;base64,{{data.surat_pernyataan}}" /> 
+                </div>
+
+                <div class="custom-file col-sm-6">
+                    <input type="file" accept="application/pdf" id="surat_pernyataan_update">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<br>
+
+<div class="row">
+    <div class="col-md-3">
+        <button type="button" class="btn btn-block btn-primary" onclick="update_data_pass_access_petugas()">Update</button>
+    </div>
+
+    <div class="col-md-3">
+        <button type="button" class="btn btn-block btn-warning" onclick="cancel_update_data_pass_access_petugas()">Cancel</button>
+    </div>
+
+</div>
+
+<script>
+    $('#tanggal_lahir_update').datetimepicker({
+        format: 'L'
+    });
+
+    async function update_data_pass_access_petugas() {
+        showLoading();
+
+        let fd = new FormData();
+        fd.append("opt", "petugas");
+        fd.append("key_update", document.getElementById("key_update").value);
+        fd.append("npwp", document.getElementById("npwp").value);
+        fd.append("nama_petugas", document.getElementById("nama_petugas_update").value);
+        fd.append("tempat_lahir", document.getElementById("tempat_lahir_update").value);
+        fd.append("tanggal_lahir", document.getElementById("tanggal_lahir_update").value);
+        fd.append("old_no_identitas", document.getElementById("old_no_identitas").value);
+        fd.append("no_identitas", document.getElementById("no_identitas_update").value);
+        fd.append("no_induk_karyawan", document.getElementById("no_induk_karyawan_update").value);
+        fd.append("agama", document.getElementById("agama_update").value);
+        fd.append("alamat_karyawan", document.getElementById("alamat_karyawan_update").value);
+        fd.append("no_hp_karyawan", document.getElementById("no_hp_karyawan_update").value);
+        fd.append("jabatan", document.getElementById("jabatan_update").value);
+        fd.append("pass_access", document.getElementById("pass_access_update").value);
+        fd.append("scan_identitas", $("#scan_identitas_update").prop("files")[0]);
+        fd.append("pas_foto", $("#pas_foto_update").prop("files")[0]);
+        fd.append("surat_pernyataan", $("#surat_pernyataan_update").prop("files")[0]);
+
+        await xhr.open("POST", "{{ url_for('pass_access_bp.update_data_pass_access') }}");
+        const body = fd;
+        xhr.timeout = 10000;
+        xhr.onload = () => {
+            hideLoading();
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                notif("success", xhr.responseText);
+                document.getElementById("search_update_pass_access_result").innerHTML = "";
+                document.getElementById("content_search_update_pass_access").innerHTML = "";
+            } else {
+                if (xhr.status == 999) {
+                    notif("error", xhr.responseText);
+                } else if (xhr.status == 888) {
+                    notif("warning", xhr.responseText);
+                }
+            }
+        };
+
+        xhr.ontimeout = (e) => {
+            hideLoading();
+            notif("warning", "Proses Gagal");
+        };
+
+        xhr.send(body);
+    }
+
+    function cancel_update_data_pass_access_petugas() {
+        document.getElementById("content_search_update_pass_access").innerHTML = "";
+        document.getElementById(key_update_pass_access).checked = false;
+    }
+</script>

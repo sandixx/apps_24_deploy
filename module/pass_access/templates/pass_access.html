@@ -1,0 +1,442 @@
+<div class="card-body">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card card-primary">
+                <div class="card-header">
+                    <h3 class="card-title">Data Perusahaan</h3>
+                </div>
+
+                <div class="card-body">
+                    <form>
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label>Nama Perusahaan</label>
+                                        <input id="perusahaan" type="text" class="form-control" placeholder="Nama Perusahaan" maxlength="255" oninput="this.value = this.value.toUpperCase();" onkeydown="return onlyAllowedAlp(event);">
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label>NPWP Perusahaan</label>
+                                        <input id="npwp" type="text" class="form-control" placeholder="NPWP" maxlength="19"  onkeypress="npwp_16()">
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label>Nama Penanggung Jawab</label>
+                                        <input id="pj" type="text" class="form-control" placeholder="Penanggung Jawab" maxlength="100" oninput="this.value = this.value.toUpperCase();" onkeydown="return onlyAllowedAlp(event);">                                    </div>
+                                </div>
+
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label>No. Identitas Penanggung Jawab</label>
+                                        <input id="nik_pj" type="text" class="form-control" placeholder="No. Identitas (KTP/SIM)" maxlength="16" oninput="this.value = this.value.toUpperCase();" onkeydown="return onlyAllowedAlp(event);">
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label>Alamat Perusahaan</label>
+                                        <input id="alamat_perusahaan" type="text" class="form-control" placeholder="Alamat Perusahaan" maxlength="255" oninput="this.value = this.value.toUpperCase();" onkeydown="return onlyAllowedAlp(event);">
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label>No. Telp</label>
+                                        <input id="no_telp" type="text" class="form-control" placeholder="No. Telp" maxlength="20" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');">
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label>No. Hp</label>
+                                        <input id="no_hp" type="text" class="form-control" placeholder="No. Hp" maxlength="20" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');">
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label>Jumlah Petugas</label>
+                                        <input id="jumlah_petugas" oninput="this.value = this.value.replace(/[^1-8.]/g, '').replace(/(\..*)\./g, '$1'); add_petugas();" type="text" class="form-control" placeholder="Jumlah Petugas" maxlength="1">
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-12">
+                                    <div class="form-group">
+                                        <label>Surat Permohonan</label>
+                                        <div class="custom-file col-sm-12">
+                                            <input type="file" accept="application/pdf" id="scan_surat_permohonan">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-12">
+                                    <div class="form-group">
+                                        <label>Scan NPWP</label>
+                                        <div class="custom-file col-sm-12">
+                                            <input type="file" accept="image/jpeg, image/png" id="scan_npwp">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-12">
+                                    <div class="form-group">
+                                        <label>Scan NIK</label>
+                                        <div class="custom-file col-sm-12">
+                                            <input type="file" accept="image/jpeg, image/png" id="scan_nik_pj">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card card-primary">
+                <div class="card-header">
+                    <h3 class="card-title">Petugas</h3>
+                </div>
+
+                <div class="card-body">
+                    <div id="add_petugas">
+                        
+                    </div>
+
+                    <div class="col-sm-12">
+                        <div class="form-check">
+                            <input id="check_status" class="form-check-input" type="checkbox" onchange="check_submit()">
+                            <label class="form-check-label">Data Saya Sudah Benar Dan Lengkap</label>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="col-sm-12">
+                        <button id="button_create" type="button" class="btn btn-block btn-primary" onclick="create_pass_access()" disabled>Create</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    var number = 0;
+
+    $(document).ready(function() {
+        bsCustomFileInput.init();
+        document.getElementById("scan_surat_permohonan").value = null;
+        document.getElementById("scan_surat_permohonan").innerHTML = "";
+        document.getElementById("scan_npwp").value = null;
+        document.getElementById("scan_npwp").innerHTML = "";
+        document.getElementById("scan_nik_pj").value = null;
+        document.getElementById("scan_nik_pj").innerHTML = "";
+    });
+
+    function check_submit() {
+        status_check = document.getElementById('check_status').checked;
+        if (status_check == true) {
+            document.getElementById('button_create').disabled = false;
+        } else {
+            document.getElementById('button_create').disabled = true;
+        }
+    }
+
+    function add_petugas() {
+        var jumlah_petugas = document.getElementById("jumlah_petugas").value;
+
+        if (jumlah_petugas == "") {
+            jumlah_petugas = "0";
+        }
+
+        if (jumlah_petugas && jumlah_petugas > number) {
+            for (i = number; i < jumlah_petugas; i++) {
+                var container = document.getElementById("add_petugas");
+                var div = document.createElement('div');
+                var id_div = "form_group_" + (parseInt(i) + parseInt(1));
+                var id_nama_petugas = "nama_petugas_" + (parseInt(i) + parseInt(1));
+                var id_tempat_lahir = "tempat_lahir_" + (parseInt(i) + parseInt(1));
+                var id_tanggal_lahir = "tanggal_lahir_" + (parseInt(i) + parseInt(1));
+                var id_i_tanggal_lahir = "i_tanggal_lahir_" + (parseInt(i) + parseInt(1));
+                var id_no_identitas = "no_identitas_" + (parseInt(i) + parseInt(1));
+                var id_no_induk_karyawan = "no_induk_karyawan_" + (parseInt(i) + parseInt(1));
+                var id_agama = "agama_" + (parseInt(i) + parseInt(1));
+                var id_alamat_karyawan = "alamat_karyawan_" + (parseInt(i) + parseInt(1));
+                var id_no_hp_karyawan = "no_hp_karyawan_" + (parseInt(i) + parseInt(1));
+                var id_jabatan = "jabatan_" + (parseInt(i) + parseInt(1));
+                var id_pass_access = "pass_access_" + (parseInt(i) + parseInt(1));
+                var id_scan_identitas = "scan_identitas_" + (parseInt(i) + parseInt(1));
+                var id_pas_foto = "pas_foto_" + (parseInt(i) + parseInt(1));
+                var id_surat_pernyataan = "surat_pernyataan_" + (parseInt(i) + parseInt(1));
+
+                div.id = id_div;
+                div.className = 'form-group';
+
+                div.innerHTML = `
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <label style="font-size:150%;">Petugas ke ` + (parseInt(i) + parseInt(1)) + `</label>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label>Nama Petugas</label>
+                                <input id="` + id_nama_petugas + `" oninput="this.value = this.value.toUpperCase();" type="text" class="form-control" placeholder="Nama Petugas" maxlength="100">
+                            </div>
+                        </div>
+
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label>Tempat Lahir</label>
+                                <input id="` + id_tempat_lahir + `" oninput="this.value = this.value.toUpperCase();" type="text" class="form-control" placeholder="Tempat Lahir" maxlength="100">
+                            </div>
+                        </div>
+
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label>Tanggal Lahir</label>
+                                <div id="` + id_i_tanggal_lahir + `" class="input-group date" data-target-input="nearest">
+                                    <input id="` + id_tanggal_lahir + `" type="text" class="form-control datetimepicker-input" data-target="#` + id_i_tanggal_lahir + `" data-toggle="datetimepicker"/>
+                                    <div class="input-group-append" data-target="#` + id_i_tanggal_lahir + `" data-toggle="datetimepicker">
+                                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label>No. Identitas Diri (KTP/SIM)</label>
+                                <input id="` + id_no_identitas + `" oninput="this.value = this.value.toUpperCase();" type="text" class="form-control" placeholder="No. Identitas Diri (KTP/SIM)" maxlength="16">
+                            </div>
+                        </div>
+
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label>No. Induk Karyawan</label>
+                                <input id="` + id_no_induk_karyawan + `" oninput="this.value = this.value.toUpperCase();" type="text" class="form-control" placeholder="No. Induk Karyawan" maxlength="100">
+                            </div>
+                        </div>
+
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label>Agama</label>
+                                <select id="` + id_agama + `" class="form-control select2bs4" style="width: 100%;">
+                                    <option value="islam">Islam</option>
+                                    <option value="protestan">Protestan</option>
+                                    <option value="katolik">Katolik</option>
+                                    <option value="hindu">Hindu</option>
+                                    <option value="budha">Budha</option>
+                                    <option value="konghucu">Konghucu</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label>Alamat</label>
+                                <input id="` + id_alamat_karyawan + `" oninput="this.value = this.value.toUpperCase();" type="text" class="form-control" placeholder="Alamat" maxlength="225">
+                            </div>
+                        </div>
+
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label>No. Hp</label>
+                                <input id="` + id_no_hp_karyawan + `" class="form-control" placeholder="No. Hp" maxlength="20" onkeypress="return onlyNumberKey(event);">
+                            </div>
+                        </div>
+
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label>Jabatan</label>
+                                <input id="` + id_jabatan + `" oninput="this.value = this.value.toUpperCase();" type="text" class="form-control" placeholder="Jabatan" maxlength="20">
+                            </div>
+                        </div>
+                        
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label>Pass Access</label>
+                                <select id="` + id_pass_access + `" class="form-control select2bs4" style="width: 100%;">
+                                    <option value="behandle">Behandle</option>
+                                    <option value="building">Building</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-12">
+                            <div class="form-group">
+                                <label>Scan Identitas</label>
+                                <div class="custom-file col-sm-12">
+                                    <input type="file" accept="image/jpeg, image/png" id="`+ id_scan_identitas + `">
+                                </div>
+                                <!--div class="custom-file col-sm-12">
+                                    <input type="file" class="custom-file-input" id="`+ id_scan_identitas + `">
+                                    <label class="form-control custom-file-label" for="`+ id_scan_identitas + `">Scan Identitas</label>
+                                </!--div-->
+                            </div>
+                        </div>
+
+                        <div class="col-sm-12">
+                            <div class="form-group">
+                                <label>Pas Foto</label>
+                                <div class="custom-file col-sm-12">
+                                    <input type="file" accept="image/jpeg, image/png" id="`+ id_pas_foto + `">
+                                </div>
+                                <!--div class="custom-file col-sm-121">
+                                    <input type="file" class="custom-file-input" id="`+ id_pas_foto + `">
+                                    <label class="form-control custom-file-label" for="`+ id_pas_foto + `">Pas Foto</label>
+                                </!--div-->
+                            </div>
+                        </div>
+
+                        <div class="col-sm-12">
+                            <div class="form-group">
+                                <label>Surat Pernyataan</label>
+                                <div class="custom-file col-sm-12">
+                                    <input type="file" accept="application/pdf" id="`+ id_surat_pernyataan + `">
+                                </div>
+                                <!--div class="custom-file col-sm-12 1">
+                                    <input type="file" class="custom-file-input" id="`+ id_surat_pernyataan + `">
+                                    <label class="form-control custom-file-label" for="`+ id_surat_pernyataan + `">Surat Pernyataan</label>
+                                </!--div-->
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                container.appendChild(div);
+                number = number + 1;
+            }
+
+            var container = document.getElementById("add_petugas");
+            var div_s = document.createElement('div');
+            div_s.id = "added_src";
+            container.appendChild(div_s);
+            add_scr_pass_access();
+
+        } else if (jumlah_petugas && jumlah_petugas < number) {
+            var sr_a = document.getElementById("added_src");
+            sr_a.parentNode.removeChild(sr_a);
+
+            for (i = number; i > jumlah_petugas; i--) {
+                var elem = document.getElementById("form_group_"+i);
+                elem.parentNode.removeChild(elem);
+                number = number - 1;
+            }
+        }
+    }
+
+    function add_scr_pass_access(){
+        for (let i = 0; i < number; i++) {
+            x = i + 1;
+            var s = "$('#i_tanggal_lahir_"+x+"').datetimepicker({\n"+
+                "format: 'L'\n"+
+            "});\n";
+            //"bsCustomFileInput.init();";
+            addCode(s);
+        }
+
+        var z = "$('.select2').select2()\n"+
+            "$('.select2bs4').select2({\n"+
+            "    theme: 'bootstrap4'\n"+
+            "})\n"+
+            "$('#datemask').inputmask('dd/mm/yyyy', { 'placeholder': 'dd/mm/yyyy' })\n"+
+            "$('#datemask2').inputmask('mm/dd/yyyy', { 'placeholder': 'mm/dd/yyyy' })\n"+
+            "$('[data-mask]').inputmask()\n"+
+            "bsCustomFileInput.init();";
+        addCode(z);
+    }
+
+    function addCode(code){
+        var JS = document.createElement('script');
+        JS.text = code;
+        document.getElementById("added_src").append(JS);
+    }
+
+    async function create_pass_access(){
+        showLoading();
+
+        let fd = new FormData();
+        var perusahaan = document.getElementById("perusahaan").value;
+        var npwp = document.getElementById("npwp").value;
+        var pj = document.getElementById("pj").value;
+        var nik_pj = document.getElementById("nik_pj").value;
+        var alamat_perusahaan = document.getElementById("alamat_perusahaan").value;
+        var no_telp = document.getElementById("no_telp").value;
+        var no_hp = document.getElementById("no_hp").value;
+        var jumlah_petugas = document.getElementById("jumlah_petugas").value;
+        var scan_surat_permohonan = $("#scan_surat_permohonan").prop("files")[0];
+        var scan_npwp = $("#scan_npwp").prop("files")[0];
+        var scan_nik_pj = $("#scan_nik_pj").prop("files")[0];
+
+        fd.append("cust_name", perusahaan);
+        fd.append("npwp", npwp);
+        fd.append("pj", pj);
+        fd.append("nik_pj", nik_pj);
+        fd.append("alamat_perusahaan", alamat_perusahaan);
+        fd.append("no_telp", no_telp);
+        fd.append("no_hp", no_hp);
+        fd.append("jumlah_petugas", jumlah_petugas);
+        fd.append("scan_surat_permohonan", scan_surat_permohonan);
+        fd.append("scan_npwp", scan_npwp);
+        fd.append("scan_nik_pj", scan_nik_pj);
+
+        for (i = 0; i < jumlah_petugas; i++) {
+            fd.append("nama_petugas_"+(i+1), document.getElementById("nama_petugas_"+(i+1)).value);
+            fd.append("tempat_lahir_"+(i+1), document.getElementById("tempat_lahir_"+(i+1)).value);
+            fd.append("tanggal_lahir_"+(i+1), document.getElementById("tanggal_lahir_"+(i+1)).value);
+            fd.append("no_identitas_"+(i+1), document.getElementById("no_identitas_"+(i+1)).value);
+            fd.append("no_induk_karyawan_"+(i+1), document.getElementById("no_induk_karyawan_"+(i+1)).value);
+            fd.append("agama_"+(i+1), document.getElementById("agama_"+(i+1)).value);
+            fd.append("alamat_karyawan_"+(i+1), document.getElementById("alamat_karyawan_"+(i+1)).value);
+            fd.append("no_hp_karyawan_"+(i+1), document.getElementById("no_hp_karyawan_"+(i+1)).value);
+            fd.append("jabatan_"+(i+1), document.getElementById("jabatan_"+(i+1)).value);
+            fd.append("pass_access_"+(i+1), document.getElementById("pass_access_"+(i+1)).value);
+            fd.append("scan_identitas_"+(i+1), $("#scan_identitas_"+(i+1)).prop("files")[0]);
+            fd.append("pas_foto_"+(i+1), $("#pas_foto_"+(i+1)).prop("files")[0]);
+            fd.append("surat_pernyataan_"+(i+1), $("#surat_pernyataan_"+(i+1)).prop("files")[0]);
+        }
+
+        await xhr.open("POST", "{{ url_for('pass_access_bp.pass_access') }}");
+        const body = fd;
+        xhr.timeout = 10000;
+        xhr.onload = () => {
+            hideLoading();
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                document.getElementById("perusahaan").value = "";
+                document.getElementById("npwp").value = "";
+                document.getElementById("pj").value = "";
+                document.getElementById("nik_pj").value = "";
+                document.getElementById("alamat_perusahaan").value = "";
+                document.getElementById("no_telp").value = "";
+                document.getElementById("no_hp").value = "";
+                document.getElementById("jumlah_petugas").value = "";
+                document.getElementById("scan_surat_permohonan").value = null;
+                document.getElementById("scan_npwp").value = null;
+                document.getElementById("scan_nik_pj").value = null;
+                add_petugas();
+                notif("success", xhr.responseText);
+            } else {
+                if (xhr.status == 999) {
+                    notif("error", xhr.responseText);
+                } else if (xhr.status == 888) {
+                    notif("warning", xhr.responseText);
+                }
+            }
+        };
+
+        xhr.ontimeout = (e) => {
+            hideLoading();
+            notif("warning", "Proses Gagal");
+        };
+
+        xhr.send(body);
+    }
+</script>

@@ -1,0 +1,67 @@
+<br>
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card card-primary">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-sm-2 col-md-3">
+                                <div class="form-group">
+                                    <input id="input_data_gatein_impor" onkeypress="return process_gatein_impor_enter(event)" type="text" class="form-control" style="text-transform:uppercase;">
+                                </div>
+                            </div>
+
+                            <div class="col-sm-2 col-md-2">
+                                <button type="button" id="btn_process_impor" class="btn btn-block btn-primary" onclick="process_gatein_impor_val()">Process</button>
+                            </div>
+                        </div>
+
+                        <div class="form-group" id="content_data"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    $( document ).ready(function() {
+        document.getElementById("btn_process_impor").style.display='none';
+        document.getElementById("input_data_gatein_impor").focus();
+    });
+
+    function process_gatein_impor_enter(evt) {
+        if (evt.keyCode === 13) {
+            process_gatein_impor();
+        }
+    }
+
+    async function process_gatein_impor() {
+        var input_data = document.getElementById("input_data_gatein_impor").value;
+        var fd = new FormData();
+        showLoading();
+        fd.append("input_data", input_data);
+
+        await xhr.open("POST", "{{ url_for('gatein_bp.report_gatein_impor') }}");
+        const body = fd;
+        xhr.onload = () => {
+            hideLoading();
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                notif("success", "Proses Berhasil");
+                document.getElementById("content_data").style.height = "470px";
+                $('#content_data').html(xhr.response);
+            } else {
+                document.getElementById("content_data").innerHTML = "";
+                if (xhr.status == 999) {
+                    notif("error", xhr.responseText);
+                } else if (xhr.status == 888) {
+                    notif("warning", xhr.responseText);
+                }
+            }
+            document.getElementById("input_data_gatein_impor").value = "";
+            document.getElementById("input_data_gatein_impor").focus();
+        };
+        xhr.send(body);
+    }
+</script>

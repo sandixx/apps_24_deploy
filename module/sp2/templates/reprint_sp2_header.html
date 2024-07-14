@@ -1,0 +1,65 @@
+<br>
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card card-primary">
+                    <!--div class="card-header">
+                        <h3 class="card-title">Search</h3>
+                    </!--div-->
+                    
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-sm-2 col-md-3">
+                                <div class="form-group">
+                                    <input id="find_sp2" onkeypress="return search_sp2_enter(event)" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" type="text" class="form-control" placeholder="Invoice No." name="input_box" style="text-transform:uppercase;">
+                                </div>
+                            </div>
+
+                            <div class="col-sm-2 col-md-1">
+                                <button type="button" class="btn btn-block btn-primary" onclick="search_sp2()">Search</button>
+                            </div>
+                        </div>
+
+                        <div class="form-group" id="content_data"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    function search_sp2_enter(evt) {
+        if (evt.keyCode === 13) {
+            seach_sp2();
+        }
+    }
+
+    async function search_sp2() {
+        var input_data = document.getElementById("find_sp2").value;
+
+        if (input_data) {
+            var fd = new FormData();
+            showLoading();
+            fd.append("val", input_data);
+
+            await xhr.open("POST", "{{ url_for('sp2_bp.reprint_sp2') }}");
+            const body = fd;
+            xhr.onload = () => {
+                hideLoading();
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                    $('#content_data').html(xhr.response);
+                } else {
+                    if (xhr.status == 999) {
+                        notif("error", xhr.responseText);
+                    }
+                }
+            };
+            xhr.send(body);
+        } else {
+            notif("warning", "Harap Isi Data Yang Ingin Dicari");
+            return;
+        }
+    }
+</script>

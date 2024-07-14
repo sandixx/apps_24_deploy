@@ -1,0 +1,112 @@
+<table id="table_inv" class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th style="font-size:12px;">NO</th>
+            <th style="font-size:12px;">TYPE</th>
+            <th style="font-size:12px;">TRX ID</th>
+            <th style="font-size:12px;">PROFORMA</th>
+            <th style="font-size:12px;">NPWP</th>
+            <th style="font-size:12px;">CUST NAME</th>
+            <th style="font-size:12px;">TOTAL</th>
+            <th style="font-size:12px;">CREATED</th>
+            <th style="font-size:12px;">::</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for r in data %}
+        <tr>
+            <td style="font-size:12px;">{{ r.no }}</td>
+            <td style="font-size:12px;">{{ r.type }}</td>
+            <td style="font-size:12px;">{{ r.trx_id }}</td>
+            <td style="font-size:12px;">{{ r.transaction_id }}</td>
+            <td style="font-size:12px;">{{ r.npwp }}</td>
+            <td style="font-size:12px;">{{ r.cust_name }}</td>
+            <td style="font-size:12px;">{{ "Rp. {:,.0f}".format(r.total_amount) }}</td>
+            <td style="font-size:12px;">{{ r.created }}</td>
+            <td style="font-size:12px;"><button type="button" id="{{ r.transaction_id }}_{{ r.total_amount }}" class="btn btn-block btn-primary" onclick="pop_pay();">Process</button></td>
+        </tr>
+        {% endfor %}
+    </tfoot>
+</table>
+
+<div class="modal fade" id="cancel_confirm">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-body">
+                <p id="trp"></p>
+            </div>
+
+            <div class="modal-footer justify-content-between">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
+                <button type="button" class="btn btn-primary" onclick="process_pay();">Yes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        $('#table_inv').DataTable({
+            "paging": true,
+            "lengthChange": false,
+            "searching": true,
+            "ordering": false,
+            "info": false,
+            "autoWidth": false,
+            "responsive": true,
+        });
+    });
+
+    var tr_cs = "";
+
+    var rupiah = (number)=>{
+        return new Intl.NumberFormat("id-ID", {
+            style: "currency",
+            currency: "IDR"
+        }).format(number).replace(/(\.|,)00$/g, '');
+    }
+
+    function pop_pay() {
+        zz = document.activeElement.id;
+        const arr = zz.split("_");
+        tr_cs = arr[0]
+        document.getElementById("trp").innerText = "Lakukan Proses Pembayaran " + tr_cs + " Dengan Total " + rupiah(arr[1]) + " ???"
+        $('#cancel_confirm').modal('toggle');
+    }
+
+    async function process_pay() {
+        transaction_id = tr_cs;
+        showLoading();
+        var fd = new FormData();
+        fd.append("transaction_id", transaction_id);
+
+        await xhr.open("POST", "{{ url_for('payment_impor_bp.payment_impor') }}");
+        const body = fd;
+        xhr.timeout = 10000;
+        xhr.onload = () => {
+            hideLoading();
+            $('#cancel_confirm').modal('hide');
+
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                notif("success", xhr.responseText);
+                get_list_payment_imp();
+            } else {
+                if (xhr.status == 999) {
+                    notif("error", xhr.responseText);
+                } else if (xhr.status == 888) {
+                    notif("warning", xhr.responseText);
+                } else if (xhr.status == 401) {
+                    window.location = "{{ url_for('auth_bp.logout') }}";
+                }
+            }
+            tr_cs = "";
+        };
+        
+        xhr.ontimeout = (e) => {
+            on_timeout();
+        };
+        
+        xhr.send(body);
+    }
+</script>

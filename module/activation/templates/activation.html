@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+    <style>
+        .bg {
+            background-image: url("https://cdn.grahasegaramedan.co.id/img/cont_bg.jpg");
+            height: 100%;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+    </style>
+
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Activation - Graha Segara</title>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+        <link rel="stylesheet" href="{{ url_for('static', filename='fontawesome-free/css/all.min.css') }}">
+        <link rel="stylesheet" href="https://cdn.grahasegaramedan.co.id/icheck-bootstrap/icheck-bootstrap.min.css">
+        <link rel="stylesheet" href="https://cdn.grahasegaramedan.co.id/css/adminlte.min.css">
+        <link rel="stylesheet" href="https://cdn.grahasegaramedan.co.id/toastr/toastr.min.css">
+        <link rel="stylesheet" href="https://cdn.grahasegaramedan.co.id/css/pre2.css">
+        <link rel="icon" href="https://cdn.grahasegaramedan.co.id/img/gs.png" type="image/gif" sizes="16x16">
+        <link rel="apple-touch-icon" href="https://cdn.grahasegaramedan.co.id/img/gs.png">
+        <link rel="icon" href="https://cdn.grahasegaramedan.co.id/favicon.ico" type="image/x-icon">
+    </head>
+
+    <body class="hold-transition register-page bg">
+        <div id="loading-overlay" hidden></div>
+        <div id="loader-wrapper" style="background-color: #212121; opacity: 0.5;">
+            <div id="loader"></div>
+        </div>
+        
+        <div class="register-box">
+            <div class="card card-outline card-primary">
+                <div class="card-header text-center">
+                    <a href="https://grahasegaramedan.co.id" class="h1">Graha Segara</a>
+                </div>
+
+                <div class="card-body">
+                    <p>Congratulation! Your account has been successfully created</p>
+                    <p>But your account has not been activated</p>
+                    <p>Please check your email and visit the activation link that was sent</p>
+                    <p>Or resend the activation link</p>
+
+                    <form >
+                        <div class="input-group mb-3">
+                            <input type="text" class="form-control" placeholder="Email" id="email" name="email" maxlength="100">
+                            <div class="input-group-append">
+                                <div class="input-group-text">
+                                    <span class="fas fa-envelope"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-4">
+                                <button type="button" class="btn btn-block btn-primary" onclick="resend()">Resend</button>
+                            </div>
+
+                            <div class="col-8">
+                                <a href="{{ url_for('auth_bp.login') }}" class="btn btn-light btn-block">Back to Login</a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="modal-msg">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Message</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p id="msg"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script type="text/javascript" src="https://cdn.grahasegaramedan.co.id/jquery/jquery.min.js"></script>
+        <script type="text/javascript" src="https://cdn.grahasegaramedan.co.id/bootstrap/js/bootstrap.bundle.min.js"></script>
+        <script type="text/javascript" src="https://cdn.grahasegaramedan.co.id/js/adminlte.min.js"></script>
+        <script type="text/javascript" src="https://cdn.grahasegaramedan.co.id/js/loader.js"></script>
+        <script type="text/javascript" src="https://cdn.grahasegaramedan.co.id/js/pages/dis.js"></script>
+        <script type="text/javascript" src="https://cdn.grahasegaramedan.co.id/toastr/toastr.min.js"></script>
+
+        <script>
+            $(document).ready(function(){
+                hideLoading();
+            });
+
+            function notif(info, data) {
+                if (info == "warning") {
+                    toastr.warning(data);
+                    toastr.s
+                } else if (info == "error") {
+                    toastr.error(data);
+                }
+            }
+
+            var log = document.getElementById("email");
+            log.addEventListener("keypress", function(event) {
+                if (event.key === "Enter") {
+                    resend();
+                }
+            });
+
+            async function resend() {
+                showLoading();
+                var email = document.getElementById("email").value;
+                var fd = new FormData();
+                fd.append("email", email);
+
+                const xhr = new XMLHttpRequest();
+                await xhr.open("POST", "{{ url_for('activation_bp.activation') }}");
+                xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token() }}");
+                const body = fd;
+                xhr.onload = () => {
+                    hideLoading();
+                    if (xhr.readyState == 4 && xhr.status == 200) {
+                        document.getElementById("email").value = "";
+                        document.getElementById('email').style.background = 'white';
+                        document.getElementById('email').style.color = '#495057';
+                        document.getElementById("msg").innerHTML = "Email Telah Terkirim <br>Silahkan Cek Email Anda Untuk Aktivasi";
+                        $('#modal-msg').modal('toggle');
+                    } else {
+                        if (xhr.status == 999) {
+                            notif("error", xhr.responseText);
+                        }
+                    }
+                };
+                xhr.send(body);
+            }
+        </script>
+
+        <noscript>
+            <meta http-equiv="refresh" content="0;url='https://grahasegaramedan.co.id'">
+        </noscript>
+
+    </body>
+</html>

@@ -1,0 +1,67 @@
+<section class="content">
+    <div class="container-fluid">
+        <table id="table_jo_cont" class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th style="font-size:12px;">NO</th>
+                    <th style="font-size:12px;">NPE</th>
+                    <th style="font-size:12px;">PEB</th>
+                    <th style="font-size:12px;">CUSTOMER</th>
+                    <th style="font-size:12px;">NPWP</th>
+                    <th style="font-size:12px;">VESSEL</th>
+                    <th style="font-size:12px;">CONTAINER</th>
+                    <th style="font-size:12px;">::</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for r in data %}
+                <tr>
+                    <td style="font-size:12px;">{{ r.no }}</td>
+                    <td style="font-size:12px;">{{ r.npe }}</td>
+                    <td style="font-size:12px;">{{ r.peb }}</td>
+                    <td style="font-size:12px;">{{ r.cust_name }}</td>
+                    <td style="font-size:12px;">{{ r.npwp }}</td>
+                    <td style="font-size:12px;">{{ r.vessel }}</td>
+                    <td style="font-size:12px;"><button type="button" id="{{r.trx}}" class="btn btn-block btn-primary" onclick="list_container();">List</button></td>
+                    <td style="font-size:12px;"><button type="button" id="{{r.trx}}" class="btn btn-block btn-primary" onclick="list_container();">Approve</button></td>
+                </tr>
+                {% endfor %}
+            </tfoot>
+        </table>
+    </div>
+</section>
+
+{% for r in data %}
+<div class="modal fade" id="l_{{r.trx}}">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">List Container</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body" id="data_list_cont">
+                <table style="text-align: center; width:100%">
+                    <tbody>
+                    {% for z in r.cont_id %}
+                        <tr>
+                            <td>{{ z }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
+
+<script>
+    function list_container() {
+        var id = document.activeElement.id;
+        $('#l_'+id).modal('toggle');
+    }
+</script>

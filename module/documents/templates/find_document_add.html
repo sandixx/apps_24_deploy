@@ -1,0 +1,69 @@
+<br>
+<div class="card-body">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card card-primary">
+                <div class="card-header">
+                    <h3 class="card-title">Search</h3>
+                </div>
+
+                <div class="card-body">
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>Container ID</label>
+                            <input id="input_data_search_cntr_add" onkeypress="return search_add_cntr_enter(event)" placeholder="Container ID" type="text" class="form-control" style="text-transform:uppercase;">
+                        </div>
+                    </div>
+
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <button type="button" class="btn btn-block btn-primary" onclick="seach_cntr_add_val()">Search</button>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="card-body">
+                            <div class="form-group" id="content_add_cntr"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function search_add_cntr_enter(evt) {
+        if (evt.keyCode === 13) {
+            seach_cntr_add_val();
+        }
+    }
+
+    async function seach_cntr_add_val() {
+        var input_data = document.getElementById("input_data_search_cntr_add").value;
+
+        if (input_data) {
+            var fd = new FormData();
+            showLoading();
+            fd.append("val", input_data);
+
+            await xhr.open("POST", "{{ url_for('document_bp.find_container_add') }}");
+            const body = fd;
+            xhr.onload = () => {
+                hideLoading();
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                    $('#content_add_cntr').html(xhr.response);
+                } else {
+                    if (xhr.status == 999) {
+                        document.getElementById("content_add_cntr").innerHTML = "";
+                        notif("error", xhr.responseText);
+                    }
+                }
+            };
+            xhr.send(body);
+        } else {
+            notif("warning", "Harap Isi Data Yang Ingin Dicari");
+            document.getElementById("content_edit_doc").innerHTML = "";
+        }
+    }
+</script>

@@ -1,0 +1,194 @@
+<br>
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card card-primary">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="card card-primary">
+                                    <div class="card-header">
+                                        <h3 class="card-title">Account</h3>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="col-sm-12">
+                                            <div class="form-group">
+                                                <label>Access</label>
+                                                <select id="access_id" class="form-control select2bs4" style="width: 100%;" onchange="change_access();">
+                                                    {% for r in access_data %}
+                                                    <option value="{{r.access_id}}">{{ r.access_name }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-sm-12">
+                                            <div class="form-group">
+                                                <label>Name</label>
+                                                <input id="name_user" type="text" class="form-control" placeholder="Name" maxlength="40" style="text-transform:uppercase;">
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="col-sm-12">
+                                            <div class="form-group">
+                                                <label>Username</label>
+                                                <input id="user" type="text" class="form-control" placeholder="Username" maxlength="20">
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="col-sm-12">
+                                            <div class="form-group">
+                                                <label>Password</label>
+                                                <input id="pw" type="text" class="form-control" placeholder="Password" maxlength="25">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-sm-6" id="data_customer">
+                                <div class="card card-primary">
+                                    <div class="card-header">
+                                        <h3 class="card-title">Customer</h3>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="col-sm-12">
+                                            <div class="form-group">
+                                                <label>NPWP</label>
+                                                <input id="npwp" type="text" class="form-control" placeholder="NPWP" maxlength="20" onkeyup="npwp_length();" onkeydown="formatNpwp();">
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="col-sm-12">
+                                            <div class="form-group">
+                                                <label>Alamat</label>
+                                                <textarea id="address" rows="3" class="form-control" style="text-transform:uppercase;"></textarea>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-sm-12">
+                                            <div class="form-group">
+                                                <label for="">Email</label>
+                                                <input type="text" class="form-control" placeholder="Email" id="email" maxlength="100" oninput="email_check_customer()">
+                                            </div>
+                                        </div>
+
+                                        <div class="col-sm-12">
+                                            <div class="form-group">
+                                                <label for="">Phone Number</label>
+                                                <input type="text" class="form-control" placeholder="Phone Number" id="phone_number" maxlength="25" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');">
+                                            </div>
+                                        </div>
+
+                                        <div class="col-sm-12">
+                                            <div class="form-group">
+                                                <label for="">Mobile Number</label>
+                                                <input type="text" class="form-control" placeholder="Mobile Number" id="mobile_number" maxlength="25" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-3">
+                            <button id="button_create" type="button" class="btn btn-block btn-primary" onclick="create_account_p()">Create Account</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    $('.select2').select2()
+
+    $('.select2bs4').select2({
+        theme: 'bootstrap4'
+    })
+
+    $( document ).ready(function() {
+        change_access();
+    });
+
+    function change_access() {
+        var access_id = document.getElementById("access_id").value;
+        
+        if (access_id == '7') {
+            document.getElementById("data_customer").style.display='block';
+        } else {
+            document.getElementById("data_customer").style.display='none';
+        }
+    }
+
+    function email_check_customer() {
+        var email = document.getElementById("email").value;
+        var mailformat = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
+
+        if (email.match(mailformat)) {
+            document.getElementById('email').style.background = 'white';
+            document.getElementById('email').style.color = '#495057';
+        } else {
+            document.getElementById('email').style.background = 'red';
+            document.getElementById('email').style.color = 'white';
+        }
+    }
+
+    async function create_account_p(){
+        showLoading();
+        var access_id = document.getElementById("access_id").value;
+        var name = document.getElementById("name_user").value;
+        var user = document.getElementById("user").value;
+        var password = document.getElementById("pw").value;
+        var address = document.getElementById("address").value;
+        var npwp = document.getElementById("npwp").value;
+        var email = document.getElementById("email").value;
+        var phone_number = document.getElementById("phone_number").value;
+        var mobile_number = document.getElementById("mobile_number").value;
+
+        var fd = new FormData();
+        fd.append("access_id", access_id);
+        fd.append("name", name);
+        fd.append("user", user);
+        fd.append("password", password);
+        fd.append("address", address);
+        fd.append("npwp", npwp);
+        fd.append("email", email);
+        fd.append("phone_number", phone_number);
+        fd.append("mobile_number", mobile_number);
+
+        await xhr.open("POST", "{{ url_for('account_bp.add_account') }}");
+        const body = fd;
+        xhr.timeout = 10000;
+        xhr.onload = () => {
+            hideLoading();
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                notif("success", xhr.responseText);
+                document.getElementById("name_user").value = "";
+                document.getElementById("user").value = "";
+                document.getElementById("pw").value = "";
+                document.getElementById("address").value = "";
+                document.getElementById("npwp").value = "";
+                document.getElementById("email").value = "";
+                document.getElementById("phone_number").value = "";
+                document.getElementById("mobile_number").value = "";
+            } else {
+                if (xhr.status == 999) {
+                    notif("error", xhr.responseText);
+                } else if (xhr.status == 888) {
+                    notif("warning", xhr.responseText);
+                } else if (xhr.status == 401) {
+                    window.location = "{{ url_for('auth_bp.logout') }}";
+                }
+            }
+        };
+
+        xhr.ontimeout = (e) => {
+            on_timeout();
+        };
+
+        xhr.send(body);
+    }
+</script>

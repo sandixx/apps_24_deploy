@@ -1,0 +1,60 @@
+<table id="trgoe" class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th style="font-size:12px;">NPE</th>
+            <th style="font-size:12px;">PEB</th>
+            <th style="font-size:12px;">NPWP</th>
+            <th style="font-size:12px;">VESSEL</th>
+            <th style="font-size:12px;">CONT ID</th>
+            <th style="font-size:12px;">SIZE</th>
+            <th style="font-size:12px;">BERAT KG</th>
+            <th style="font-size:12px;">SEAL</th>
+            <th style="font-size:12px;">LOC</th>
+            <th style="font-size:12px;">GATE OUT</th>
+        </tr>
+    </thead>
+    
+    <tbody>
+        {% for r in data %}
+        <tr>
+            <td style="font-size:12px;">{{ r[0] }}</td>
+            <td style="font-size:12px;">{{ r[2] }}</td>
+            <td style="font-size:12px;">{{ r[4] }}</td>
+            <td style="font-size:12px;">{{ r[5] }}</td>
+            <td style="font-size:12px;">{{ r[7] }}</td>
+            <td style="font-size:12px;">{{ r[8] }}</td>
+            <td style="font-size:12px;">{{ r[9] }}</td>
+            <td style="font-size:12px;">{{ r[10] }}</td>
+            <td style="font-size:12px;">{{ r[12] }}</td>
+            <td style="font-size:12px;">{{ r[11] }}</td>
+        </tr>
+        {% endfor %}
+    </tfoot>
+</table>
+
+<br>
+
+<div class="row">
+    <div class="col-sm-1">
+        <a download="Report Gate Out Ekspor {{periode}}" class="btn btn-block btn-primary" href="data:application/pdf;base64,{{pdf}}">PDF</a>
+    </div>
+
+    <!--div class="col-sm-1">
+        <a download="Report Pass Aceess {{tipe}} {{periode}}" class="btn btn-block btn-primary" href="data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,{{excel_data}}">Excel</a>
+    </!--div-->
+
+</div>
+
+<script>
+    $(function () {
+        $('#trgoe').DataTable({
+            "paging": true,
+            "lengthChange": false,
+            "searching": true,
+            "ordering": false,
+            "info": true,
+            "autoWidth": false,
+            "responsive": true,
+        });
+    });
+</script>

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta content="width=device-width, initial-scale=1.0" name="viewport">
+        <title>Kuesioner Pelanggan</title>
+        <meta content="" name="description">
+        <meta content="" name="keywords">
+
+        <link href="https://cdn.grahasegaramedan.co.id/img/gs.png" rel="icon">
+        <link href="https://cdn.grahasegaramedan.co.id/img/gs.png" rel="apple-touch-icon">
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Raleway:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+
+        <link href="{{ url_for('static', filename='welcome_client/vendor/aos/aos.css') }}" rel="stylesheet">
+        <link href="{{ url_for('static', filename='welcome_client/vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+        <link href="{{ url_for('static', filename='welcome_client/vendor/bootstrap-icons/bootstrap-icons.css') }}" rel="stylesheet">
+        <link href="{{ url_for('static', filename='welcome_client/vendor/boxicons/css/boxicons.min.css') }}" rel="stylesheet">
+        <link href="{{ url_for('static', filename='welcome_client/vendor/glightbox/css/glightbox.min.css') }}" rel="stylesheet">
+        <link href="{{ url_for('static', filename='welcome_client/vendor/swiper/swiper-bundle.min.css') }}" rel="stylesheet">
+        <link href="{{ url_for('static', filename='welcome_client/css/style.css') }}" rel="stylesheet">
+        <link href="{{ url_for('static', filename='welcome_client/css/stars.css') }}" rel="stylesheet">
+
+        <link rel="stylesheet" href="https://cdn.grahasegaramedan.co.id/css/adminlte.min.css">
+        <link rel="stylesheet" href="https://cdn.grahasegaramedan.co.id/select2/css/select2.min.css">
+        <link rel="stylesheet" href="https://cdn.grahasegaramedan.co.id/select2-bootstrap4-theme/select2-bootstrap4.min.css">
+        <link rel="stylesheet" href="https://cdn.grahasegaramedan.co.id/toastr/toastr.min.css">
+    </head>
+    
+    <body>
+        <div id="inner_data">
+            
+        </div>
+        
+        <script type="text/javascript" src="https://cdn.grahasegaramedan.co.id/js/socket.io.js"></script>
+        <script type="text/javascript" src="{{ url_for('static', filename='welcome_client/vendor/aos/aos.js') }}"></script>
+        <script type="text/javascript" src="{{ url_for('static', filename='welcome_client/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+        <script type="text/javascript" src="{{ url_for('static', filename='welcome_client/vendor/glightbox/js/glightbox.min.js') }}"></script>
+        <script type="text/javascript" src="{{ url_for('static', filename='welcome_client/vendor/isotope-layout/isotope.pkgd.min.js') }}"></script>
+        <script type="text/javascript" src="{{ url_for('static', filename='welcome_client/vendor/swiper/swiper-bundle.min.js') }}"></script>
+        <script type="text/javascript" src="{{ url_for('static', filename='welcome_client/js/main.js') }}"></script>
+        <script type="text/javascript" src="https://cdn.grahasegaramedan.co.id/jquery/jquery.min.js"></script>
+        <script type="text/javascript" src="https://cdn.grahasegaramedan.co.id/toastr/toastr.min.js"></script>
+
+        <script>
+            var socket = io();
+            var client = "{{ client }}";
+            console.log(client);
+            const xhr = new XMLHttpRequest();
+
+            function notif(info, data) {
+                if (info == "success") {
+                    toastr.success(data);
+                } else if (info == "info") {
+                    toastr.info(data);
+                } else if (info == "warning") {
+                    toastr.warning(data);
+                } else if (info == "error") {
+                    toastr.error(data);
+                }
+            }
+
+            socket.on("connect", function() {
+                socket.emit("user_join", client);
+            })
+
+            if (client == "1") {
+                socket.on('client_1_data', function(msg) {
+                    get_data_client();
+                });
+            } else if (client == "2") {
+                socket.on('client_2_data', function(msg) {
+                    get_data_client();
+                });
+            }
+
+            $( document ).ready(function() {
+                get_home();
+            });
+
+            async function get_home() {
+                var fd = new FormData();
+                fd.append("loket", client);
+
+                await xhr.open("POST", "{{ url_for('kuesioner_bp.home_client') }}");
+                const body = fd;
+                xhr.onload = () => {
+                    if (xhr.readyState == 4 && xhr.status == 200) {
+                        $('#inner_data').html(xhr.response);
+                    } else {
+                        console.log(xhr.response);
+                    }
+                };
+                xhr.send(body);
+            }
+
+            async function get_data_client() {
+                var fd = new FormData();
+                fd.append("client", client);
+
+                await xhr.open("POST", "{{ url_for('kuesioner_bp.progress_client') }}");
+                const body = fd;
+                xhr.onload = () => {
+                    if (xhr.readyState == 4 && xhr.status == 200) {
+                        $('#inner_data').html(xhr.response);
+                    }
+                };
+                xhr.send(body);
+            }
+        </script>
+    </body>
+</html>

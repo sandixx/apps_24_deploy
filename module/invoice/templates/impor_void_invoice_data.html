@@ -1,0 +1,166 @@
+<div class="row">
+    <div class="col-md-6">
+        {% if session['external_access'] == "NO" %}
+        <div class="form-group row">
+            <label class="col-sm-3 col-form-label">TRX ID</label>
+            <div class="col-sm-9">
+                <input type="text" class="form-control" value="{{data.trx}}" disabled>
+            </div>
+        </div>
+        {% endif %}
+
+        <div class="form-group row">
+            <label id="trx_id" class="col-sm-9 col-form-label" hidden>{{data.trx}}</label>
+            <label class="col-sm-3 col-form-label">No. Doc</label>
+            <div class="col-sm-9">
+                <input type="text" id="no_doc" class="form-control" value="{{data.no_doc}}" disabled>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-sm-3 col-form-label">Tanggal Doc</label>
+            <div class="col-sm-9">
+                <input type="text" id="tgl_doc" class="form-control" value="{{data.tgl_doc}}" disabled>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-sm-3 col-form-label">NPWP</label>
+            <div class="col-sm-9">
+                <input type="text" id="npwp" class="form-control" value="{{data.npwp}}" disabled>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-sm-3 col-form-label">Customer</label>
+            <div class="col-sm-9">
+                <input type="text" id="cust_name" class="form-control" value="{{data.cust_name}}" disabled>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-sm-3 col-form-label">Faktur Pajak</label>
+            <div class="col-sm-9">
+                <input type="text" id="cust_name" class="form-control" value="{{data.tax_nbr}}" disabled>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-sm-3 col-form-label">Terminal</label>
+            <div class="col-sm-9">
+                <input type="text" id="terminal_code" class="form-control" value="{{data.terminal_code}}" disabled>
+                <input type="text" id="eq_type" class="form-control" value="{{data.eq_type}}" disabled hidden>
+                <input type="text" id="invoice_no_r" class="form-control" value="{{invoice_no}}" disabled hidden>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <div class="col-sm-6">
+                <button type="button" id="{{data.trx}}" class="btn btn-block btn-primary" onclick="list_container_invoice();">List Cont</button>
+            </div>
+
+            <div class="col-sm-6">
+                <button type="button" class="btn btn-block btn-danger" onclick="pop_cancel();">Void Invoice</button>
+            </div>
+        </div>
+
+        <div class="modal fade" id="i_{{data.trx}}">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">List Container</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+
+                    <div class="modal-body" id="data_list_cont_pre_invoice">
+                        <table style="text-align: center; width:100%">
+                            <tbody>
+                                <tr>
+                                    <th>No</th>
+                                    <th>Container</th>
+                                    <th>Size</th>
+                                    <th>Type</th>
+                                    <th>Status</th>
+                                </tr>
+                            {% for z in data.cont_id %}
+                                <tr>
+                                    <td>{{ z.no }}</td>
+                                    <td>{{ z.cont_id }}</td>
+                                    <td>{{ z.size }}</td>
+                                    <td>{{ z.type }}</td>
+                                    <td>{{ z.status }}</td>
+                                </tr>
+                            {% endfor %}
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="cancel_confirm">
+            <div class="modal-dialog modal-sm"">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <p>Void Invoice No. <b>{{invoice_no}}</b> ???</p>
+                        <input type="password" id="pass_cancel" class="form-control" placeholder="Masukan Password">
+                    </div>
+
+                    <div class="modal-footer justify-content-between">
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
+                        <button type="button" class="btn btn-primary" onclick="void_invoice();">Yes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function list_container_invoice() {
+        var id = document.activeElement.id;
+        $('#i_'+id).modal('toggle');
+    }
+
+    function pop_cancel() {
+        $('#cancel_confirm').modal('toggle');
+    }
+
+    async function void_invoice() {
+        var invoice_no = document.getElementById("invoice_no").value;
+        var pass_cancel = document.getElementById("pass_cancel").value;
+
+        var fd = new FormData();
+        showLoading();
+        fd.append("invoice_no", invoice_no);
+        fd.append("pass_cancel", pass_cancel);
+
+        await xhr.open("PUT", "{{ url_for('invoice_impor_bp.void_invoice_impor') }}");
+        const body = fd;
+        xhr.timeout = 10000;
+        xhr.onload = () => {
+            hideLoading();
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                notif("success", xhr.responseText);
+                $('#cancel_confirm').modal('hide');
+                document.getElementById("data_void_invoice_impor").innerHTML = "";
+            } else {
+                if (xhr.status == 999) {
+                    notif("error", xhr.responseText);
+                } else if (xhr.status == 888) {
+                    notif("warning", xhr.responseText);
+                } else if (xhr.status == 401) {
+                    window.location = "{{ url_for('auth_bp.logout') }}";
+                }
+            }
+        };
+
+        xhr.ontimeout = (e) => {
+            on_timeout();
+        };
+
+        xhr.send(body);
+    }
+</script>

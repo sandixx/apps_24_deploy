@@ -1,0 +1,65 @@
+<br>
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card card-primary">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-sm-2 col-md-2">
+                                <div class="form-group">
+                                    <div class="input-group">
+                                        <select id="opt_list_pass_access" class="form-control select2" style="width: 100%;">
+                                            <option value="perusahaan" selected="selected">Perusahaan</option>
+                                            <option value="petugas">Petugas</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-2 col-md-1">
+                                <button type="button" class="btn btn-block btn-primary" onclick="get_list_pass_access()">OK</button>
+                            </div>
+                        </div>
+
+                        <div class="form-group" id="content_list_pass_access"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    async function get_list_pass_access() {
+        var opt_list = document.getElementById("opt_list_pass_access").value;
+
+        var fd = new FormData();
+        showLoading();
+        fd.append("opt_list", opt_list)
+
+        await xhr.open("POST", "{{ url_for('pass_access_bp.list_pass_access') }}");
+        const body = fd;
+        xhr.timeout = 10000;
+        xhr.onload = () => {
+            hideLoading();
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                $('#content_list_pass_access').html(xhr.response);
+            } else {
+                document.getElementById("content_list_pass_access").value = "";
+                if (xhr.status == 999) {
+                    notif("error", xhr.responseText);
+                } else if (xhr.status == 888) {
+                    notif("warning", xhr.responseText);
+                }
+            }
+        };
+
+        xhr.ontimeout = (e) => {
+            hideLoading();
+            notif("warning", "Proses Gagal");
+        };
+        
+        xhr.send(body);
+    }
+</script>

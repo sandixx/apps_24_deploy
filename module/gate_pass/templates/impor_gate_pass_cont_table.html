@@ -1,0 +1,79 @@
+<table id="table_inv" class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th style="font-size:12px;">NO</th>
+            <th style="font-size:12px;">TRX</th>
+            <th style="font-size:12px;">CONT</th>
+            <th style="font-size:12px;">INVOICE</th>
+            <th style="font-size:12px;">PROFORMA</th>
+            <th style="font-size:12px;">PAYMENT DATE</th>
+            <th style="font-size:12px;">::</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for r in data %}
+        <tr>
+            <td style="font-size:12px;">{{ r.no }}</td>
+            <td style="font-size:12px;">{{ r.trx_id }}</td>
+            <td style="font-size:12px;">{{ r.cont_id }}</td>
+            <td style="font-size:12px;">{{ r.invoice }}</td>
+            <td style="font-size:12px;">{{ r.payment_no }}</td>
+            <td style="font-size:12px;">{{ r.payment_date }}</td>
+            <td style="font-size:12px;"><button type="button" class="btn btn-block btn-primary" onclick="print_gate_pass('{{ r.cont_id }}_{{ r.invoice }}');">Print</button></td>
+        </tr>
+        {% endfor %}
+    </tfoot>
+</table>
+
+<script>
+    $(function () {
+        $('#table_inv').DataTable({
+            "paging": true,
+            "lengthChange": false,
+            "searching": true,
+            "ordering": false,
+            "info": false,
+            "autoWidth": false,
+            "responsive": true,
+        });
+    });
+
+    async function print_gate_pass(data_i) {
+        const myArray = data_i.split("_");
+        cont_id = myArray[0];
+        invoice_no = myArray[1];
+        showLoading();
+        var fd = new FormData();
+        fd.append("opt", "container");
+        fd.append("cont_id", cont_id);
+        fd.append("invoice_no", invoice_no);
+
+        await xhr.open("POST", "{{ url_for('gate_pass_impor_bp.gate_pass_impor') }}");
+        const body = fd;
+        xhr.timeout = 10000;
+        xhr.onload = () => {
+            hideLoading();
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                document.getElementById("content_data_gp").style.height = "650px";
+                $('#content_data_gp').html(xhr.response);
+            } else {
+                document.getElementById("content_data_gp").style.height = "0px";
+                if (xhr.status == 999) {
+                    notif("error", xhr.responseText);
+                } else if (xhr.status == 888) {
+                    notif("warning", xhr.responseText);
+                } else if (xhr.status == 401) {
+                    window.location = "{{ url_for('auth_bp.logout') }}";
+                }
+            }
+            get_gp_data("container");
+        };
+        
+        xhr.ontimeout = (e) => {
+            on_timeout();
+        };
+        
+        xhr.send(body);
+    }
+</script>

@@ -1,0 +1,28 @@
+<table id="table_penarikan" class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th style="font-size:12px;">::</th>
+            <th style="font-size:12px;">CONTAINER</th>
+            <th style="font-size:12px;">SIZE</th>
+            <th style="font-size:12px;">LOC</th>
+            <th style="font-size:12px;">NO DOC</th>
+    </thead>
+    
+    <tbody>
+        {% for r in data %}
+        <tr>
+            <td style="font-size:12px;"><input type="radio" name="radio_pilih_cont" id="{{r.cont_id}}_{{r.no_doc}}_{{r.size}}" onclick="pilih_cont('{{r.cont_id}}_{{r.no_doc}}_{{r.size}}')"></td>
+            <td style="font-size:12px;">{{r.cont_id}}</td>
+            <td style="font-size:12px;">{{r.size}}/{{r.type}}</td>
+            <td style="font-size:12px;">{{r.block}}-{{r.slot}}-{{r.row}}-{{r.tier}}</td>
+            <td style="font-size:12px;">{{r.no_doc}}</td>
+        </tr>
+        {% endfor %}
+    </tfoot>
+</table>
+<br>
+<div class="col-md-12">
+    <div class="row" id="opt_20">
+        
+    </div>
+</div>

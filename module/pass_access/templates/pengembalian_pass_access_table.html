@@ -1,0 +1,111 @@
+<div class="card-body">
+<table id="tppa" class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th style="font-size:12px;">NO</th>
+            <th style="font-size:12px;">NO. KARTU</th>
+            <th style="font-size:12px;">PASS ACCESS</th>
+            <th style="font-size:12px;">NAMA</th>
+            <th style="font-size:12px;">NO. IDENTITAS</th>
+            <th style="font-size:12px;">PERUSAHAAN</th>
+            <th style="font-size:12px;">KEPERLUAN</th>
+            <th style="font-size:12px;">WAKTU AMBIL</th>
+            <th style="font-size:12px;">::</th>
+
+        </tr>
+    </thead>
+    
+    <tbody>
+        {% for r in data %}
+        <tr id="{{ r.id }}">
+            <td style="font-size:12px;">{{ r.no }}</td>
+            <td style="font-size:12px;">{{ r.no_kartu }}</td>
+            <td style="font-size:12px;">{{ r.pass_access }}</td>
+            <td style="font-size:12px;">{{ r.nama }}</td>
+            <td style="font-size:12px;">{{ r.no_identitas }}</td>
+            <td style="font-size:12px;">{{ r.perusahaan }}</td>
+            <td style="font-size:12px;">{{ r.keperluan }}</td>
+            <td style="font-size:12px;">{{ r.ambil }}</td>
+            <td>
+                <button type="button" id="{{ r.id }}" class="btn btn-block btn-primary" onclick="opt_ppa()">Kembalikan</button>
+            </td>
+        </tr>
+        {% endfor %}
+    </tfoot>
+</table>
+</div>
+
+<div class="modal fade" id="modal_pengembalian_pass_access">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-body">
+                <p id="modal_msg_pengembalian_pass_access"></p>
+            </div>
+
+            <div class="modal-footer justify-content-between">
+                <button type="button" class="btn btn-danger" onclick="cppa()" data-dismiss="modal">Tidak</button>
+                <button id="" type="button" class="btn btn-primary" onclick="pppa()" data-dismiss="modal">Ya</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        $('#tppa').DataTable({
+            "paging": true,
+            "lengthChange": false,
+            "searching": true,
+            "ordering": false,
+            "info": true,
+            "autoWidth": false,
+            "responsive": true,
+        });
+    });
+
+    var id_pengembalian_pass_access = "";
+
+    async function opt_ppa(){
+        id_pengembalian_pass_access = document.activeElement.id;
+        currentRow = document.getElementById(id_pengembalian_pass_access).closest("tr");
+        var Cells = currentRow.getElementsByTagName("td");
+        var nk = Cells[1].textContent;
+        var nkt = Cells[2].textContent;
+        document.getElementById("modal_msg_pengembalian_pass_access").innerHTML = "Kembalikan Pass Access " + nk + " " + nkt + " ?";
+        $('#modal_pengembalian_pass_access').modal('toggle');
+    }
+
+    function cppa(){
+        $('#modal_pengembalian_pass_access').modal('hide');
+    }
+
+    function pppa(){
+        showLoading();
+        let fd = new FormData();
+        fd.append("id_kartu", id_pengembalian_pass_access);
+
+        xhr.open("POST", "{{ url_for('pass_access_bp.ppa') }}");
+        xhr.timeout = 10000;
+        const body = fd;
+        xhr.onload = () => {
+            hideLoading();
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                notif("success", xhr.responseText);
+                get_pengembalian_pass_access();
+            } else {
+                if (xhr.status == 999) {
+                    notif("error", xhr.responseText);
+                } else if (xhr.status == 888) {
+                    notif("warning", xhr.responseText);
+                }
+            }
+        };
+
+        xhr.ontimeout = (e) => {
+            hideLoading();
+            notif("warning", "Proses Gagal");
+        };
+        
+        xhr.send(body);
+    }
+</script>

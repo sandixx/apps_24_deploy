@@ -1,0 +1,167 @@
+<br>
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card card-primary">
+                    <div class="card-body">
+                        <div class="form-group" id="content_search_pass_access">
+                            <section class="content">
+                                <div class="container-fluid">
+                                    <table id="tp" class="table table-bordered table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th style="font-size:12px;">::</th>
+                                                <th style="font-size:12px;">CUSTOMER</th>
+                                                <th style="font-size:12px;">NPWP</th>
+                                                <th style="font-size:12px;">PENANGGUNG JAWAB</th>
+                                                <th style="font-size:12px;">ALAMAT</th>
+                                                <th style="font-size:12px;">NO. TELP</th>
+                                                <th style="font-size:12px;">NO. HP</th>
+                                                <th style="font-size:12px;">PETUGAS</th>
+                                            </tr>
+                                        </thead>
+                                        
+                                        <tbody>
+                                            {% for r in data %}
+                                            <tr>
+                                                <td>
+                                                    <div class="radio">
+                                                        <input type="radio" id='{{r.id}}' name="opt_id" onclick="get_key_pass_perusahaan_checked()">
+                                                    </div>
+                                                </td>
+                                                <td style="font-size:12px;">{{ r.cust_name }}</td>
+                                                <td style="font-size:12px;">{{ r.npwp }}</td>
+                                                <td style="font-size:12px;">{{ r.p_j }}</td>
+                                                <td style="font-size:12px;">{{ r.alamat_perusahaan }}</td>
+                                                <td style="font-size:12px;">{{ r.nt_perusahaan }}</td>
+                                                <td style="font-size:12px;">{{ r.nh_perusahaan }}</td>
+                                                <td style="font-size:12px;"><button type="button" id="{{r.id}}" class="btn btn-block btn-primary" onclick="list_petugas_pass_access();">List Petugas</button></td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tfoot>
+                                    </table>
+
+                                    <br>
+                                    <div class="col-sm-2">
+                                        <button type="button" class="btn btn-block btn-primary" onclick="process_print_pass_access_perusahaan()">Print</button>
+                                    </div>
+                                </div>
+                            </section>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="content" id="container_pass_access_perusahaan">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card card-primary">
+                    <div class="card-body">
+                        <div id="print_data_pass_access"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% for r in data %}
+<div class="modal fade" id="l_{{r.id}}">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">List Petugas</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body" id="data_petugas_pass_access">
+                <table style="text-align: center; width:100%">
+                    <tbody>
+                        <tr>
+                            <th>Nama</th>
+                            <th>No. Identitas</th>
+                        </tr>
+                    {% for z in r.petugas %}
+                        <tr>
+                            <td>{{ z.nama_petugas }}</td>
+                            <td>{{ z.no_identitas }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
+
+<script>
+    $( document ).ready(function() {
+        document.getElementById("container_pass_access_perusahaan").style.display = "none";
+    });
+
+    $(function () {
+        $('#tp').DataTable({
+            "paging": true,
+            "lengthChange": false,
+            "searching": false,
+            "ordering": true,
+            "info": true,
+            "autoWidth": false,
+            "responsive": true,
+        });
+    });
+
+    var id_pass_access = "";
+
+    function list_petugas_pass_access() {
+        var id = document.activeElement.id;
+        $('#l_'+id).modal('toggle');
+    }
+
+    function get_key_pass_perusahaan_checked() {
+        id_pass_access = document.activeElement.id;
+    }
+
+    async function process_print_pass_access_perusahaan() {
+        var fd = new FormData();
+        showLoading();
+        fd.append("id_pass_access", id_pass_access);
+        fd.append("opt", "perusahaan");
+
+        await xhr.open("POST", "{{ url_for('pass_access_bp.print_data_petugas') }}");
+        const body = fd;
+        xhr.timeout = 10000;
+        xhr.onload = () => {
+            hideLoading();
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                document.getElementById("container_pass_access_perusahaan").style.display = "block";
+                $('#print_data_pass_access').html(xhr.response);
+                document.getElementById("print_data_pass_access").style.height = "650px";
+            } else {
+                document.getElementById("print_data_pass_access").innerHTML = "";
+                document.getElementById("print_data_pass_access").style.height = "0px";
+                document.getElementById("container_pass_access_perusahaan").style.display = "none";
+                if (xhr.status == 999) {
+                    notif("error", xhr.responseText);
+                } else if (xhr.status == 888) {
+                    notif("warning", xhr.responseText);
+                }
+            }
+        };
+
+        xhr.ontimeout = (e) => {
+            hideLoading();
+            notif("warning", "Proses Gagal");
+        };
+        
+        xhr.send(body);
+    }
+</script>

@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+    <style>
+        .bg {
+            background-image: url("https://cdn.grahasegaramedan.co.id/img/cont_bg.jpg");
+            height: 100%;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+    </style>
+
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Register - Graha Segara</title>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+        <link rel="stylesheet" href="{{ url_for('static', filename='fontawesome-free/css/all.min.css') }}">
+        <link rel="stylesheet" href="https://cdn.grahasegaramedan.co.id/icheck-bootstrap/icheck-bootstrap.min.css">
+        <link rel="stylesheet" href="https://cdn.grahasegaramedan.co.id/css/adminlte.min.css">
+        <link rel="stylesheet" href="https://cdn.grahasegaramedan.co.id/css/pre2.css">
+        <link rel="stylesheet" href="https://cdn.grahasegaramedan.co.id/toastr/toastr.min.css">
+        <link rel="icon" href="https://cdn.grahasegaramedan.co.id/img/gs.png" type="image/gif" sizes="16x16">
+        <!--link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}"-->
+        <link rel="apple-touch-icon" href="https://cdn.grahasegaramedan.co.id/img/gs.png">
+        <link rel="icon" href="https://cdn.grahasegaramedan.co.id/favicon.ico" type="image/x-icon">
+    </head>
+
+    <body class="hold-transition register-page bg">
+        <div id="loading-overlay" hidden></div>
+        <div id="loader-wrapper" style="background-color: #212121; opacity: 0.5;">
+            <div id="loader"></div>
+        </div>
+        
+        <div class="register-box">
+            <div class="card card-outline card-primary">
+                <div class="card-header text-center">
+                    <a href="https://grahasegaramedan.co.id" class="h1">Graha Segara</a>
+                </div>
+
+                <div class="card-body">
+                    <p class="login-box-msg">Register</p>
+
+                    <form>
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="input-group col-sm-2 col-md-6 mb-3">
+                                    <input type="text" class="form-control" placeholder="Username" id="username" maxlength="25" id="username">
+                                    <div class="input-group-append">
+                                        <div class="input-group-text">
+                                            <span class="fas fa-user"></span>
+                                        </div>
+                                    </div>
+                                    <br>
+                                </div>
+        
+                                <div class="input-group col-sm-2 col-md-6 mb-3">
+                                    <input type="text" class="form-control" placeholder="Company" id="cust_name" maxlength="255" oninput="this.value = this.value.toUpperCase();">
+                                    <div class="input-group-append">
+                                        <div class="input-group-text">
+                                            <span class="fas fa-building"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="input-group col-sm-2 col-md-6 mb-3">
+                                    <input type="password" class="form-control" placeholder="Password" id="password" maxlength="25">
+                                    <div class="input-group-append">
+                                        <div class="input-group-text">
+                                            <span class="fas fa-lock"></span>
+                                        </div>
+                                    </div>
+                                </div>
+        
+                                <div class="input-group col-sm-2 col-md-6 mb-3">
+                                    <input type="password" class="form-control" placeholder="Retype Password" name="r_password" id="r_password" maxlength="25" oninput="check_retype_password()">
+                                    <div class="input-group-append">
+                                        <div class="input-group-text">
+                                            <span class="fas fa-lock"></span>
+                                        </div>
+                                    </div>
+                                </div>
+        
+                                <div class="input-group col-sm-2 col-md-6 mb-3">
+                                    <input type="text" class="form-control" placeholder="NPWP" id="npwp" maxlength="20" onkeyup="npwp_length();" oninput="formatNpwp();" >
+                                    <div class="input-group-append">
+                                        <div class="input-group-text">
+                                            <span class="fas fa-address-card"></span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="input-group col-sm-2 col-md-6 mb-3">
+                                    <input type="text" class="form-control" placeholder="Address" id="address" maxlength="30" oninput="this.value = this.value.toUpperCase();">
+                                    <div class="input-group-append">
+                                        <div class="input-group-text">
+                                            <span class="fas fa-id-card"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="input-group col-sm-2 col-md-6 mb-3">
+                                    <input type="text" class="form-control" placeholder="Email" name="email" id="email" maxlength="255" oninput="email_check()">
+                                    <div class="input-group-append">
+                                        <div class="input-group-text">
+                                            <span class="fas fa-envelope"></span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="input-group col-sm-2 col-md-6 mb-3">
+                                    <input type="text" class="form-control" placeholder="Phone Number" id="phone_number" onkeypress="return onlyNumberKey(event)" maxlength="20" >
+                                    <div class="input-group-append">
+                                        <div class="input-group-text">
+                                            <span class="fas fa-phone"></span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="input-group col-sm-2 col-md-6 mb-3">
+                                    <input type="text" class="form-control" placeholder="Mobile Number" id="mobile_number" onkeypress="return onlyNumberKey(event)" maxlength="25">
+                                    <div class="input-group-append">
+                                        <div class="input-group-text">
+                                            <span class="fas fa-mobile"></span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="custom-file col-sm-2 col-md-6 mb-3">
+                                    <input type="file" class="custom-file-input" id="npwp_file" name="npwp_file">
+                                    <label class="custom-file-label" for="npwp_file">NPWP Scan File</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-4">
+                                <button type="button" class="btn btn-block btn-primary" onclick="register()">Register</button>
+                            </div>
+
+                            <div class="col-8">
+                                <a href="{{ url_for('auth_bp.login') }}" class="btn btn-light btn-block">I already have account</a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="modal-msg">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Message</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p id="msg"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script type="text/javascript" src="https://cdn.grahasegaramedan.co.id/jquery/jquery.min.js"></script>
+        <script type="text/javascript" src="https://cdn.grahasegaramedan.co.id/bootstrap/js/bootstrap.bundle.min.js"></script>
+        <script type="text/javascript" src="https://cdn.grahasegaramedan.co.id/js/adminlte.min.js"></script>
+        <script type="text/javascript" src="https://cdn.grahasegaramedan.co.id/bs-custom-file-input/bs-custom-file-input.min.js"></script>
+        <script type="text/javascript" src="https://cdn.grahasegaramedan.co.id/js/loader.js"></script>
+        <script type="text/javascript" src="https://cdn.grahasegaramedan.co.id/toastr/toastr.min.js"></script>
+        <script type="text/javascript" src="https://cdn.grahasegaramedan.co.id/js/pages/dis.js"></script>
+        <!--script type="text/javascript" src="{{ url_for('static', filename='js/app.js') }}"></!--script-->
+
+        <script>
+            $(document).ready(function(){
+                hideLoading();
+                document.getElementById("npwp_file").value = null;
+                document.getElementById("npwp_file").innerHTML = "";
+            });
+
+            $(function () {
+                bsCustomFileInput.init();
+            });
+
+            function notif(info, data) {
+                if (info == "success") {
+                    toastr.success(data);
+                } else if (info == "info") {
+                    toastr.info(data);
+                } else if (info == "warning") {
+                    toastr.warning(data);
+                } else if (info == "error") {
+                    toastr.error(data);
+                }
+            }
+
+            async function register() {
+                showLoading();
+                var user = document.getElementById("username").value;
+                var pass = document.getElementById("password").value;
+                var r_pass = document.getElementById("r_password").value;
+                var cust_name = document.getElementById("cust_name").value;
+                var npwp = document.getElementById("npwp").value;
+                var address = document.getElementById("address").value;
+                var email = document.getElementById("email").value;
+                var phone_number = document.getElementById("phone_number").value;
+                var mobile_number = document.getElementById("mobile_number").value;
+                var npwp_file = $("#npwp_file").prop("files")[0];
+                var fd = new FormData();
+
+                var csrf_token = "{{ csrf_token() }}";
+                fd.append("username", user);
+                fd.append("password", pass);
+                fd.append("r_password", r_pass);
+                fd.append("cust_name", cust_name);
+                fd.append("npwp", npwp);
+                fd.append("address", address);
+                fd.append("email", email);
+                fd.append("phone_number", phone_number);
+                fd.append("mobile_number", mobile_number);
+                fd.append("npwp_file", npwp_file);
+
+                const xhr = new XMLHttpRequest();
+                await xhr.open("POST", "{{ url_for('reg_bp.register') }}");
+                xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token() }}");
+                const body = fd;
+                xhr.onload = () => {
+                    if (xhr.readyState == 4 && xhr.status == 200) {
+                        document.getElementById("username").value = "";
+                        document.getElementById("cust_name").value = "";
+                        document.getElementById("password").value = "";
+                        document.getElementById("r_password").value = "";
+                        document.getElementById("npwp").value = "";
+                        document.getElementById("address").value = "";
+                        document.getElementById("email").value = "";
+                        document.getElementById("phone_number").value = "";
+                        document.getElementById("mobile_number").value = "";
+                        document.getElementById("npwp_file").value = null;
+                        document.getElementById("npwp_file").innerHTML = "";
+                        hideLoading();
+                        document.getElementById("msg").innerHTML = "Registrasi Berhasil <br>Silahkan Cek Email Anda Untuk Aktivasi<br><i style='color: red;'>&#42;Link Aktifasi Hanya Belaku Selama 5 Menit</i>";
+                        $('#modal-msg').modal('toggle');
+                    } else {
+                        hideLoading();
+                        if (xhr.status == 999) {
+                            notif("error", xhr.responseText);
+                        } else if (xhr.status == 888) {
+                            notif("warning", xhr.responseText);
+                        }
+                    }
+                };
+                xhr.send(body);
+            }
+
+            function onlyNumberKey(evt) {
+                var ASCIICode = (evt.which) ? evt.which : evt.keyCode
+                if (ASCIICode > 31 && (ASCIICode < 48 || ASCIICode > 57))
+                    return false;
+                return true;
+            }
+
+            function check_retype_password() {
+                var pass= document.getElementById("password").value;
+                var r_pass= document.getElementById("r_password").value;
+
+                if (!r_pass) {
+                    document.getElementById('r_password').style.background = 'white';
+                    document.getElementById('r_password').style.color = '#495057';
+                    return;
+                }
+
+                if (pass != r_pass) {
+                    document.getElementById('r_password').style.background = 'red';
+                    document.getElementById('r_password').style.color = 'white';
+                } else {
+                    document.getElementById('r_password').style.background = 'white';
+                    document.getElementById('r_password').style.color = '#495057';
+                }
+            }
+
+            function formatNpwp() {
+                const NPWP = document.getElementById("npwp");
+
+                NPWP.oninput = (e) => {
+                    e.target.value = autoFormatNPWP(e.target.value);
+                }
+
+                function autoFormatNPWP(NPWPString) {
+                    try {
+                        var cleaned = ("" + NPWPString).replace(/\D/g, "");
+                        var match = cleaned.match(/(\d{0,2})?(\d{0,3})?(\d{0,3})?(\d{0,1})?(\d{0,3})?(\d{0,3})$/);
+                        return [      
+                                match[1], 
+                                match[2] ? ".": "",
+                                match[2], 
+                                match[3] ? ".": "",
+                                match[3],
+                                match[4] ? ".": "",
+                                match[4],
+                                match[5] ? "-": "",
+                                match[5],
+                                match[6] ? ".": "",
+                                match[6]].join("")
+                    } catch(err) {
+                        return "";
+                    }
+                }
+            }
+
+            function npwp_length() {
+                const npwp = document.getElementById("npwp").value;
+
+                if (npwp.length < 20) {
+                    document.getElementById('npwp').style.background = 'red';
+                    document.getElementById('npwp').style.color = 'white';
+                    return false;
+                } else {
+                    document.getElementById('npwp').style.background = 'white';
+                    document.getElementById('npwp').style.color = '#495057';
+                    return true;
+                }
+            }
+
+            function email_check() {
+                var email = document.getElementById("email").value;
+                var mailformat = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
+
+                if (email.match(mailformat)) {
+                    document.getElementById('email').style.background = 'white';
+                    document.getElementById('email').style.color = '#495057';
+                } else {
+                    document.getElementById('email').style.background = 'red';
+                    document.getElementById('email').style.color = 'white';
+                }
+            }
+        </script>
+
+        <noscript>
+            <meta http-equiv="refresh" content="0;url='https://grahasegaramedan.co.id'">
+        </noscript>
+    </body>
+</html>

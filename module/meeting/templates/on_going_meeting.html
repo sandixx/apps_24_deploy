@@ -1,0 +1,40 @@
+<br>
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card card-primary">
+                    <div class="card-body">
+                        <div class="form-group">
+                            <section class="content">
+                                <div class="container-fluid" id="content_data">
+                                    {% for r in data %}
+                                    <div class="card card-primary">
+                                        <div class="card-header">
+                                            <h3 class="card-title">{{r.start_time}}</h3>
+                                        </div>
+                                        
+                                        <form>
+                                            <div class="card-body">
+                                                {% for x in r.list_data %}
+                                                {% if x.no > 1 %}
+                                                <br>
+                                                {% endif %}
+                                                <h5>{{x.start_time}} &#8594; {{x.end_time}}</h5>
+                                                    <h5>{{x.ruang}}</h5>
+                                                    <h3>{{x.keperluan}}</h3>
+                                                    <h5>{{x.pic}}</h5>
+                                                {% endfor %}
+                                            </div>
+                                        </form>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </section>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

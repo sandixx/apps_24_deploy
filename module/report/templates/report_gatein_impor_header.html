@@ -1,0 +1,97 @@
+<br>
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">BEFORE GATEIN</h3>
+                    </div>
+                    
+                    <form>
+                        <div class="card-body">
+                            <div class="form-group">
+                                <div class="row">
+                                    <div id="filter1" class="col-sm-2 col-md-2">
+                                        <label>Option :</label>
+                                        <div class="input-group">
+                                            <select id="opt_filter1" name="opt_filter1" class="form-control select2bs4" style="width: 100%;" onchange="check()">
+                                                <option value="no_filter" selected="selected">No Filter</option>
+                                                <option value="filtered">Filter</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div id="d1" class="col-sm-2 col-md-3">
+                                        <label>Date :</label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text">
+                                                    <i class="far fa-calendar-alt"></i>
+                                                </span>
+                                            </div>
+                                            <input type="text" class="form-control float-right" id="reservation" name="datez">
+                                        </div>
+                                    </div>
+
+                                    <div id="terminal" class="col-sm-2 col-md-2">
+                                        <label>Terminal :</label>
+                                        <div class="input-group">
+                                            <select id="opt_terminal" name="opt_terminal" class="form-control select2bs4" style="width: 100%;">
+                                                <option value="all" selected="selected">ALL</option>
+                                                <option value="ptp">PTP</option>
+                                                <option value="tpk">TPK</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div id="doc" class="col-sm-2 col-md-3">
+                                        <label>Document :</label>
+                                        <div class="input-group">
+                                            <select id="opt_doc" name="opt_doc" class="form-control select2bs4" style="width: 100%;">
+                                                <option value="all" selected="selected">ALL</option>
+                                                <option value="spjm">SPJM</option>
+                                                <option value="kara_hewan">KARANTINA IKAN</option>
+                                                <option value="kara_tumbuhan">KARANTINA TUMBUHAN</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="col-sm-2 col-md-1">
+                                    <li id="b_b4gatein" class="btn btn-primary">
+                                        <a href="#" class="" style="color:#FFF;">OK</a>
+                                    </li>
+                                </div>
+                            </div>
+
+                            <section class="content">
+                                <br>
+                                <div class="container-fluid" id="table_b4gatein"></div>
+                            </section>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="modal fade" id="modal-msg">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Message</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <p id="msg"></p>
+            </div>
+        </div>
+    </div>
+</div>

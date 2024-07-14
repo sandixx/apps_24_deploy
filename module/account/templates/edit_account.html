@@ -1,0 +1,143 @@
+<br>
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card card-primary">
+                        <div class="card-body">
+                            <div class="form-group" id="content_data">
+                                <section class="content">
+                                    <div class="container-fluid">
+                                        <table id="table_edit_account" class="table table-bordered table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th style="font-size:12px;">NO</th>
+                                                    <th style="font-size:12px;">NAMA</th>
+                                                    <th style="font-size:12px;">USERNAME</th>
+                                                    <th style="font-size:12px;">AKSES</th>
+                                                    <th style="font-size:12px;">STATUS</th>
+                                                    <th style="font-size:12px;">::</th>
+                                                </tr>
+                                            </thead>
+                                            
+                                            <tbody>
+                                                {% for r in access_data %}
+                                                <tr>
+                                                    <td style="font-size:12px;">{{ r.no }}</td>
+                                                    <td style="font-size:12px;">{{ r.name }}</td>
+                                                    <td style="font-size:12px;">{{ r.username }}</td>
+                                                    <td style="font-size:12px;">{{ r.access_name }}</td>
+                                                    <td style="font-size:12px;">{{ r.status }}</td>
+                                                    <td style="font-size:12px;"><button type="button" class="btn btn-block btn-primary" onclick="pop_edit_account('{{r.name}}', '{{r.username}}', '{{r.passwd}}');">Edit</button></td>
+                                                </tr>
+                                                {% endfor %}
+                                            </tfoot>
+                                        </table>
+                                    </div>
+                                </section>
+
+                                <div class="modal fade" id="modal_edit_account">
+                                    <div class="modal-dialog modal-sm">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h4 class="modal-title">Edit Account</h4>
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            
+                                            <div class="modal-body">
+                                                <div class="row">
+                                                    <div class="col-sm-12">
+                                                        <div class="form-group">
+                                                            <label>Name</label>
+                                                            <input id="name_user" type="text" class="form-control" placeholder="Name" maxlength="40" style="text-transform:uppercase;">
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-sm-12">
+                                                        <div class="form-group">
+                                                            <label>Username</label>
+                                                            <input id="old_username" type="text" class="form-control" disabled hidden>
+                                                            <input id="username" type="text" class="form-control" placeholder="Username" maxlength="40">
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-sm-12">
+                                                        <div class="form-group">
+                                                            <label>Password</label>
+                                                            <input id="old_passwd" type="text" class="form-control" disabled hidden>
+                                                            <input id="passwd" type="text" class="form-control" placeholder="Password" maxlength="40">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="modal-footer justify-content-between">
+                                                <button type="button" class="btn btn-primary" onclick="update_account()" data-dismiss="modal">Update</button>
+                                            </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    $(function () {
+        $("#table_edit_account").DataTable({
+        "responsive": true, "lengthChange": false, "autoWidth": false
+        }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+    });
+
+    function pop_edit_account(name, username, passwd) {
+        document.getElementById("name_user").value = name;
+        document.getElementById("username").value = username;
+        document.getElementById("passwd").value = passwd;
+        document.getElementById("old_username").value = username;
+        document.getElementById("old_passwd").value = passwd;
+        $('#modal_edit_account').modal('toggle');
+    }
+
+    async function update_account(){
+        showLoading();
+        var fd = new FormData();
+        fd.append("old_username", document.getElementById("old_username").value);
+        fd.append("old_passwd", document.getElementById("old_passwd").value);
+        fd.append("name_user", document.getElementById("name_user").value);
+        fd.append("username", document.getElementById("username").value);
+        fd.append("passwd", document.getElementById("passwd").value);
+
+        await xhr.open("POST", "{{ url_for('account_bp.edit_account') }}");
+        const body = fd;
+        xhr.timeout = 10000;
+        xhr.onload = () => {
+            hideLoading();
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                notif("success", xhr.responseText);
+                $('#modal_edit_account').modal('hide');
+                edit_account();
+            } else {
+                if (xhr.status == 999) {
+                    notif("error", xhr.responseText);
+                } else if (xhr.status == 888) {
+                    notif("warning", xhr.responseText);
+                } else if (xhr.status == 401) {
+                    window.location = "{{ url_for('auth_bp.logout') }}";
+                }
+            }
+        };
+
+        xhr.ontimeout = (e) => {
+            on_timeout();
+        };
+
+        xhr.send(body);
+    }
+</script>

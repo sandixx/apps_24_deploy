@@ -1,0 +1,71 @@
+<br>
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card card-primary">
+                    <!--div class="card-header">
+                        <h3 class="card-title">Search</h3>
+                    </!--div-->
+                    
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-sm-2 col-md-3">
+                                <div class="form-group">
+                                    <input id="input_invoice_no" onkeypress="return search_inv_enter(event)" type="text" class="form-control" placeholder="Invocie No" style="text-transform:uppercase;">
+                                </div>
+                            </div>
+
+                            <div class="col-sm-2 col-md-1">
+                                <button id="search_preinv" type="button" class="btn btn-block btn-primary" onclick="val_reprint_preinv()">Search</button>
+                            </div>
+                        </div>
+
+                        <div class="form-group" id="data_reprint_search"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    function search_inv_enter(evt) {
+        if (evt.keyCode === 13) {
+            val_reprint_preinv();
+        }
+    }
+
+    async function val_reprint_preinv() {
+        var input_data = document.getElementById("input_invoice_no").value;
+        var fd = new FormData();
+        const xhr = new XMLHttpRequest();
+        showLoading();
+        fd.append("val", input_data);
+
+        await xhr.open("POST", "{{ url_for('pre_invoice_bp.reprint_pre_invoice') }}");
+        const body = fd;
+        xhr.timeout = 10000;
+        xhr.onload = () => {
+            hideLoading();
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                $('#data_reprint_search').html(xhr.response);
+            } else {
+                if (xhr.status == 999) {
+                    notif("error", xhr.responseText);
+                } else if (xhr.status == 888) {
+                    notif("warning", xhr.responseText);
+                } else {
+                    window.location = "{{ url_for('auth_bp.logout') }}";
+                }
+                document.getElementById("data_reprint_search").innerHTML = "";
+            }
+        };
+
+        xhr.ontimeout = (e) => {
+            on_timeout();
+        };
+        
+        xhr.send(body);
+    }
+</script>

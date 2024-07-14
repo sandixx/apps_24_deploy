@@ -1,0 +1,139 @@
+<table id="table_inv" class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th style="font-size:12px;">NO</th>
+            <th style="font-size:12px;">TYPE</th>
+            <th style="font-size:12px;">INVOICE</th>
+            <!--th style="font-size:12px;">INVOICE DATE</!--th-->
+            <th style="font-size:12px;">PAYMENT</th>
+            <!--th style="font-size:12px;">PAYMENT DATE</!--th-->
+            <!--th style="font-size:12px;">PAID TRHU</!--th-->
+            <th style="font-size:12px;">NPWP</th>
+            <th style="font-size:12px;">CUSTOMER</th>
+            <th style="font-size:12px;">CONT</th>
+            <th style="font-size:12px;">::</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for r in data %}
+        <tr>
+            <td style="font-size:12px;">{{ r.no }}</td>
+            <td style="font-size:12px;">{{ r.type }}</td>
+            <td style="font-size:12px;">{{ r.invoice_no }}</td>
+            <!--td style="font-size:12px;">{{ r.invoice_date }}</!--td-->
+            <td style="font-size:12px;">{{ r.payment_no }}</td>
+            <!--td style="font-size:12px;">{{ r.payment_date }}</!--td-->
+            <!--td style="font-size:12px;">{{ r.paid_trhu }}</!--td-->
+            <td style="font-size:12px;">{{ r.npwp }}</td>
+            <td style="font-size:12px;">{{ r.cust_name }}</td>
+            <td style="font-size:12px;"><button type="button" class="btn btn-block btn-primary" onclick="list_container_invoice('{{ r.invoice_no }}');">Cont</button></td>
+            <td style="font-size:12px;">
+                <div class="row">
+                    {% if ea == "NO" %}
+                    <div class="col-md-6">
+                        <button type="button" class="btn btn-block btn-primary" onclick="print_inv_imp('{{ r.invoice_no }}_preview');">Preview</button>
+                    </div>
+                    {% endif %}
+                    
+                    <div class="col-md-6">
+                        <button type="button" class="btn btn-block btn-primary" onclick="print_inv_imp('{{ r.invoice_no }}_print');">Print</button>
+                    </div>
+                </div>
+                
+            </td>
+        </tr>
+        {% endfor %}
+    </tfoot>
+</table>
+
+{% for r in data %}
+<div class="modal fade" id="modal_inv_print_{{ r.invoice_no }}">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">List Container</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <table style="text-align: center; width:100%">
+                    <tbody>
+                        <tr>
+                            <th>No</th>
+                            <th>Container</th>
+                        </tr>
+                    {% for z in r.cont %}
+                        <tr>
+                            <td>{{ z.no }}</td>
+                            <td>{{ z.cont_id }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
+
+<script>
+    $(function () {
+        $('#table_inv').DataTable({
+            "paging": true,
+            "lengthChange": false,
+            "searching": true,
+            "ordering": false,
+            "info": false,
+            "autoWidth": false,
+            "responsive": true,
+        });
+    });
+
+    function list_container_invoice(data) {
+        $('#modal_inv_print_'+data).modal('toggle');
+    }
+
+    async function print_inv_imp(data) {
+        const myArray = data.split("_");
+        inv_no = myArray[0];
+        opt = myArray[1];
+        showLoading();
+        var fd = new FormData();
+        fd.append("invoice_no", inv_no);
+        fd.append("opt", opt);
+
+        await xhr.open("POST", "{{ url_for('invoice_impor_bp.print_invoice_impor') }}");
+        const body = fd;
+        xhr.timeout = 10000;
+        xhr.onload = () => {
+            hideLoading();
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                document.getElementById('pdf_inv').style.height='1200px';
+                $('#pdf_inv').html(xhr.response);
+
+                if (opt == "print"){
+                    get_list_inv_imp();
+                }
+            } else {
+                document.getElementById('pdf_inv').style.height='0px';
+                document.getElementById("pdf_inv").innerHTML = "";
+                if (xhr.status == 999) {
+                    notif("error", xhr.responseText);
+                } else if (xhr.status == 888) {
+                    notif("warning", xhr.responseText);
+                } else if (xhr.status == 401) {
+                    window.location = "{{ url_for('auth_bp.logout') }}";
+                }
+            }
+        };
+        
+        xhr.ontimeout = (e) => {
+            on_timeout();
+        };
+        
+        xhr.send(body);
+    }
+</script>

@@ -1,0 +1,69 @@
+<h1>Pilih Terminal</h1>
+
+<div class="row">
+    <div class="form-group col-md-6">
+        <button id="ptp" type="button" style="font-size: 40px;" class="btn btn-block btn-primary" onclick="chose_terminal('ptp');">Terminal A (PTP)</button>
+        <br>
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>SIZE</th>
+                    <th>TOTAL</th>
+                </tr>
+            </thead>
+            
+            <tbody>
+                <tr>
+                    <td>20</td>
+                    <td>{{data['ptp_20']}}</td>
+                </tr>
+                <tr>
+                    <td>40</td>
+                    <td>{{data['ptp_40']}}</td>
+                </tr>
+                <tr>
+                    <td>45</td>
+                    <td>{{data['ptp_45']}}</td>
+                </tr>
+
+                <tr>
+                    <td style="font-weight: bold;">TOTAL</td>
+                    <td style="font-weight: bold;">{{data['total_ptp']}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="form-group col-md-6">
+        <button id="tpk" type="button" style="font-size: 40px;" class="btn btn-block btn-danger" onclick="chose_terminal('tpk');">Terminal B (TPK)</button>
+        <br>
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>SIZE</th>
+                    <th>TOTAL</th>
+                </tr>
+            </thead>
+            
+            <tbody>
+                <tr>
+                    <td>20</td>
+                    <td>{{data['tpk_20']}}</td>
+                </tr>
+                <tr>
+                    <td>40</td>
+                    <td>{{data['tpk_40']}}</td>
+                </tr>
+                <tr>
+                    <td>45</td>
+                    <td>{{data['tpk_45']}}</td>
+                </tr>
+
+                <tr>
+                    <td style="font-weight: bold;">TOTAL</td>
+                    <td style="font-weight: bold;">{{data['total_tpk']}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

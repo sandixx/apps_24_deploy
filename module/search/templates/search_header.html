@@ -1,0 +1,90 @@
+<br>
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card card-primary">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-sm-2 col-md-2">
+                                <div class="form-group">
+                                    <div class="input-group">
+                                        <select id="opt_search" name="opt_search" class="form-control select2" style="width: 100%;" onchange="check_search();">
+                                            <option value="cntr" selected="selected">Container</option>
+                                            <option value="npe">NPE</option>
+                                            <option value="3d">3D</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-2 col-md-3">
+                                <div class="form-group">
+                                    <input id="input_data_search" onkeypress="return search_enter(event)" type="text" class="form-control" placeholder="Container ID" style="text-transform:uppercase;">
+                                </div>
+                            </div>
+
+                            <div class="col-sm-2 col-md-1">
+                                <button type="button" class="btn btn-block btn-primary" onclick="seach_val()">Search</button>
+                            </div>
+                        </div>
+
+                        <div class="form-group" id="content_data"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    function search_enter(evt) {
+        if (evt.keyCode === 13) {
+            seach_val();
+        }
+    }
+
+    function check_search(){
+        var x = document.getElementById("opt_search").value;
+
+        if (x == "cntr") {
+            document.getElementById("input_data_search").placeholder = "Container ID";
+        } else if (x == 'npe') {
+            document.getElementById("input_data_search").placeholder = "No. NPE";
+        } else if (x == '3d') {
+            document.getElementById("input_data_search").placeholder = "No. 3D";
+        }
+    }
+
+    async function seach_val() {
+        var opt_search = document.getElementById("opt_search").value;
+        var input_data = document.getElementById("input_data_search").value;
+
+        if (input_data) {
+            var fd = new FormData();
+            showLoading();
+            fd.append("opt", opt_search);
+            fd.append("val", input_data);
+
+            await xhr.open("POST", "{{ url_for('search_bp.search') }}");
+            xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token() }}");
+            const body = fd;
+            xhr.onload = () => {
+                hideLoading();
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                    $('#content_data').html(xhr.response);
+                } else {
+                    if (xhr.status == 999) {
+                        notif("error", xhr.responseText);
+                    } else if (xhr.status == 888) {
+                        notif("warning", xhr.responseText);
+                    }
+                }
+            };
+            xhr.send(body);
+        } else {
+            notif("warning", "Harap Isi Data Yang Ingin Dicari");
+            return;
+        }
+    }
+</script>

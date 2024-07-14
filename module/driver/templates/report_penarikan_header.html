@@ -1,0 +1,125 @@
+<br>
+<section class="content">
+    <div class="container-fluid">
+        <div class="col-md-12">
+            <div class="card card-primary">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label>Date :</label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">
+                                            <i class="far fa-calendar-alt"></i>
+                                        </span>
+                                    </div>
+                                    <input type="text" class="form-control float-right" id="date_report_penarikan">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label>Terminal :</label>
+                                <div class="input-group">
+                                    <select id="opt_terminal" class="form-control select2bs4" style="width: 100%;">
+                                        <option value="all" selected="selected">ALL</option>
+                                        <option value="ptp">Terminal A (Ex PTP)</option>
+                                        <option value="tpk">Terminal B (Ex TPK)</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label>Driver :</label>
+                                <div class="input-group">
+                                    <select id="opt_driver" class="form-control select2bs4" style="width: 100%;">
+                                        <option value="all" selected="selected">ALL</option>
+                                        {% for r in data %}
+                                        <option value="{{r.driver}}">{{r.driver}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label>No. Truck :</label>
+                                <div class="input-group">
+                                    <select id="opt_truck" class="form-control select2bs4" style="width: 100%;">
+                                        <option value="all" selected="selected">ALL</option>
+                                        <option value="ET-01">ET-01</option>
+                                        <option value="ET-03">ET-03</option>
+                                        <option value="ET-24">ET-24</option>
+                                        <option value="ET-25">ET-25</option>
+                                        <option value="GS-01">GS-01</option>
+                                        <option value="GS-02">GS-02</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-2">
+                        <button type="button" class="btn btn-block btn-primary" onclick="get_report_penarikan()">Search</button>
+                    </div>
+                    <br>
+                    <div id="content_report_penarikan"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    $('#date_report_penarikan').daterangepicker({
+        locale: {
+            format: 'DD/MM/YYYY'
+        }
+    })
+
+    async function get_report_penarikan(){
+        showLoading();
+        var da = document.getElementById("date_report_penarikan").value;
+        var len = (da.length - 1) / 2;
+        var date1 = da.substring(0, len).trim();
+        var date2 = da.substring(len + 1).trim();
+        var opt_terminal = document.getElementById("opt_terminal").value;
+        var opt_driver = document.getElementById("opt_driver").value;
+        var opt_truck = document.getElementById("opt_truck").value;
+
+        var fd = new FormData();
+        fd.append("date1", date1);
+        fd.append("date2", date2);
+        fd.append("opt_terminal", opt_terminal);
+        fd.append("opt_driver", opt_driver);
+        fd.append("opt_truck", opt_truck);
+
+        await xhr.open("POST", "{{ url_for('driver_bp.report_penarikan') }}");
+        const body = fd;
+        xhr.timeout = 10000;
+        xhr.onload = () => {
+            hideLoading();
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                $('#content_report_penarikan').html(xhr.response);
+            } else {
+                if (xhr.status == 999) {
+                    notif("error", xhr.responseText);
+                } else if (xhr.status == 888) {
+                    notif("warning", xhr.responseText);
+                } else if (xhr.status == 401) {
+                    window.location = "{{ url_for('auth_bp.logout') }}";
+                }
+            }
+        };
+        
+        xhr.ontimeout = (e) => {
+            on_timeout();
+        };
+        
+        xhr.send(body);
+    }
+</script>

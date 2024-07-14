@@ -1,0 +1,135 @@
+<table id="table_customer" class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th style="font-size:12px;">::</th>
+            <th style="font-size:12px;">NAME</th>
+            <th style="font-size:12px;">NPWP</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for r in data_x %}
+        <tr>
+            <td style="font-size:12px;"><input type="radio" id="{{r.cust_name}}__{{r.npwp}}__{{r.address}}__{{r.email}}__{{r.phone_number}}__{{r.mobile_number}}__{{r.opt}}" name="optradio_cust" onclick="get_result_customer()"></td>
+            <td style="font-size:12px;">{{ r.cust_name }}</td>
+            <td style="font-size:12px;">{{ r.npwp }}</td>
+        </tr>
+        {% endfor %}
+    </tfoot>
+</table>
+
+<script>
+    $(function () {
+        $('#table_customer').DataTable({
+            "paging": true,
+            "lengthChange": false,
+            "searching": false,
+            "ordering": true,
+            "info": true,
+            "autoWidth": false,
+            "responsive": true,
+        });
+    });
+
+    function get_result_customer(){
+        id = document.activeElement.id;
+        var array_res_cust = id.split("__");
+        cust_name = array_res_cust[0];
+        npwp = array_res_cust[1];
+        address = array_res_cust[2];
+        email = array_res_cust[3];
+        phone_number = array_res_cust[4];
+        mobile_number = array_res_cust[5];
+        opt = array_res_cust[6];
+
+        data_result = document.getElementById("content_cust").innerHTML = `
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label>Company Name</label>
+                        <input type="text" class="form-control" placeholder="Company" id="cust_name_edit" maxlength="255" oninput="this.value = this.value.toUpperCase();" value="` + cust_name + `">
+                    </div>
+                </div>
+                
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label>NPWP</label>
+                        <input type="text" class="form-control" placeholder="NPWP" id="npwp_edit" maxlength="19" onkeypress="npwp_16();" value="` + npwp + `">
+                        <input type="text" class="form-control" id="opt_edit" value="` + opt + `" hidden disabled>
+                        <input type="text" class="form-control" id="npwp_ori_edit" value="` + npwp + `" hidden disabled>
+                    </div>
+                </div>
+                
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label>Address</label>
+                        <textarea rows="3" class="form-control" placeholder="Address" id="address_edit" maxlength="255" oninput="this.value = this.value.toUpperCase();">` + address + `</textarea>
+                    </div>
+                </div>
+                
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label>Email</label>
+                        <textarea rows="2" class="form-control" placeholder="Email" id="email_edit" maxlength="100" oninput="email_check()">` + email + `</textarea>
+                    </div>
+                </div>
+                
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label>Phone Number</label>
+                        <input type="text" class="form-control" placeholder="Phone Number" id="phone_number_edit" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1')" maxlength="20" value="` + phone_number + `">
+                    </div>
+                </div>
+                
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label>Mobile Number</label>
+                        <input type="text" class="form-control" placeholder="Mobile Number" id="mobile_number_edit" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1')" maxlength="25" value="` + mobile_number + `">
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <button type="button" class="btn btn-block btn-primary" onclick="update_cust()">Update</button>
+            </div>
+        `;
+    }
+
+    async function update_cust(){
+        var opt = document.getElementById("opt_edit").value;
+        var npwp_ori = document.getElementById("npwp_ori_edit").value;
+        var cust_name = document.getElementById("cust_name_edit").value;
+        var npwp = document.getElementById("npwp_edit").value;
+        var address = document.getElementById("address_edit").value;
+        var email = document.getElementById("email_edit").value;
+        var phone_number = document.getElementById("phone_number_edit").value;
+        var mobile_number = document.getElementById("mobile_number_edit").value;
+
+        var fd = new FormData();
+        showLoading();
+        fd.append("opt", opt);
+        fd.append("npwp_ori", npwp_ori);
+        fd.append("cust_name", cust_name);
+        fd.append("npwp", npwp);
+        fd.append("address", address);
+        fd.append("email", email);
+        fd.append("phone_number", phone_number);
+        fd.append("mobile_number", mobile_number);
+
+        await xhr.open("POST", "{{ url_for('customer_bp.edit_customer') }}");
+        const body = fd;
+        xhr.onload = () => {
+            hideLoading();
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                document.getElementById("content_cust").innerHTML = "";
+                document.getElementById("search_result").innerHTML = "";
+                notif("success", xhr.responseText);
+            } else {
+                if (xhr.status == 999) {
+                    notif("error", xhr.responseText);
+                }
+            }
+        };
+        xhr.send(body);
+    }
+</script>

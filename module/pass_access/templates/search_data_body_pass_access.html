@@ -1,0 +1,156 @@
+<br>
+<div class=" text-center">
+    <img width="150" height="200" src="data:image/jpeg;base64,{{pas_foto}}" /> 
+</div>
+<br>
+<div class="row">
+    <div class="col-sm-12">
+        <div class="form-group">
+            <label>Nama Lengkap</label>
+            <input id="res_nama_pass_access" type="text" class="form-control" maxlength="150" value="{{nama_petugas}}" disabled>
+        </div>
+    </div>
+
+    <div class="col-sm-12">
+        <div class="form-group">
+            <label>Perusahaan</label>
+            <input id="res_perusahaan_pass_access" type="text" class="form-control" maxlength="150" value="{{perusahaan}}" disabled>
+        </div>
+    </div>
+
+    <div class="col-sm-12">
+        <div class="form-group">
+            <label>Pass Access</label>
+            <input id="res_type_pass_access" type="text" class="form-control" maxlength="150" value="{{pass_access}}" style="background-color: {{color}}; color:white" disabled>
+        </div>
+    </div>
+
+    {% if session['ambil_pass_access'] == 'YES' %}
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">Pengambilan/Pengembalian Kartu Pass Access</h3>
+                    </div>
+
+                    <div class="card-body">
+                        <div class="form-group">
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    <label>No. Kartu</label>
+                                    <input id="id_kartu" type="text" class="form-control" value="{{id_kartu}}" hidden>
+                                    <input id="no_kartu" type="text" class="form-control" placeholder="No. Kartu" maxlength="2" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" value="{{no_kartu}}" {{es}}>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-2" id="btn_pass_access_ambil">
+                                <button type="button" class="btn btn-block btn-primary" onclick="ambil_pass_access()">Ambil</button>
+                            </div>
+
+                            <div class="col-sm-2" id="btn_pass_access_kembali">
+                                <button type="button" class="btn btn-block btn-primary" onclick="kembalikan_pass_access()">Kembalikan</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $( document ).ready(function() {
+            id_kartu = document.getElementById("id_kartu").value;
+
+            if (id_kartu === "") {
+                document.getElementById('btn_pass_access_ambil').style.display = 'block';
+                document.getElementById('btn_pass_access_kembali').style.display = 'none';
+            } else {
+                document.getElementById('btn_pass_access_ambil').style.display = 'none';
+                document.getElementById('btn_pass_access_kembali').style.display = 'block';
+            }
+        });
+
+        async function ambil_pass_access() {
+            var nama_petugas = document.getElementById("res_nama_pass_access").value;
+            var perusahaan = document.getElementById("res_perusahaan_pass_access").value;
+            var pass_access = document.getElementById("res_type_pass_access").value;
+            var no_kartu = document.getElementById("no_kartu").value;
+            
+            var fd = new FormData();
+            showLoading();
+            fd.append("process", "ambil");
+            fd.append("terdaftar", "YES");
+            fd.append("key", key_pass_access);
+            fd.append("pass_access", pass_access);
+            fd.append("no_kartu", no_kartu);
+            fd.append("nama_petugas", nama_petugas);
+            fd.append("perusahaan", perusahaan);
+            
+            await xhr.open("POST", "{{ url_for('pass_access_bp.ambil_pass_access') }}");
+            const body = fd;
+            xhr.timeout = 10000;
+            xhr.onload = () => {
+                hideLoading();
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                    notif("success", xhr.responseText);
+                    document.getElementById('btn_pass_access_ambil').style.display = 'none';
+                    document.getElementById('btn_pass_access_kembali').style.display = 'block';
+                    document.getElementById("no_kartu").disabled = true;
+                } else {
+                    if (xhr.status == 999) {
+                        notif("error", xhr.responseText);
+                    } else if (xhr.status == 888) {
+                        notif("warning", xhr.responseText);
+                    }
+                }
+            };
+
+            xhr.ontimeout = (e) => {
+                hideLoading();
+                notif("warning", "Proses Gagal");
+            };
+
+            xhr.send(body);
+        }
+
+        async function kembalikan_pass_access() {
+            var id_kartu = document.getElementById("id_kartu").value;
+            var no_kartu = document.getElementById("no_kartu").value;
+            
+            var fd = new FormData();
+            showLoading();
+            fd.append("process", "kembalikan");
+            fd.append("id_kartu", id_kartu);
+            fd.append("no_kartu", no_kartu);
+            
+            await xhr.open("POST", "{{ url_for('pass_access_bp.ambil_pass_access') }}");
+            const body = fd;
+            xhr.timeout = 10000;
+            xhr.onload = () => {
+                hideLoading();
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                    notif("success", xhr.responseText);
+                    document.getElementById('btn_pass_access_ambil').style.display = 'block';
+                    document.getElementById('btn_pass_access_kembali').style.display = 'none';
+                    document.getElementById("no_kartu").value = "";
+                    document.getElementById("no_kartu").disabled = false;
+                } else {
+                    if (xhr.status == 999) {
+                        notif("error", xhr.responseText);
+                    } else if (xhr.status == 888) {
+                        notif("warning", xhr.responseText);
+                    }
+                }
+            };
+
+            xhr.ontimeout = (e) => {
+                hideLoading();
+                notif("warning", "Proses Gagal");
+            };
+
+            xhr.send(body);
+        }
+    </script>
+    {% endif %}
+</div>

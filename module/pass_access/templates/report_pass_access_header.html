@@ -1,0 +1,86 @@
+<br>
+<section class="content">
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card card-primary">
+                    <div class="card-body">
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-sm-3">
+                                    <div class="form-group">
+                                        <label>Tanggal :</label>
+                                        <div class="input-group-prepend">
+                                            <input type="text" class="form-control float-right" id="date_rpa">
+                                            <span class="input-group-text">
+                                                <i class="far fa-calendar-alt"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-2">
+                                    <div class="form-group">
+                                        <label>Tipe Pass Access :</label>
+                                        <select id="opt_rpa" class="form-control select2" style="width: 100%;">
+                                            <option value="all" selected="selected">Semua</option>
+                                            <option value="behandle">Behandle</option>
+                                            <option value="building">Building</option>
+                                            <option value="visitor">Visitor</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-1">
+                                <button type="button" class="btn btn-block btn-primary" onclick="search_rpa()">OK</button>
+                            </div>
+
+                            <br>
+                            <div id="content_rpa"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    $('#date_rpa').daterangepicker()
+
+    async function search_rpa(){
+        showLoading();
+        let fd = new FormData();
+        let opt_rpa = document.getElementById('opt_rpa').value;
+        let date_rpa = document.getElementById('date_rpa').value;
+
+        fd.append("opt", opt_rpa);
+        fd.append("date", date_rpa);
+
+        await xhr.open("POST", "{{ url_for('pass_access_bp.report_pass_access') }}");
+        const body = fd;
+        xhr.timeout = 10000;
+        xhr.onload = () => {
+            hideLoading();
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                $('#content_rpa').html(xhr.response);
+            } else {
+                document.getElementById("content_rpa").innerHTML = "";
+                if (xhr.status == 999) {
+                    notif("error", xhr.responseText);
+                } else if (xhr.status == 888) {
+                    notif("warning", xhr.responseText);
+                }
+            }
+            hideLoading();
+        };
+
+        xhr.ontimeout = (e) => {
+            hideLoading();
+            notif("warning", "Proses Gagal");
+        };
+        
+        xhr.send(body);
+    }
+</script>

@@ -1,0 +1,41 @@
+<table id="kx" class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th style="font-size:12px;">DESCRIPTION</th>
+            <th style="font-size:12px;">QTY</th>
+            <th style="font-size:12px;">TOTAL</th>
+        </tr>
+    </thead>
+    
+    <tbody>
+        <tr>
+            <td style="font-size:12px;">{{ data.harga_awal[0] }}</td>
+            <td style="font-size:12px;">{{ data.harga_awal[1] }}</td>
+            <td style="font-size:12px;">{{ "Rp {:,.0f}".format(data.harga_awal[2]) }}</td>
+        </tr>
+
+        {% if data.extend == 'yes' %}
+        {% for r in list_extend %}
+            <tr>
+                <td style="font-size:12px;">{{ r }}</td>
+                <td style="font-size:12px;">{{ data[r][1] }}</td>
+                <td style="font-size:12px;">{{ "Rp {:,.0f}".format(data[r][2]) }}</td>
+            </tr>
+            {% endfor %}
+        {% endif %}
+
+        <tr>
+            <td style="font-size:12px;">{{ data.materai[0] }}</td>
+            <td style="font-size:12px;">{{ data.materai[1] }}</td>
+            <td style="font-size:12px;">{{ "Rp {:,.0f}".format(data.materai[2]) }}</td>
+        </tr>
+
+        <tr>
+            <td style="font-size:12px;">{{ data.tax[0] }}</td>
+            <td style="font-size:12px;">{{ data.tax[1] }}</td>
+            <td style="font-size:12px;">{{ "Rp {:,.0f}".format(data.tax[2]) }}</td>
+        </tr>
+    </tfoot>
+</table>
+
+<h3>Total Harga : {{ "Rp {:,.0f}".format(total_harga) }}</h3>

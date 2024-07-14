@@ -1,0 +1,398 @@
+<table id="tpt" class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th style="font-size:12px;">::</th>
+            <th style="font-size:12px;">CUSTOMER</th>
+            <th style="font-size:12px;">NPWP</th>
+            <th style="font-size:12px;">PENANGGUNG JAWAB</th>
+            <th style="font-size:12px;">NO. TELP</th>
+            <th style="font-size:12px;">NO. HP</th>
+            <th style="font-size:12px;">::</th>
+        </tr>
+    </thead>
+    
+    <tbody>
+        {% for r in data %}
+        <tr>
+            <td>
+                <div class="radio">
+                    <input type="radio" id='{{r.id}}' name="opt_id_update_perusahaan" onclick="get_id_update_pass_perusahaan_checked()">
+                </div>
+            </td>
+            <td style="font-size:12px;">{{ r.cust_name }}</td>
+            <td style="font-size:12px;">{{ r.npwp }}</td>
+            <td style="font-size:12px;">{{ r.p_j }}</td>
+            <td style="font-size:12px;">{{ r.nt_perusahaan }}</td>
+            <td style="font-size:12px;">{{ r.nh_perusahaan }}</td>
+            <td>
+                <button type="button" id="{{r.id}}_{{r.total}}" class="btn btn-block btn-primary" onclick="add_data_petugas_update()">Tambah Petugas</button>
+            </td>
+        </tr>
+        {% endfor %}
+    </tfoot>
+</table>
+
+<div class="modal fade" id="update_pass_access_modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Tambah Petugas Pass Access</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <input id="jumlah_petugas_update" oninput="this.value = this.value.replace(/[^1-8.]/g, '').replace(/(\..*)\./g, '$1'); add_petugas_update(); hide_btn_add_update();" type="text" class="form-control" placeholder="Jumlah Petugas" maxlength="1">
+                <div id="update_pass_access_modal_body"></div>
+                <br>
+                <div class="col-sm-12" id="btnAddUpdate">
+                    <button type="button" class="btn btn-block btn-primary" onclick="add_pass_access_update();">Create</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        $('#tpt').DataTable({
+            "paging": true,
+            "lengthChange": false,
+            "searching": false,
+            "ordering": false,
+            "info": true,
+            "autoWidth": false,
+            "responsive": true,
+        });
+    });
+
+    var id_update_pass_access = "";
+    var jumlah_add_petugas_update = 0;
+    var number_update = 0;
+
+    function get_id_update_pass_perusahaan_checked() {
+        id_update_pass_access = document.activeElement.id;
+        show_data_update_pass_access_perusahaan();
+    }
+
+    async function show_data_update_pass_access_perusahaan() {
+        showLoading();
+        let fd = new FormData();
+
+        fd.append("opt", "perusahaan");
+        fd.append("input", id_update_pass_access);
+
+        await xhr.open("POST", "{{ url_for('pass_access_bp.content_update_pass_access') }}");
+        const body = fd;
+        xhr.timeout = 10000;
+        xhr.onload = () => {
+            hideLoading();
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                $('#content_search_update_pass_access').html(xhr.response);
+            } else {
+                document.getElementById("content_search_update_pass_access").value = "";
+                document.getElementById(id_update_pass_access).checked = false;
+                if (xhr.status == 999) {
+                    notif("error", xhr.responseText);
+                } else if (xhr.status == 888) {
+                    notif("warning", xhr.responseText);
+                }
+            }
+        };
+
+        xhr.ontimeout = (e) => {
+            hideLoading();
+            notif("warning", "Proses Gagal");
+        };
+
+        xhr.send(body);
+    }
+
+    function add_data_petugas_update(){
+        $('#btnAddUpdate').hide();
+        x  = document.activeElement.id.split("_");
+        id_update_pass_access = x[0];
+        jumlah_add_petugas_update = x[1];
+        $('#update_pass_access_modal').modal('toggle');
+    }
+
+    function add_petugas_update() {
+        var jumlah_petugas_update = document.getElementById("jumlah_petugas_update").value;
+
+        var max_total = 8 - parseInt(jumlah_add_petugas_update);
+        if (parseInt(jumlah_petugas_update) > max_total) {
+            notif("warning", "Total Petugas Tidak Boleh Lebih Dari " + max_total);
+            return;
+        }
+
+        if (jumlah_petugas_update == "") {
+            jumlah_petugas_update = "0";
+        }
+
+        var container = document.getElementById("update_pass_access_modal_body");
+
+        if (jumlah_petugas_update && jumlah_petugas_update > number_update) {
+            for (i = number_update; i < jumlah_petugas_update; i++) {
+                var div = document.createElement('div');
+                var id_div = "form_group_" + (parseInt(i) + parseInt(1));
+                var id_nama_petugas = "nama_petugas_" + (parseInt(i) + parseInt(1));
+                var id_tempat_lahir = "tempat_lahir_" + (parseInt(i) + parseInt(1));
+                var id_tanggal_lahir = "tanggal_lahir_" + (parseInt(i) + parseInt(1));
+                var id_i_tanggal_lahir = "i_tanggal_lahir_" + (parseInt(i) + parseInt(1));
+                var id_no_identitas = "no_identitas_" + (parseInt(i) + parseInt(1));
+                var id_no_induk_karyawan = "no_induk_karyawan_" + (parseInt(i) + parseInt(1));
+                var id_agama = "agama_" + (parseInt(i) + parseInt(1));
+                var id_alamat_karyawan = "alamat_karyawan_" + (parseInt(i) + parseInt(1));
+                var id_no_hp_karyawan = "no_hp_karyawan_" + (parseInt(i) + parseInt(1));
+                var id_jabatan = "jabatan_" + (parseInt(i) + parseInt(1));
+                var id_pass_access = "pass_access_" + (parseInt(i) + parseInt(1));
+                var id_scan_identitas = "scan_identitas_" + (parseInt(i) + parseInt(1));
+                var id_pas_foto = "pas_foto_" + (parseInt(i) + parseInt(1));
+                var id_surat_pernyataan = "surat_pernyataan_" + (parseInt(i) + parseInt(1));
+
+                div.id = id_div;
+                div.className = 'form-group';
+
+                div.innerHTML = `
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <label style="font-size:150%;">Petugas ke ` + (parseInt(i) + parseInt(1)) + `</label>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label>Nama Petugas</label>
+                                <input id="` + id_nama_petugas + `" oninput="this.value = this.value.toUpperCase();" type="text" class="form-control" placeholder="Nama Petugas" maxlength="100">
+                            </div>
+                        </div>
+
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label>Tempat Lahir</label>
+                                <input id="` + id_tempat_lahir + `" oninput="this.value = this.value.toUpperCase();" type="text" class="form-control" placeholder="Tempat Lahir" maxlength="100">
+                            </div>
+                        </div>
+
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label>Tanggal Lahir</label>
+                                <div id="` + id_i_tanggal_lahir + `" class="input-group date" data-target-input="nearest">
+                                    <input id="` + id_tanggal_lahir + `" type="text" class="form-control datetimepicker-input" data-target="#` + id_i_tanggal_lahir + `" data-toggle="datetimepicker"/>
+                                    <div class="input-group-append" data-target="#` + id_i_tanggal_lahir + `" data-toggle="datetimepicker">
+                                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label>No. Identitas Diri (KTP/SIM)</label>
+                                <input id="` + id_no_identitas + `" oninput="this.value = this.value.toUpperCase();" type="text" class="form-control" placeholder="No. Identitas Diri (KTP/SIM)" maxlength="16">
+                            </div>
+                        </div>
+
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label>No. Induk Karyawan</label>
+                                <input id="` + id_no_induk_karyawan + `" oninput="this.value = this.value.toUpperCase();" type="text" class="form-control" placeholder="No. Induk Karyawan" maxlength="100">
+                            </div>
+                        </div>
+
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label>Agama</label>
+                                <select id="` + id_agama + `" class="form-control select2bs4" style="width: 100%;">
+                                    <option value="islam">Islam</option>
+                                    <option value="protestan">Protestan</option>
+                                    <option value="katolik">Katolik</option>
+                                    <option value="hindu">Hindu</option>
+                                    <option value="budha">Budha</option>
+                                    <option value="konghucu">Konghucu</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label>Alamat</label>
+                                <input id="` + id_alamat_karyawan + `" oninput="this.value = this.value.toUpperCase();" type="text" class="form-control" placeholder="Alamat" maxlength="225">
+                            </div>
+                        </div>
+
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label>No. Hp</label>
+                                <input id="` + id_no_hp_karyawan + `" class="form-control" placeholder="No. Hp" maxlength="20" onkeypress="return onlyNumberKey(event);">
+                            </div>
+                        </div>
+
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label>Jabatan</label>
+                                <input id="` + id_jabatan + `" oninput="this.value = this.value.toUpperCase();" type="text" class="form-control" placeholder="Jabatan" maxlength="20">
+                            </div>
+                        </div>
+                        
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label>Pass Access</label>
+                                <select id="` + id_pass_access + `" class="form-control select2bs4" style="width: 100%;">
+                                    <option value="behandle">Behandle</option>
+                                    <option value="building">Building</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-12">
+                            <div class="form-group">
+                                <label>Scan Identitas</label>
+                                <div class="custom-file col-sm-12">
+                                    <input type="file" accept="image/jpeg, image/png" id="`+ id_scan_identitas + `">
+                                </div>
+                                <!--div class="custom-file col-sm-12">
+                                    <input type="file" class="custom-file-input" id="`+ id_scan_identitas + `">
+                                    <label class="form-control custom-file-label" for="`+ id_scan_identitas + `">Scan Identitas</label>
+                                </!--div-->
+                            </div>
+                        </div>
+
+                        <div class="col-sm-12">
+                            <div class="form-group">
+                                <label>Pas Foto</label>
+                                <div class="custom-file col-sm-12">
+                                    <input type="file" accept="image/jpeg, image/png" id="`+ id_pas_foto + `">
+                                </div>
+                                <!--div class="custom-file col-sm-121">
+                                    <input type="file" class="custom-file-input" id="`+ id_pas_foto + `">
+                                    <label class="form-control custom-file-label" for="`+ id_pas_foto + `">Pas Foto</label>
+                                </!--div-->
+                            </div>
+                        </div>
+
+                        <div class="col-sm-12">
+                            <div class="form-group">
+                                <label>Surat Pernyataan</label>
+                                <div class="custom-file col-sm-12">
+                                    <input type="file" accept="application/pdf" id="`+ id_surat_pernyataan + `">
+                                </div>
+                                <!--div class="custom-file col-sm-12 1">
+                                    <input type="file" class="custom-file-input" id="`+ id_surat_pernyataan + `">
+                                    <label class="form-control custom-file-label" for="`+ id_surat_pernyataan + `">Surat Pernyataan</label>
+                                </!--div-->
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                container.appendChild(div);
+                number_update = number_update + 1;
+            }
+
+            var container = document.getElementById("update_pass_access_modal_body");
+            var div_s = document.createElement('div');
+            div_s.id = "added_src";
+            container.appendChild(div_s);
+            add_scr_pass_access_update();
+
+        } else if (jumlah_petugas_update && jumlah_petugas_update < number_update) {
+            var sr_a = document.getElementById("added_src");
+            sr_a.parentNode.removeChild(sr_a);
+
+            for (i = number_update; i > jumlah_petugas_update; i--) {
+                var elem = document.getElementById("form_group_"+i);
+                elem.parentNode.removeChild(elem);
+                number_update = number_update - 1;
+            }
+        }
+    }
+
+    function add_scr_pass_access_update(){
+        for (let i = 0; i < number_update; i++) {
+            x = i + 1;
+            var s = "$('#i_tanggal_lahir_"+x+"').datetimepicker({\n"+
+                "format: 'L'\n"+
+            "});\n";
+            addCode_update(s);
+        }
+
+        var z = "$('.select2bs4').select2({\n"+
+            "    theme: 'bootstrap4'\n"+
+            "})\n"+
+            "$('#datemask').inputmask('dd/mm/yyyy', { 'placeholder': 'dd/mm/yyyy' })\n"+
+            "$('#datemask2').inputmask('mm/dd/yyyy', { 'placeholder': 'mm/dd/yyyy' })\n"+
+            "$('[data-mask]').inputmask()\n"+
+            "bsCustomFileInput.init();";
+        addCode_update(z);
+    }
+
+    function addCode_update(code){
+        var JS = document.createElement('script');
+        JS.text = code;
+        document.getElementById("added_src").append(JS);
+    }
+    
+    function hide_btn_add_update(){
+        let jumlah_petugas_update = document.getElementById("jumlah_petugas_update").value;
+        let max_total = 8 - parseInt(jumlah_add_petugas_update);
+
+        if (parseInt(jumlah_petugas_update) > max_total || jumlah_petugas_update == "") {
+            document.getElementById("btnAddUpdate").style.display = "none";
+        } else {
+            document.getElementById("btnAddUpdate").style.display = "block";
+        }
+    }
+
+    async function add_pass_access_update(){
+        showLoading();
+
+        let fd = new FormData();
+        var jumlah_petugas_update = document.getElementById("jumlah_petugas_update").value;
+
+        fd.append("id", id_update_pass_access);
+        fd.append("jumlah_petugas", jumlah_petugas_update);
+
+        for (i = 0; i < jumlah_petugas_update; i++) {
+            fd.append("nama_petugas_"+(i+1), document.getElementById("nama_petugas_"+(i+1)).value);
+            fd.append("tempat_lahir_"+(i+1), document.getElementById("tempat_lahir_"+(i+1)).value);
+            fd.append("tanggal_lahir_"+(i+1), document.getElementById("tanggal_lahir_"+(i+1)).value);
+            fd.append("no_identitas_"+(i+1), document.getElementById("no_identitas_"+(i+1)).value);
+            fd.append("no_induk_karyawan_"+(i+1), document.getElementById("no_induk_karyawan_"+(i+1)).value);
+            fd.append("agama_"+(i+1), document.getElementById("agama_"+(i+1)).value);
+            fd.append("alamat_karyawan_"+(i+1), document.getElementById("alamat_karyawan_"+(i+1)).value);
+            fd.append("no_hp_karyawan_"+(i+1), document.getElementById("no_hp_karyawan_"+(i+1)).value);
+            fd.append("jabatan_"+(i+1), document.getElementById("jabatan_"+(i+1)).value);
+            fd.append("pass_access_"+(i+1), document.getElementById("pass_access_"+(i+1)).value);
+            fd.append("scan_identitas_"+(i+1), $("#scan_identitas_"+(i+1)).prop("files")[0]);
+            fd.append("pas_foto_"+(i+1), $("#pas_foto_"+(i+1)).prop("files")[0]);
+            fd.append("surat_pernyataan_"+(i+1), $("#surat_pernyataan_"+(i+1)).prop("files")[0]);
+        }
+
+        await xhr.open("POST", "{{ url_for('pass_access_bp.add_pass_access_update') }}");
+        const body = fd;
+        xhr.timeout = 10000;
+        xhr.onload = () => {
+            hideLoading();
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                $('#update_pass_access_modal').modal('hide');
+                notif("success", xhr.responseText);
+            } else {
+                if (xhr.status == 999) {
+                    notif("error", xhr.responseText);
+                } else if (xhr.status == 888) {
+                    notif("warning", xhr.responseText);
+                }
+            }
+        };
+
+        xhr.ontimeout = (e) => {
+            hideLoading();
+            notif("warning", "Proses Gagal");
+        };
+
+        xhr.send(body);
+    }
+</script>

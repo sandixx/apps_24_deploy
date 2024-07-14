@@ -1,0 +1,74 @@
+<table id="example1" class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>NO</th>
+            <th>TRX</th>
+            <th>PETUGAS</th>
+            <th>CONT ID</th>
+            <th>SIZE</th>
+            <th>NO DOC</th>
+            <th>TRUCK</th>
+            <th>TERMINAL</th>
+            <th>START</th>
+            <th>GATE IN TERMINAL</th>
+            <th>STACK ON YARD</th>
+            <th>LIFT ON</th>
+            <th>GATE OUT TERMINAL</th>
+            <th>GATE IN TPS</th>
+            <th>LIFT OFF</th>
+            <th>CANCEL</th>
+            <th>NOTE</th>
+            <th>FINISH</th>
+            <th>START - GATE IN TERMINAL</th>
+            <th>GATE IN TERMINAL - PILIH CONT</th>
+            <th>STACK ON YARD - LIFT ON</th>
+            <th>LIFT ON - GATE OUT TERMINAL</th>
+            <th>GATE OUT TERMINAL - GATE IN TPS</th>
+            <th>GATE IN TPS - LIFT OFF</th>
+            <th>LIFT OFF - FINISH</th>
+            <th>TOTAL</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for r in data %}
+        <tr>
+            <td style="{% if r.cancel_time %}background-color:red; color:white;{% endif %}">{{ r.no }}</td>
+            <td style="{% if r.cancel_time %}background-color:red; color:white;{% endif %}">{{ r.no_trx }}</td>
+            <td style="{% if r.cancel_time %}background-color:red; color:white;{% endif %}">{{ r.petugas }}</td>
+            <td style="{% if r.cancel_time %}background-color:red; color:white;{% endif %}">{{ r.cont_id }}</td>
+            <td style="{% if r.cancel_time %}background-color:red; color:white;{% endif %}">{{ r.size }}</td>
+            <td style="{% if r.cancel_time %}background-color:red; color:white;{% endif %}">{{ r.no_doc }}</td>
+            <td style="{% if r.cancel_time %}background-color:red; color:white;{% endif %}">{{ r.no_truck }}</td>
+            <td style="{% if r.cancel_time %}background-color:red; color:white;{% endif %}">{{ r.terminal }}</td>
+            <td style="{% if r.cancel_time %}background-color:red; color:white;{% endif %}">{{ r.start_time }}</td>
+            <td style="{% if r.cancel_time %}background-color:red; color:white;{% endif %}">{{ r.gate_in_terminal }}</td>
+            <td style="{% if r.cancel_time %}background-color:red; color:white;{% endif %}">{{ r.pilih }}</td>
+            <td style="{% if r.cancel_time %}background-color:red; color:white;{% endif %}">{{ r.lift_on }}</td>
+            <td style="{% if r.cancel_time %}background-color:red; color:white;{% endif %}">{{ r.gate_out_terminal }}</td>
+            <td style="{% if r.cancel_time %}background-color:red; color:white;{% endif %}">{{ r.gate_in_tps }}</td>
+            <td style="{% if r.cancel_time %}background-color:red; color:white;{% endif %}">{{ r.lift_off }}</td>
+            <td style="{% if r.cancel_time %}background-color:red; color:white;{% endif %}">{{ r.cancel_time }}</td>
+            <td style="{% if r.cancel_time %}background-color:red; color:white;{% endif %}">{{ r.note }}</td>
+            <td style="{% if r.cancel_time %}background-color:red; color:white;{% endif %}">{{ r.finish }}</td>
+            <td style="{% if r.cancel_time %}background-color:red; color:white;{% endif %}">{{ r.start_time_gate_in_terminal }}</td>
+            <td style="{% if r.cancel_time %}background-color:red; color:white;{% endif %}">{{ r.date_gate_in_terminal_date_pilih }}</td>
+            <td style="{% if r.cancel_time %}background-color:red; color:white;{% endif %}">{{ r.date_pilih_date_lift_on }}</td>
+            <td style="{% if r.cancel_time %}background-color:red; color:white;{% endif %}">{{ r.date_lift_on_date_gate_out_terminal }}</td>
+            <td style="{% if r.cancel_time %}background-color:red; color:white;{% endif %}">{{ r.date_gate_out_terminal_date_gate_in_tps }}</td>
+            <td style="{% if r.cancel_time %}background-color:red; color:white;{% endif %}">{{ r.date_gate_in_tps_date_lift_off }}</td>
+            <td style="{% if r.cancel_time %}background-color:red; color:white;{% endif %}">{{ r.date_lift_off_date_finish }}</td>
+            <td style="{% if r.cancel_time %}background-color:red; color:white;{% endif %}">{{ r.total_time }}</td>
+        </tr>
+        {% endfor %}
+    </tfoot>
+</table>
+
+<script>
+    $(function () {
+        $("#example1").DataTable({
+            "responsive": true, "lengthChange": false, "autoWidth": false,
+            "buttons": ["csv", "excel", "print", "colvis"]
+        }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+    });
+</script>

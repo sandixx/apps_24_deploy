@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Report - B4Gatein</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <link rel="stylesheet" href="{{ url_for('static', filename='fontawesome-free/css/all.min.css')}}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='datatables-bs4/css/dataTables.bootstrap4.min.css')}}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='datatables-responsive/css/responsive.bootstrap4.min.css')}}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='datatables-buttons/css/buttons.bootstrap4.min.css')}}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/adminlte.min.css')}}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/pre2.css')}}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='daterangepicker/daterangepicker.css')}}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='icheck-bootstrap/icheck-bootstrap.min.css')}}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css')}}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='select2/css/select2.min.css')}}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='select2-bootstrap4-theme/select2-bootstrap4.min.css')}}">
+</head>
+
+<body>
+    {% block content %}{% endblock %}
+
+    <script type="text/javascript" src="{{ url_for('static', filename='jquery/jquery.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/adminlte.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/loader.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/pages/dis.js') }}"></script>
+
+    <script type="text/javascript" src="{{ url_for('static', filename='datatables/jquery.dataTables.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='datatables-bs4/js/dataTables.bootstrap4.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='datatables-responsive/js/dataTables.responsive.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='datatables-responsive/js/responsive.bootstrap4.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='datatables-buttons/js/dataTables.buttons.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='datatables-buttons/js/buttons.bootstrap4.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='moment/moment.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='inputmask/jquery.inputmask.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='daterangepicker/daterangepicker.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='select2/js/select2.full.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js') }}"></script>
+
+    <script>
+        $('.select2').select2()
+
+        $('.select2bs4').select2({
+            theme: 'bootstrap4'
+        })
+        $('#datemask').inputmask('dd/mm/yyyy', { 'placeholder': 'dd/mm/yyyy' })
+        $('#datemask2').inputmask('mm/dd/yyyy', { 'placeholder': 'mm/dd/yyyy' })
+        $('[data-mask]').inputmask()
+
+        $('#reservationdate').datetimepicker({
+            format: 'L'
+        });
+
+        $('#reservationdatetime').datetimepicker({ icons: { time: 'far fa-clock' } });
+
+        $('#reservation').daterangepicker()
+        $('#reservationtime').daterangepicker({
+            timePicker: true,
+            timePickerIncrement: 30,
+            locale: {
+                format: 'MM/DD/YYYY hh:mm A'
+            }
+        })
+        
+        $('#daterange-btn').daterangepicker(
+            {
+                ranges   : {
+                'Today'       : [moment(), moment()],
+                'Yesterday'   : [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                'Last 7 Days' : [moment().subtract(6, 'days'), moment()],
+                'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+                'This Month'  : [moment().startOf('month'), moment().endOf('month')],
+                'Last Month'  : [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+                },
+                startDate: moment().subtract(29, 'days'),
+                endDate  : moment()
+            },
+            function (start, end) {
+                $('#reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'))
+            }
+        )
+
+        $('#timepicker').datetimepicker({
+            format: 'LT'
+        })
+    </script>
+
+
+    {% block script %}{% endblock %}
+</body>
+</html>

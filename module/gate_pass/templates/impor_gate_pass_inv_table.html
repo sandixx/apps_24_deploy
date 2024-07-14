@@ -1,0 +1,115 @@
+<table id="table_inv" class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th style="font-size:12px;">NO</th>
+            <th style="font-size:12px;">TYPE</th>
+            <th style="font-size:12px;">INVOICE</th>
+            <th style="font-size:12px;">PROFORMA</th>
+            <th style="font-size:12px;">PAYMENT DATE</th>
+            <th style="font-size:12px;">TOTAL</th>
+            <th style="font-size:12px;">CONT</th>
+            <th style="font-size:12px;">::</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for r in data %}
+        <tr>
+            <td style="font-size:12px;">{{ r.no }}</td>
+            <td style="font-size:12px;">{{ r.type }}</td>
+            <td style="font-size:12px;">{{ r.invoice }}</td>
+            <td style="font-size:12px;">{{ r.payment_no }}</td>
+            <td style="font-size:12px;">{{ r.payment_date }}</td>
+            <td style="font-size:12px;">{{ r.total_cont }}</td>
+            <td style="font-size:12px;"><button type="button" class="btn btn-block btn-primary" onclick="list_container_gp('{{ r.invoice }}');">Cont</button></td>
+            <td style="font-size:12px;"><button type="button" id="{{ r.invoice }}" class="btn btn-block btn-primary" onclick="print_gate_pass('{{ r.invoice }}');">Print</button></td>
+        </tr>
+        {% endfor %}
+    </tfoot>
+</table>
+
+{% for r in data %}
+<div class="modal fade" id="modal_gp_print_{{ r.invoice }}">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">List Container</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <table style="text-align: center; width:100%">
+                    <tbody>
+                        <tr>
+                            <th>No</th>
+                            <th>Container</th>
+                        </tr>
+                    {% for z in r.data_cont %}
+                        <tr>
+                            <td>{{ z.no }}</td>
+                            <td>{{ z.cont_id }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
+
+<script>
+    $(function () {
+        $('#table_inv').DataTable({
+            "paging": true,
+            "lengthChange": false,
+            "searching": true,
+            "ordering": false,
+            "info": false,
+            "autoWidth": false,
+            "responsive": true,
+        });
+    });
+
+    function list_container_gp(data) {
+        var id = document.activeElement.id;
+        $('#modal_gp_print_'+data).modal('toggle');
+    }
+
+    async function print_gate_pass(data_i) {
+        invoice_no = data_i;
+        showLoading();
+        var fd = new FormData();
+        fd.append("opt", "invoice");
+        fd.append("invoice_no", invoice_no);
+
+        await xhr.open("POST", "{{ url_for('gate_pass_impor_bp.gate_pass_impor') }}");
+        const body = fd;
+        xhr.timeout = 10000;
+        xhr.onload = () => {
+            hideLoading();
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                document.getElementById("content_data_gp").style.height = "650px";
+                $('#content_data_gp').html(xhr.response);
+            } else {
+                document.getElementById("content_data_gp").style.height = "0px";
+                if (xhr.status == 999) {
+                    notif("error", xhr.responseText);
+                } else if (xhr.status == 888) {
+                    notif("warning", xhr.responseText);
+                } else if (xhr.status == 401) {
+                    window.location = "{{ url_for('auth_bp.logout') }}";
+                }
+            }
+            get_gp_data("invoice");
+        };
+        
+        xhr.ontimeout = (e) => {
+            on_timeout();
+        };
+        
+        xhr.send(body);
+    }
+</script>

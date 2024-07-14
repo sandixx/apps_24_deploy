@@ -1,0 +1,21 @@
+<div class="table-responsive p-0" style="text-align: center;">
+    <table class="table table-head-fixed text-nowrap">
+        <tbody>
+            <tr>
+                <th>DESCRIPTION</th>
+                <th>QTY</th>
+                <th>TOTAL</th>
+            </tr>
+
+            {% for x in dtl_harga %}
+            <tr>
+                <td>{{ x.desc }}</td>
+                <td>{{ x.total_cont }}</td>
+                <td>{{ "Rp. {:,.0f}".format(x.harga) }}</td>
+            </tr>
+            {% endfor %}
+        </tfoot>
+    </table>
+</div>
+
+<h3>Total Harga : {{ "Rp. {:,.0f}".format(total_harga) }}</h3>
